@@ -4,17 +4,20 @@ module dds_uart_clock(
         enable_16
     );
 
+    parameter TOP = 62500;
+    parameter ACCUM_BITS = 18;
+
     input clk;
     input [15:0] baudrate;
     output reg enable_16;
 
-    reg [17:0] accum = 0;
+    reg [ACCUM_BITS-1:0] accum = 0;
 
     always @(posedge clk)
     begin
-        if (accum > 62500)
+        if (accum >= TOP)
             begin
-                accum <= accum + baudrate - 62500;
+                accum <= accum + baudrate - TOP;
                 enable_16 <= 1;
             end
         else
@@ -22,6 +25,138 @@ module dds_uart_clock(
                 accum <= accum + baudrate;
                 enable_16 <= 0;
             end
+    end
+
+endmodule
+
+module s3g_rx(
+        clk,
+        rst,
+        rx_data,
+        rx_done,
+
+        packet_done,
+        packet_error,
+        buffer_valid,
+        buffer_addr,
+        buffer_data,
+
+        buf0,
+        buf1,
+        buf2,
+        buf3,
+        buf4,
+        buf5,
+        buf6,
+        buf7,
+        buf8,
+        buf9,
+        buf10,
+        buf11,
+        buf12,
+        buf13,
+        buf14,
+        buf15
+    );
+        
+`include "../src/crc8.v"
+
+    input clk;
+    input rst;
+    input [7:0] rx_data;
+    input rx_done;
+
+    output reg packet_done;
+    output reg packet_error;
+    output reg buffer_valid;
+
+    output reg [7:0] buf0;
+    output reg [7:0] buf1;
+    output reg [7:0] buf2;
+    output reg [7:0] buf3;
+    output reg [7:0] buf4;
+    output reg [7:0] buf5;
+    output reg [7:0] buf6;
+    output reg [7:0] buf7;
+    output reg [7:0] buf8;
+    output reg [7:0] buf9;
+    output reg [7:0] buf10;
+    output reg [7:0] buf11;
+    output reg [7:0] buf12;
+    output reg [7:0] buf13;
+    output reg [7:0] buf14;
+    output reg [7:0] buf15;
+    
+    input [7:0] buffer_addr;
+    output [7:0] buffer_data;
+
+    reg [7:0] buffer[0:255];
+
+    localparam S_INIT = 0, S_LEN = 1, S_DATA = 2, S_CRC = 3;
+
+    reg [2:0] state = S_INIT;
+    reg [2:0] next_state;
+    reg [7:0] byte_cnt = 0;
+    reg [7:0] next_byte_cnt;
+    reg [7:0] crc = 0;
+    reg [7:0] next_crc;
+    reg next_packet_done;
+    reg next_packet_error;
+
+    always @(state, rx_done, rx_data)
+        begin
+            next_state <= state;
+            next_byte_cnt <= byte_cnt;
+            next_crc <= crc;
+            next_packet_done <= 0;
+            next_packet_error <= 0;
+
+            if (state == S_INIT)
+                begin
+                    if (rx_done && rx_data == 8'hD5)
+                        next_state <= S_LEN;
+                end
+            else if (state == S_LEN)
+                begin
+                    if (rx_done)
+                    begin
+                        next_state <= S_DATA;
+                        next_byte_cnt <= rx_data;
+                        next_crc <= 0;
+                    end
+                end
+            else if (state == S_DATA)
+                begin
+                    if (rx_done)
+                    begin
+                        next_byte_cnt <= byte_cnt - 1;
+                        next_crc <= nextCRC8_D8(rx_data, crc);
+                        if (byte_cnt == 1)
+                            next_state <= S_CRC;
+                    end
+                end
+            else if (state == S_CRC)
+                begin
+                    if (rx_done)
+                    begin
+                        next_state <= S_INIT;
+                        if (rx_data == crc)
+                            next_packet_done <= 1;
+                        else
+                            next_packet_error <= 1;
+                    end
+                end
+            else 
+                next_state <= S_INIT;
+        end
+    
+    always @(posedge clk)
+    begin
+        state <= next_state;
+        crc <= next_crc;
+        byte_cnt <= next_byte_cnt;
+        packet_error <= next_packet_error;
+        packet_done <= next_packet_done;
     end
 
 endmodule
@@ -40,16 +175,16 @@ module top(osc_clk,
 
     input osc_clk;
 
-   output led0;
-   output led1;
-   output led2;
-   output led3;
-   output led4;
-   output led5;
-   output led6;
-   output led7;
+   output reg led0;
+   output reg led1;
+   output reg led2;
+   output reg led3;
+   output reg led4;
+   output reg led5;
+   output reg led6;
+   output reg led7;
 
-    input rxd;
+   input rxd;
    output txd;
    
    reg [31:0] cnt = 0;
@@ -64,14 +199,17 @@ module top(osc_clk,
    
    reg blym = 0;
 
-   assign led0 = rx_data[0];
-   assign led1 = rx_data[1];
-   assign led2 = rx_data[2];
-   assign led3 = rx_data[3];
-   assign led4 = rx_data[4];
-   assign led5 = rx_data[5];
-   assign led6 = rx_data[6];
-   assign led7 = rx_data[7];
+    always @(posedge osc_clk)
+    begin
+       led0 <= rx_data[0];
+       led1 <= rx_data[1];
+       led2 <= rx_data[2];
+       led3 <= rx_data[3];
+       led4 <= rx_data[4];
+       led5 <= rx_data[5];
+       led6 <= rx_data[6];
+       led7 <= rx_data[7];
+   end
 
    assign tx_data = rx_data;
    assign tx_wr = rx_done;
@@ -102,6 +240,5 @@ module top(osc_clk,
         .tx_wr(tx_wr),
         .tx_done(tx_done)
     );
-
 
 endmodule

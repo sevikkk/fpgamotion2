@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="./isim.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="s3g_rx_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/s3g_rx_tb/dut/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/state" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/crc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">crc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">crc[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/packet_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">packet_done</obj_property>
+      <obj_property name="ObjectShortName">packet_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/packet_error" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">packet_error</obj_property>
+      <obj_property name="ObjectShortName">packet_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/rx_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/rx_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_done</obj_property>
+      <obj_property name="ObjectShortName">rx_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/byte_cnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">byte_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">byte_cnt[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/cycle" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cycle[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cycle[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>
