@@ -86,7 +86,7 @@ module top(osc_clk,
 
     dds_uart_clock uclock1(
         .clk(osc_clk),
-        .baudrate(2142),
+        .baudrate(7525),
         .enable_16(enable_16)
     );
 
