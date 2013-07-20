@@ -15,9 +15,10 @@ PARFLAGS	= -ol std
 #PARFLAGS	= -ol high
 
 
-# Top
+# Top 
 
-SRC =	src/top.v
+SRC =	src/uart_transceiver.v \
+	src/top.v
 
 all:		bits
 
@@ -64,7 +65,7 @@ build/project.ngd: build/project.ngc $(PINS)
 		cd build && ngdbuild -p $(DEVICE) project.ngc -uc ../$(PINS)
 
 build/project.ncd: build/project.ngd
-		cd build && map -pr b -p $(DEVICE) project $(MAPFLAGS)
+		cd build && map -pr b -p $(DEVICE) -w project $(MAPFLAGS)
 
 build/project_r.ncd: build/project.ncd
 		cd build && par -w project project_r.ncd $(PARFLAGS)
