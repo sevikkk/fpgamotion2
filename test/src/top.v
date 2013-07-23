@@ -292,6 +292,7 @@ endmodule
 
 module top(osc_clk, 
            rxd, 
+           txd,
            led0, 
            led1, 
            led2, 
@@ -300,7 +301,9 @@ module top(osc_clk,
            led5, 
            led6, 
            led7, 
-           txd);
+           j1
+       );
+
 
     input osc_clk;
 
@@ -312,6 +315,7 @@ module top(osc_clk,
    output reg led5;
    output reg led6;
    output reg led7;
+   output [27:0] j1;
 
    input rxd;
    output txd;
@@ -329,6 +333,9 @@ module top(osc_clk,
    wire buffer_valid;
    
    reg blym = 0;
+   
+   assign j1[27:14] = cnt[25:12];
+   assign j1[13:0] = cnt[25:12];
 
     always @(posedge osc_clk)
     begin
