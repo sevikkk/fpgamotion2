@@ -303,7 +303,11 @@ module top(osc_clk,
            led7, 
            j1,
            j2,
-           j3
+           j3,
+           j4,
+           j5,
+           j6,
+           sd
        );
 
 
@@ -320,6 +324,10 @@ module top(osc_clk,
    output [27:0] j1;
    output [13:0] j2;
    output [13:0] j3;
+   output [17:0] j4;
+   output j5;
+   output [4:0] j6;
+   output [3:0] sd;
 
    input rxd;
    output txd;
@@ -339,9 +347,13 @@ module top(osc_clk,
    reg blym = 0;
    
    assign j1[27:14] = cnt[25:12];
-   assign j1[13:0] = cnt[25:12];
+   assign j1[13:0] = cnt[25:12] & cnt[26:11];
    assign j2[13:0] = cnt[25:12];
    assign j3[13:0] = cnt[25:12];
+   assign j4[17:0] = cnt[25:8];
+   assign j5 = cnt[12];
+   assign j6[4:0] = cnt[16:12];
+   assign sd[3:0] = cnt[15:12];
 
     always @(posedge osc_clk)
     begin
