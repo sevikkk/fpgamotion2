@@ -40,6 +40,22 @@ bits:		$(DESIGN).bit
 download: bits
 		impact -batch cfg/impact.run
 
+#
+# Simulation
+#
+
+TB?= s3g_rx_tb
+
+build/top_exe: $(SRC) tb/$(TB).v
+	@[ -d build ] || mkdir build
+	echo verilog work ../tb/$(TB).v > build/fuse.src
+	cd build && fuse -prj fuse.src -o top_exe work.$(TB)
+
+sim:    build/top_exe
+
+sim-run: build/top_exe
+	cd build && ./top_exe -gui -view ../tb/$(TB).wcfg &
+
 
 #
 # Synthesis
@@ -78,3 +94,4 @@ build/project_r.twr: build/project_r.ncd
 $(DESIGN).bit:	build/project_r.ncd build/project_r.twr
 		cd build && bitgen project_r.ncd -l -w $(BGFLAGS)
 		@cp -f build/project_r.bit $@
+

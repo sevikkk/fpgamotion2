@@ -1,3 +1,5 @@
+`include "../src/s3g_rx.v"
+
 module s3g_rx_tb;
 
     reg [7:0] rx_data;
