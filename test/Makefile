@@ -18,6 +18,8 @@ PARFLAGS	= -ol std
 # Top 
 
 SRC =	src/uart_transceiver.v \
+	src/dds_uart_clock.v \
+	src/s3g_rx.v \
 	src/top.v
 
 all:		bits
