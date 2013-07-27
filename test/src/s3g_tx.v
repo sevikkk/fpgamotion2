@@ -95,7 +95,7 @@ module s3g_tx(
             buffer[13] <= buf13;
             buffer[14] <= buf14;
             buffer[15] <= buf15;
-        end;
+        end
 
     always @(state, byte_cnt, crc, busy, tx_done, packet_wr)
         begin

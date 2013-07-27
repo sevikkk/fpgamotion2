@@ -51,6 +51,12 @@ module top(osc_clk,
    wire tx_done;
    wire [7:0] payload_len;
    wire buffer_valid;
+   wire packet_done;
+
+   wire [7:0] pkt_len;
+   wire [7:0] pkt_b0;
+   wire [7:0] pkt_b1;
+   wire [7:0] pkt_b2;
    
    reg blym = 0;
    
@@ -75,8 +81,6 @@ module top(osc_clk,
        led7 <= buffer_valid;
    end
 
-   assign tx_data = rx_data;
-   assign tx_wr = rx_done;
    assign rst = 0;
 
     always @(posedge osc_clk)
@@ -111,7 +115,25 @@ module top(osc_clk,
         .rx_data(rx_data),
         .rx_done(rx_done),
         .payload_len(payload_len),
-        .buffer_valid(buffer_valid)
+        .buffer_valid(buffer_valid),
+        .packet_done(packet_done)
     );
 
+   assign pkt_len = 8'h03;
+   assign pkt_b0 = 8'h81;
+   assign pkt_b1 = 8'hBA;
+   assign pkt_b2 = 8'hCE;
+
+    s3g_tx s3g_tx1(
+        .clk(osc_clk),
+        .rst(rst),
+        .tx_data(tx_data),
+        .tx_done(tx_done),
+        .tx_wr(tx_wr),
+        .packet_wr(packet_done),
+        .payload_len(pkt_len),
+        .buf0(pkt_b0),
+        .buf1(pkt_b1),
+        .buf2(pkt_b2)
+    );
 endmodule
