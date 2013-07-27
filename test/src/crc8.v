@@ -31,14 +31,14 @@
     d = Data;
     c = crc;
 
-    newcrc[0] = d[6] ^ d[4] ^ d[3] ^ d[0] ^ c[0] ^ c[3] ^ c[4] ^ c[6];
-    newcrc[1] = d[7] ^ d[5] ^ d[4] ^ d[1] ^ c[1] ^ c[4] ^ c[5] ^ c[7];
-    newcrc[2] = d[6] ^ d[5] ^ d[2] ^ c[2] ^ c[5] ^ c[6];
-    newcrc[3] = d[7] ^ d[6] ^ d[3] ^ c[3] ^ c[6] ^ c[7];
-    newcrc[4] = d[7] ^ d[6] ^ d[3] ^ d[0] ^ c[0] ^ c[3] ^ c[6] ^ c[7];
-    newcrc[5] = d[7] ^ d[6] ^ d[3] ^ d[1] ^ d[0] ^ c[0] ^ c[1] ^ c[3] ^ c[6] ^ c[7];
-    newcrc[6] = d[7] ^ d[4] ^ d[2] ^ d[1] ^ c[1] ^ c[2] ^ c[4] ^ c[7];
-    newcrc[7] = d[5] ^ d[3] ^ d[2] ^ c[2] ^ c[3] ^ c[5];
+    newcrc[7] = d[1] ^ d[3] ^ d[4] ^ d[7] ^ c[7] ^ c[4] ^ c[3] ^ c[1];
+    newcrc[6] = d[0] ^ d[2] ^ d[3] ^ d[6] ^ c[6] ^ c[3] ^ c[2] ^ c[0];
+    newcrc[5] = d[1] ^ d[2] ^ d[5] ^ c[5] ^ c[2] ^ c[1];
+    newcrc[4] = d[0] ^ d[1] ^ d[4] ^ c[4] ^ c[1] ^ c[0];
+    newcrc[3] = d[0] ^ d[1] ^ d[4] ^ d[7] ^ c[7] ^ c[4] ^ c[1] ^ c[0];
+    newcrc[2] = d[0] ^ d[1] ^ d[4] ^ d[6] ^ d[7] ^ c[7] ^ c[6] ^ c[4] ^ c[1] ^ c[0];
+    newcrc[1] = d[0] ^ d[3] ^ d[5] ^ d[6] ^ c[6] ^ c[5] ^ c[3] ^ c[0];
+    newcrc[0] = d[2] ^ d[4] ^ d[5] ^ c[5] ^ c[4] ^ c[2];
     nextCRC8_D8 = newcrc;
   end
   endfunction
