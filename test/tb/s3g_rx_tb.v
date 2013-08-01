@@ -32,6 +32,10 @@ module s3g_rx_tb;
     );
 
     initial begin
+        $dumpfile("test.vcd");
+        $dumpvars(0,dut);
+        $dumpvars(0,dut2);
+        
         rst = 0;
         clk = 0;
         rx_data = 0;
@@ -89,14 +93,15 @@ module s3g_rx_tb;
                     120: tx_done = 1;
                     130: tx_done = 1;
                     140: tx_done = 1;
+                    400: $finish;
                 endcase
 
                 #2;
                 clk = 0;
                 #5;
                 cycle = cycle + 1;
-            end;
-    end;
+            end
+    end
 
 
 endmodule

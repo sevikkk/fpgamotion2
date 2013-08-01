@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
+[*] Thu Aug  1 16:43:35 2013
+[*]
+[dumpfile] "test.vcd"
+[dumpfile_mtime] "Thu Aug  1 16:43:18 2013"
+[dumpfile_size] 13088
+[savefile] "../tb/s3g_rx_tb.sav"
+[timestart] 560
+[size] 1000 600
+[pos] -1 -1
+*-8.356054 1157 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] s3g_rx_tb.
+[treeopen] s3g_rx_tb.dut.
+[treeopen] s3g_rx_tb.dut2.
+[sst_width] 211
+[signals_width] 126
+[sst_expanded] 1
+[sst_vpaned_height] 154
+@22
+s3g_rx_tb.dut2.tx_data[7:0]
+@28
+s3g_rx_tb.dut2.tx_done
+s3g_rx_tb.dut2.tx_wr
+@29
+s3g_rx_tb.dut2.busy
+[pattern_trace] 1
+[pattern_trace] 0

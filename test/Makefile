@@ -58,6 +58,17 @@ sim-run: build/top_exe
 	cd build && ./top_exe -gui -view ../tb/$(TB).wcfg &
 
 
+build/top.out: $(SRC) tb/$(TB).v
+	@[ -d build ] || mkdir build
+	echo ../tb/$(TB).v > build/iverilog.src
+	cd build && iverilog -I ../src -c iverilog.src -o top.out
+
+isim:    build/top.out
+	cd build && ./top.out
+
+isim-run: build/top.out
+	cd build && gtkwave -a ../tb/$(TB).sav
+
 #
 # Synthesis
 #
