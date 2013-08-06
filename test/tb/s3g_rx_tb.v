@@ -4,20 +4,27 @@
 
 module s3g_rx_tb;
 
-    reg [7:0] rx_data;
-    reg rx_done;
     reg clk;
     reg rst;
+
     reg [31:0] cycle;
-    reg packet_wr;
+
+    reg [7:0] rx_data;
+    reg rx_done;
+
     reg tx_done;
     wire tx_wr;
+    wire [7:0] tx_data;
 
     s3g_rx dut(
         .clk(clk),
         .rst(rst),
         .rx_data(rx_data),
-        .rx_done(rx_done)
+        .rx_done(rx_done),
+        .packet_done(rx_packet_done),
+        .packet_error(rx_packet_error),
+        .payload_len(rx_payload_len),
+        .buffer_valid(rx_buffer_valid),
     );
 
     s3g_tx dut2(
