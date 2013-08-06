@@ -35,13 +35,7 @@ module s3g_rx_tb;
     executor dut3(
         .clk(clk),
         .rst(rst),
-        .tx_done(tx_done),
-        .tx_wr(tx_wr),
-        .payload_len(8'h3),
-        .packet_wr(packet_wr),
-        .buf0(8'h1),
-        .buf1(8'h2),
-        .buf2(8'h3)
+        .tx_done(tx_done)
     );
 
     initial begin
