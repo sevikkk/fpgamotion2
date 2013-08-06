@@ -1,5 +1,6 @@
 `include "../src/s3g_rx.v"
 `include "../src/s3g_tx.v"
+`include "../src/executor.v"
 
 module s3g_rx_tb;
 
@@ -20,6 +21,18 @@ module s3g_rx_tb;
     );
 
     s3g_tx dut2(
+        .clk(clk),
+        .rst(rst),
+        .tx_done(tx_done),
+        .tx_wr(tx_wr),
+        .payload_len(8'h3),
+        .packet_wr(packet_wr),
+        .buf0(8'h1),
+        .buf1(8'h2),
+        .buf2(8'h3)
+    );
+
+    executor dut3(
         .clk(clk),
         .rst(rst),
         .tx_done(tx_done),
