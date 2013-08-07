@@ -2,6 +2,7 @@ module executor (
     input clk,
     input rst,
 
+    // s3g_rx interface
     input rx_packet_done,
     input rx_packet_error,
     input rx_buffer_valid,
@@ -24,6 +25,7 @@ module executor (
     input [7:0] rx_buf14,
     input [7:0] rx_buf15,
 
+    // s3g_tx interface
     input tx_busy,
     output reg tx_packet_wr,
 
@@ -45,6 +47,7 @@ module executor (
     output reg [7:0] tx_buf14,
     output reg [7:0] tx_buf15,
 
+    // output_registers
     output reg [31:0] out_reg0,
     output reg [31:0] out_reg1,
     output reg [31:0] out_reg2,
@@ -76,7 +79,39 @@ module executor (
     output reg [31:0] out_reg28,
     output reg [31:0] out_reg29,
     output reg [31:0] out_reg30,
-    output reg [31:0] out_reg31
+    output reg [31:0] out_reg31,
+    output reg [31:0] out_reg32,
+    output reg [31:0] out_reg33,
+    output reg [31:0] out_reg34,
+    output reg [31:0] out_reg35,
+    output reg [31:0] out_reg36,
+    output reg [31:0] out_reg37,
+    output reg [31:0] out_reg38,
+    output reg [31:0] out_reg39,
+    output reg [31:0] out_reg40,
+    output reg [31:0] out_reg41,
+    output reg [31:0] out_reg42,
+    output reg [31:0] out_reg43,
+    output reg [31:0] out_reg44,
+    output reg [31:0] out_reg45,
+    output reg [31:0] out_reg46,
+    output reg [31:0] out_reg47,
+    output reg [31:0] out_reg48,
+    output reg [31:0] out_reg49,
+    output reg [31:0] out_reg50,
+    output reg [31:0] out_reg51,
+    output reg [31:0] out_reg52,
+    output reg [31:0] out_reg53,
+    output reg [31:0] out_reg54,
+    output reg [31:0] out_reg55,
+    output reg [31:0] out_reg56,
+    output reg [31:0] out_reg57,
+    output reg [31:0] out_reg58,
+    output reg [31:0] out_reg59,
+    output reg [31:0] out_reg60,
+    output reg [31:0] out_reg61,
+    output reg [31:0] out_reg62,
+    output reg [31:0] out_reg63
 );
 
 localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6;
