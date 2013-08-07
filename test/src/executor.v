@@ -24,7 +24,7 @@ module executor (
     input [7:0] rx_buf14,
     input [7:0] rx_buf15,
 
-    input tx_done,
+    input tx_busy,
     output reg tx_packet_wr,
 
     output reg [7:0] tx_payload_len,
@@ -81,14 +81,14 @@ module executor (
 
 localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_READ_REG = 3;
 
-localparam S_INIT = 0, S_BUSY = 1;
+localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2;
 
 reg [1:0] state = S_INIT;
 reg [1:0] next_state;
 
 reg [2:0] next_tx_cmd;
 
-always @(tx_done, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_len,
+always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_len,
     rx_buf0, rx_buf1, rx_buf2, rx_buf3, rx_buf4, rx_buf5, rx_buf6, rx_buf7,
     rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15)
     begin
@@ -101,17 +101,21 @@ always @(tx_done, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                     if (rx_packet_done)
                         begin
                             next_tx_cmd <= CMD_OK;
-                            next_state <= S_BUSY;
+                            next_state <= S_DELAY;
                         end
                     else if (rx_packet_error)
                         begin
                             next_tx_cmd <= CMD_ERROR;
-                            next_state <= S_BUSY;
+                            next_state <= S_DELAY;
                         end
+                end
+            S_DELAY:
+                begin
+                        next_state <= S_BUSY;
                 end
             S_BUSY:
                 begin
-                    if (tx_done)
+                    if (!tx_busy)
                         next_state <= S_INIT;
                 end
             default:

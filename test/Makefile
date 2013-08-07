@@ -21,6 +21,7 @@ SRC =	src/uart_transceiver.v \
 	src/dds_uart_clock.v \
 	src/s3g_rx.v \
 	src/s3g_tx.v \
+	src/executor.v \
 	src/top.v
 
 all:		bits
@@ -67,7 +68,7 @@ isim:    build/top.out
 	cd build && ./top.out
 
 isim-run: build/top.out
-	cd build && gtkwave -a ../tb/$(TB).sav
+	cd build && gtkwave -a ../tb/$(TB).sav &
 
 #
 # Synthesis
