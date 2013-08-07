@@ -79,7 +79,7 @@ module executor (
     output reg [31:0] out_reg31
 );
 
-localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_READ_REG = 3;
+localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6;
 
 localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2;
 
@@ -100,8 +100,17 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                 begin
                     if (rx_packet_done)
                         begin
-                            next_tx_cmd <= CMD_OK;
+                            next_tx_cmd <= CMD_UNKNOWN;
                             next_state <= S_DELAY;
+                            if (rx_payload_len == 0)
+                                begin
+                                    next_tx_cmd <= CMD_OK;
+                                end
+                            else
+                                case (rx_buf0)
+                                    0: next_tx_cmd <= CMD_VERSION;
+                                    27: next_tx_cmd <= CMD_EXT_VERSION;
+                                endcase
                         end
                     else if (rx_packet_error)
                         begin
@@ -164,6 +173,34 @@ begin
                 tx_packet_wr <= 1;
                 tx_payload_len <= 1;
                 tx_buf0 <= 8'h80;
+            end
+        CMD_UNKNOWN:
+            begin
+                tx_packet_wr <= 1;
+                tx_payload_len <= 1;
+                tx_buf0 <= 8'h85;
+            end
+        CMD_VERSION:
+            begin
+                tx_packet_wr <= 1;
+                tx_payload_len <= 3;
+                tx_buf0 <= 8'h81;
+                tx_buf1 <= 8'hBA;
+                tx_buf2 <= 8'hCE;
+            end
+        CMD_EXT_VERSION:
+            begin
+                tx_packet_wr <= 1;
+                tx_payload_len <= 9;
+                tx_buf0 <= 8'h81;
+                tx_buf1 <= 8'h01;
+                tx_buf2 <= 8'h00;
+                tx_buf3 <= 8'h01;
+                tx_buf4 <= 8'h00;
+                tx_buf5 <= 8'hCE;
+                tx_buf6 <= 8'h00;
+                tx_buf7 <= 8'h00;
+                tx_buf8 <= 8'h00;
             end
     endcase
 end

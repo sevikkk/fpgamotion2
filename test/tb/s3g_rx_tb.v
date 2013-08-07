@@ -244,7 +244,57 @@ module s3g_rx_tb;
                         rx_data = 8'hD8;
                         rx_done = 1;
                     end
-                    400: $finish;
+
+                    220: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    230: begin
+                        rx_data = 8'h03;
+                        rx_done = 1;
+                    end
+                    240: begin
+                        rx_data = 0;
+                        rx_done = 1;
+                    end
+                    250: begin
+                        rx_data = 8'h01;
+                        rx_done = 1;
+                    end
+                    260: begin
+                        rx_data = 8'h02;
+                        rx_done = 1;
+                    end
+                    270: begin
+                        rx_data = 8'h78;
+                        rx_done = 1;
+                    end
+
+                    320: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    330: begin
+                        rx_data = 8'h03;
+                        rx_done = 1;
+                    end
+                    340: begin
+                        rx_data = 27;
+                        rx_done = 1;
+                    end
+                    350: begin
+                        rx_data = 8'h01;
+                        rx_done = 1;
+                    end
+                    360: begin
+                        rx_data = 8'h02;
+                        rx_done = 1;
+                    end
+                    370: begin
+                        rx_data = 8'hF3;
+                        rx_done = 1;
+                    end
+                    600: $finish;
                 endcase
 
                 #2;
