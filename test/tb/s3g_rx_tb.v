@@ -182,7 +182,7 @@ module s3g_rx_tb;
                     tx_done = 0;
 
                 if (tx_wr == 1)
-                    tx_delay = 30;
+                    tx_delay = 5;
 
                 if (tx_delay>0)
                 begin
@@ -294,7 +294,46 @@ module s3g_rx_tb;
                         rx_data = 8'hF3;
                         rx_done = 1;
                     end
-                    600: $finish;
+
+
+                    420: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    425: begin
+                        rx_data = 6;
+                        rx_done = 1;
+                    end
+                    430: begin
+                        rx_data = 60;
+                        rx_done = 1;
+                    end
+                    435: begin
+                        rx_data = 13;
+                        rx_done = 1;
+                    end
+                    440: begin
+                        rx_data = 1;
+                        rx_done = 1;
+                    end
+                    445: begin
+                        rx_data = 2;
+                        rx_done = 1;
+                    end
+                    450: begin
+                        rx_data = 3;
+                        rx_done = 1;
+                    end
+                    455: begin
+                        rx_data = 4;
+                        rx_done = 1;
+                    end
+                    460: begin
+                        rx_data = 8'h88;
+                        rx_done = 1;
+                    end
+
+                    1000: $finish;
                 endcase
 
                 #2;

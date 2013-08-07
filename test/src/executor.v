@@ -123,12 +123,20 @@ reg [1:0] next_state;
 
 reg [2:0] next_tx_cmd;
 
+reg [5:0] out_reg_addr;
+reg [31:0] out_reg_data;
+reg out_reg_stb;
+
 always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_len,
     rx_buf0, rx_buf1, rx_buf2, rx_buf3, rx_buf4, rx_buf5, rx_buf6, rx_buf7,
     rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15)
     begin
         next_state <= state;
         next_tx_cmd <= CMD_NONE;
+
+        out_reg_stb <= 0;
+        out_reg_addr <= 0;
+        out_reg_data <= 0;
 
         case (state)
             S_INIT:
@@ -145,6 +153,13 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                                 case (rx_buf0)
                                     0: next_tx_cmd <= CMD_VERSION;
                                     27: next_tx_cmd <= CMD_EXT_VERSION;
+                                    60: 
+                                    begin
+                                        out_reg_stb <= 1;
+                                        out_reg_addr <= rx_buf1;
+                                        out_reg_data <= {rx_buf5, rx_buf4, rx_buf3, rx_buf2};
+                                        next_tx_cmd <= CMD_OK;
+                                    end
                                 endcase
                         end
                     else if (rx_packet_error)
@@ -240,4 +255,76 @@ begin
     endcase
 end
 
+always @(posedge clk)
+begin
+    if (out_reg_stb)
+        case (out_reg_addr)
+            0: out_reg0 <= out_reg_data;
+            1: out_reg1 <= out_reg_data;
+            2: out_reg2 <= out_reg_data;
+            3: out_reg3 <= out_reg_data;
+            4: out_reg4 <= out_reg_data;
+            5: out_reg5 <= out_reg_data;
+            6: out_reg6 <= out_reg_data;
+            7: out_reg7 <= out_reg_data;
+            8: out_reg8 <= out_reg_data;
+            9: out_reg9 <= out_reg_data;
+            10: out_reg10 <= out_reg_data;
+            11: out_reg11 <= out_reg_data;
+            12: out_reg12 <= out_reg_data;
+            13: out_reg13 <= out_reg_data;
+            14: out_reg14 <= out_reg_data;
+            15: out_reg15 <= out_reg_data;
+            16: out_reg16 <= out_reg_data;
+            17: out_reg17 <= out_reg_data;
+            18: out_reg18 <= out_reg_data;
+            19: out_reg19 <= out_reg_data;
+            20: out_reg20 <= out_reg_data;
+            21: out_reg21 <= out_reg_data;
+            22: out_reg22 <= out_reg_data;
+            23: out_reg23 <= out_reg_data;
+            24: out_reg24 <= out_reg_data;
+            25: out_reg25 <= out_reg_data;
+            26: out_reg26 <= out_reg_data;
+            27: out_reg27 <= out_reg_data;
+            28: out_reg28 <= out_reg_data;
+            29: out_reg29 <= out_reg_data;
+            30: out_reg30 <= out_reg_data;
+            31: out_reg31 <= out_reg_data;
+            32: out_reg32 <= out_reg_data;
+            33: out_reg33 <= out_reg_data;
+            34: out_reg34 <= out_reg_data;
+            35: out_reg35 <= out_reg_data;
+            36: out_reg36 <= out_reg_data;
+            37: out_reg37 <= out_reg_data;
+            38: out_reg38 <= out_reg_data;
+            39: out_reg39 <= out_reg_data;
+            40: out_reg40 <= out_reg_data;
+            41: out_reg41 <= out_reg_data;
+            42: out_reg42 <= out_reg_data;
+            43: out_reg43 <= out_reg_data;
+            44: out_reg44 <= out_reg_data;
+            45: out_reg45 <= out_reg_data;
+            46: out_reg46 <= out_reg_data;
+            47: out_reg47 <= out_reg_data;
+            48: out_reg48 <= out_reg_data;
+            49: out_reg49 <= out_reg_data;
+            50: out_reg50 <= out_reg_data;
+            51: out_reg51 <= out_reg_data;
+            52: out_reg52 <= out_reg_data;
+            53: out_reg53 <= out_reg_data;
+            54: out_reg54 <= out_reg_data;
+            55: out_reg55 <= out_reg_data;
+            56: out_reg56 <= out_reg_data;
+            57: out_reg57 <= out_reg_data;
+            58: out_reg58 <= out_reg_data;
+            59: out_reg59 <= out_reg_data;
+            60: out_reg60 <= out_reg_data;
+            61: out_reg61 <= out_reg_data;
+            62: out_reg62 <= out_reg_data;
+            63: out_reg63 <= out_reg_data;
+        endcase
+end
+
 endmodule
+
