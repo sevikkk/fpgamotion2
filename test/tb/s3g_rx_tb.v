@@ -361,6 +361,39 @@ module s3g_rx_tb;
                     end
 
 
+                    620: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    625: begin
+                        rx_data = 5;
+                        rx_done = 1;
+                    end
+                    630: begin
+                        rx_data = 62;
+                        rx_done = 1;
+                    end
+                    635: begin
+                        rx_data = 8'h01;
+                        rx_done = 1;
+                    end
+                    640: begin
+                        rx_data = 8'h02;
+                        rx_done = 1;
+                    end
+                    645: begin
+                        rx_data = 8'h04;
+                        rx_done = 1;
+                    end
+                    650: begin
+                        rx_data = 8'h08;
+                        rx_done = 1;
+                    end
+                    655: begin
+                        rx_data = 8'h1F;
+                        rx_done = 1;
+                    end
+
                     1000: $finish;
                 endcase
 

@@ -176,7 +176,9 @@ module executor (
     input [31:0] in_reg60,
     input [31:0] in_reg61,
     input [31:0] in_reg62,
-    input [31:0] in_reg63
+    input [31:0] in_reg63,
+
+    output reg [31:0] out_stbs
 );
 
 localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6;
@@ -191,6 +193,7 @@ reg [2:0] next_tx_cmd;
 reg [5:0] out_reg_addr;
 reg [31:0] out_reg_data;
 reg out_reg_stb;
+reg [31:0] next_out_stbs;
 
 reg [5:0] next_in_mux;
 reg [5:0] in_mux;
@@ -198,6 +201,7 @@ reg [31:0] in_data;
 
 always @(posedge clk)
 begin
+    out_stbs <= next_out_stbs;
     in_mux <= next_in_mux;
     in_data <= 0;
     case (in_mux)
@@ -276,6 +280,7 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
         next_state <= state;
         next_tx_cmd <= CMD_NONE;
         next_in_mux <= in_mux;
+        next_out_stbs <= 0;
 
         out_reg_stb <= 0;
         out_reg_addr <= 0;
@@ -308,6 +313,11 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                                         next_in_mux <= rx_buf1;
                                         next_state <= S_READ;
                                         next_tx_cmd <= CMD_NONE;
+                                    end
+                                    62: // OUT_STBS
+                                    begin
+                                        next_out_stbs <= {rx_buf4, rx_buf3, rx_buf2, rx_buf1};
+                                        next_tx_cmd <= CMD_OK;
                                     end
                                 endcase
                         end
