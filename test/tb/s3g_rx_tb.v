@@ -61,6 +61,9 @@ module s3g_rx_tb;
 
     wire [31:0] reg13;
 
+    reg int4;
+    reg int14;
+
     s3g_rx dut(
         .clk(clk),
         .rst(rst),
@@ -89,7 +92,7 @@ module s3g_rx_tb;
     );
 
 
-    executor dut3(
+    executor #(100) dut3(
         .clk(clk),
         .rst(rst),
         .rx_packet_done(rx_packet_done),
@@ -133,7 +136,39 @@ module s3g_rx_tb;
         .tx_buf15(tx_buf15),
 
         .out_reg13(reg13),
-        .in_reg13(reg13)
+        .in_reg13(reg13),
+        .int0(0),
+        .int1(0),
+        .int2(0),
+        .int3(0),
+        .int4(int4),
+        .int5(0),
+        .int6(0),
+        .int7(0),
+        .int8(0),
+        .int9(0),
+        .int10(0),
+        .int11(0),
+        .int12(0),
+        .int13(0),
+        .int14(int14),
+        .int15(0),
+        .int16(0),
+        .int17(0),
+        .int18(0),
+        .int19(0),
+        .int20(0),
+        .int21(0),
+        .int22(0),
+        .int23(0),
+        .int24(0),
+        .int25(0),
+        .int26(0),
+        .int27(0),
+        .int28(0),
+        .int29(0),
+        .int30(0),
+        .int31(0)
     );
 
     s3g_tx dut2(
@@ -170,10 +205,36 @@ module s3g_rx_tb;
         $dumpvars(0,dut2);
         $dumpvars(0,dut3);
         
-        rst = 0;
-        clk = 0;
         rx_data = 0;
         rx_done = 0;
+        tx_done = 0;
+        int4 = 0;
+        int14 = 0;
+        rst = 1;
+        clk = 0;
+        #5;
+        clk = 1;
+        #5;
+        clk = 0;
+        #5;
+        clk = 1;
+        #5;
+        clk = 0;
+        #3;
+        rst = 0;
+        #2;
+        clk = 1;
+        #5;
+        clk = 0;
+        #5;
+        clk = 1;
+        #5;
+        clk = 0;
+        #5;
+        clk = 1;
+        #5;
+        clk = 0;
+        #5;
         cycle = 0;
         forever
             begin
@@ -188,6 +249,12 @@ module s3g_rx_tb;
 
                 if (tx_wr == 1)
                     tx_delay = 5;
+
+                if (int4 == 1)
+                    int4 = 0;
+
+                if (int14 == 1)
+                    int14 = 0;
 
                 if (tx_delay>0)
                 begin
@@ -394,7 +461,87 @@ module s3g_rx_tb;
                         rx_done = 1;
                     end
 
-                    1000: $finish;
+                    700: begin
+                        int4 <= 1;
+                    end
+
+
+                    820: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    825: begin
+                        rx_data = 5;
+                        rx_done = 1;
+                    end
+                    830: begin
+                        rx_data = 63;
+                        rx_done = 1;
+                    end
+                    835: begin
+                        rx_data = 8'hFF;
+                        rx_done = 1;
+                    end
+                    840: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+                    845: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+                    850: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+                    855: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+
+                    920: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    925: begin
+                        rx_data = 5;
+                        rx_done = 1;
+                    end
+                    930: begin
+                        rx_data = 64;
+                        rx_done = 1;
+                    end
+                    935: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+                    940: begin
+                        rx_data = 8'hFF;
+                        rx_done = 1;
+                    end
+                    945: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+                    950: begin
+                        rx_data = 8'h00;
+                        rx_done = 1;
+                    end
+                    955: begin
+                        rx_data = 8'h3b;
+                        rx_done = 1;
+                    end
+
+                    990: begin
+                        int4 <= 1;
+                    end
+
+                    1000: begin
+                        int14 <= 1;
+                    end
+
+                    1500: $finish;
+
                 endcase
 
                 #2;

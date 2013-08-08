@@ -164,12 +164,24 @@ module s3g_tx(
     
     always @(posedge clk)
     begin
-        state <= next_state;
-        crc <= next_crc;
-        byte_cnt <= next_byte_cnt;
-        busy <= next_busy;
-        tx_data <= next_tx_data;
-        tx_wr <= next_tx_wr;
+        if (rst)
+            begin
+                state <= S_INIT;
+                crc <= 0;
+                byte_cnt <= 0;
+                busy <= 0;
+                tx_data <= 0;
+                tx_wr <= 0;
+            end
+        else
+            begin
+                state <= next_state;
+                crc <= next_crc;
+                byte_cnt <= next_byte_cnt;
+                busy <= next_busy;
+                tx_data <= next_tx_data;
+                tx_wr <= next_tx_wr;
+            end
     end
 
 endmodule

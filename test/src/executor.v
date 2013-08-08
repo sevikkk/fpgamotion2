@@ -178,17 +178,60 @@ module executor (
     input [31:0] in_reg62,
     input [31:0] in_reg63,
 
-    output reg [31:0] out_stbs
+    output reg [31:0] out_stbs,
+
+    input int0,
+    input int1,
+    input int2,
+    input int3,
+    input int4,
+    input int5,
+    input int6,
+    input int7,
+    input int8,
+    input int9,
+    input int10,
+    input int11,
+    input int12,
+    input int13,
+    input int14,
+    input int15,
+    input int16,
+    input int17,
+    input int18,
+    input int19,
+    input int20,
+    input int21,
+    input int22,
+    input int23,
+    input int24,
+    input int25,
+    input int26,
+    input int27,
+    input int28,
+    input int29,
+    input int30,
+    input int31
 );
 
-localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6;
+parameter INTS_TIMER = 1000000;
+parameter EXT_VER_1 = 8'h01;
+parameter EXT_VER_2 = 8'h00;
+parameter EXT_VER_3 = 8'h01;
+parameter EXT_VER_4 = 8'h00;
+parameter EXT_VER_5 = 8'hCE;
+parameter EXT_VER_6 = 8'h00;
+parameter EXT_VER_7 = 8'h00;
+parameter EXT_VER_8 = 8'h00;
+
+localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6, CMD_INTERRUPT = 7;
 
 localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2, S_READ = 3, S_READ1 = 4;
 
 reg [3:0] state = S_INIT;
 reg [3:0] next_state;
 
-reg [2:0] next_tx_cmd;
+reg [3:0] next_tx_cmd;
 
 reg [5:0] out_reg_addr;
 reg [31:0] out_reg_data;
@@ -199,10 +242,43 @@ reg [5:0] next_in_mux;
 reg [5:0] in_mux;
 reg [31:0] in_data;
 
+wire [31:0] ints_vector;
+reg [31:0] ints_pending;
+reg [31:0] ints_mask;
+reg [31:0] next_ints_mask;
+reg [31:0] ints_to_clear;
+
+reg [31:0] next_ints_timer;
+reg [31:0] ints_timer;
+
+assign ints_vector = { int31, int30, int29, int28, int27, int26, int25, int24, int23, int22, int21, int20, int19, int18, int17, int16, int15, int14, int13, int12, int11, int10, int9, int8, int7, int6, int5, int4, int3, int2, int1, int0 };
+
 always @(posedge clk)
 begin
-    out_stbs <= next_out_stbs;
-    in_mux <= next_in_mux;
+    if (rst)
+        ints_pending <= 0;
+    else
+        ints_pending <= (ints_pending & ~ints_to_clear) | ints_vector;
+
+end
+
+always @(posedge clk)
+begin
+    if (rst)
+        begin
+            out_stbs <= 0;
+            ints_mask <= 32'hFFFFFFFF;
+            in_mux <= 0;
+            ints_timer <= 0;
+        end
+    else
+        begin
+            out_stbs <= next_out_stbs;
+            ints_mask <= next_ints_mask;
+            in_mux <= next_in_mux;
+            ints_timer <= next_ints_timer;
+        end
+
     in_data <= 0;
     case (in_mux)
         0: in_data <= in_reg0;
@@ -275,16 +351,25 @@ end
 
 always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_len,
     rx_buf0, rx_buf1, rx_buf2, rx_buf3, rx_buf4, rx_buf5, rx_buf6, rx_buf7,
-    rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15, state, in_mux)
+    rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15, state, in_mux, ints_pending, ints_timer)
     begin
         next_state <= state;
         next_tx_cmd <= CMD_NONE;
         next_in_mux <= in_mux;
         next_out_stbs <= 0;
 
+        next_ints_mask <= ints_mask;
+
         out_reg_stb <= 0;
         out_reg_addr <= 0;
         out_reg_data <= 0;
+
+        ints_to_clear <= 0;
+
+        next_ints_timer <= ints_timer - 1;
+
+        if (ints_timer == 0)
+            next_ints_timer <= 0;
 
         case (state)
             S_INIT:
@@ -319,12 +404,33 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                                         next_out_stbs <= {rx_buf4, rx_buf3, rx_buf2, rx_buf1};
                                         next_tx_cmd <= CMD_OK;
                                     end
+                                    63: // CLEAR_INTS
+                                    begin
+                                        ints_to_clear <= {rx_buf4, rx_buf3, rx_buf2, rx_buf1};
+                                        next_ints_timer <= 0;
+                                        next_tx_cmd <= CMD_OK;
+                                    end
+                                    64: // MASK_INTS
+                                    begin
+                                        next_ints_mask <= {rx_buf4, rx_buf3, rx_buf2, rx_buf1};
+                                        next_tx_cmd <= CMD_OK;
+                                    end
                                 endcase
                         end
                     else if (rx_packet_error)
                         begin
                             next_tx_cmd <= CMD_ERROR;
                             next_state <= S_DELAY;
+                        end
+                    else if ((ints_pending & ints_mask) != 0)
+                        begin
+                            //$display("ints:", ints_pending & ints_mask);
+                            if (ints_timer == 0)
+                            begin
+                                next_tx_cmd <= CMD_INTERRUPT;
+                                next_state <= S_DELAY;
+                                next_ints_timer <= INTS_TIMER;
+                            end
                         end
                 end
             S_DELAY:
@@ -353,7 +459,10 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
 
 always @(posedge clk)
 begin
-    state <= next_state;
+    if (rst)
+        state <= S_INIT;
+    else
+        state <= next_state;
 end
 
 always @(posedge clk)
@@ -411,14 +520,14 @@ begin
                 tx_packet_wr <= 1;
                 tx_payload_len <= 9;
                 tx_buf0 <= 8'h81;
-                tx_buf1 <= 8'h01;
-                tx_buf2 <= 8'h00;
-                tx_buf3 <= 8'h01;
-                tx_buf4 <= 8'h00;
-                tx_buf5 <= 8'hCE;
-                tx_buf6 <= 8'h00;
-                tx_buf7 <= 8'h00;
-                tx_buf8 <= 8'h00;
+                tx_buf1 <= EXT_VER_1;
+                tx_buf2 <= EXT_VER_2;
+                tx_buf3 <= EXT_VER_3;
+                tx_buf4 <= EXT_VER_4;
+                tx_buf5 <= EXT_VER_5;
+                tx_buf6 <= EXT_VER_6;
+                tx_buf7 <= EXT_VER_7;
+                tx_buf8 <= EXT_VER_8;
             end
         CMD_READ_REG:
             begin
@@ -430,12 +539,89 @@ begin
                 tx_buf3 <= in_data[23:16];
                 tx_buf4 <= in_data[31:24];
             end
+        CMD_INTERRUPT:
+            begin
+                tx_packet_wr <= 1;
+                tx_payload_len <= 5;
+                tx_buf0 <= 80;
+                tx_buf1 <= ints_pending[7:0];
+                tx_buf2 <= ints_pending[15:8];
+                tx_buf3 <= ints_pending[23:16];
+                tx_buf4 <= ints_pending[31:24];
+            end
     endcase
 end
 
 always @(posedge clk)
 begin
-    if (out_reg_stb)
+    if (rst)
+        begin
+            out_reg0 <= 0;
+            out_reg1 <= 0;
+            out_reg2 <= 0;
+            out_reg3 <= 0;
+            out_reg4 <= 0;
+            out_reg5 <= 0;
+            out_reg6 <= 0;
+            out_reg7 <= 0;
+            out_reg8 <= 0;
+            out_reg9 <= 0;
+            out_reg10 <= 0;
+            out_reg11 <= 0;
+            out_reg12 <= 0;
+            out_reg13 <= 0;
+            out_reg14 <= 0;
+            out_reg15 <= 0;
+            out_reg16 <= 0;
+            out_reg17 <= 0;
+            out_reg18 <= 0;
+            out_reg19 <= 0;
+            out_reg20 <= 0;
+            out_reg21 <= 0;
+            out_reg22 <= 0;
+            out_reg23 <= 0;
+            out_reg24 <= 0;
+            out_reg25 <= 0;
+            out_reg26 <= 0;
+            out_reg27 <= 0;
+            out_reg28 <= 0;
+            out_reg29 <= 0;
+            out_reg30 <= 0;
+            out_reg31 <= 0;
+            out_reg32 <= 0;
+            out_reg33 <= 0;
+            out_reg34 <= 0;
+            out_reg35 <= 0;
+            out_reg36 <= 0;
+            out_reg37 <= 0;
+            out_reg38 <= 0;
+            out_reg39 <= 0;
+            out_reg40 <= 0;
+            out_reg41 <= 0;
+            out_reg42 <= 0;
+            out_reg43 <= 0;
+            out_reg44 <= 0;
+            out_reg45 <= 0;
+            out_reg46 <= 0;
+            out_reg47 <= 0;
+            out_reg48 <= 0;
+            out_reg49 <= 0;
+            out_reg50 <= 0;
+            out_reg51 <= 0;
+            out_reg52 <= 0;
+            out_reg53 <= 0;
+            out_reg54 <= 0;
+            out_reg55 <= 0;
+            out_reg56 <= 0;
+            out_reg57 <= 0;
+            out_reg58 <= 0;
+            out_reg59 <= 0;
+            out_reg60 <= 0;
+            out_reg61 <= 0;
+            out_reg62 <= 0;
+            out_reg63 <= 0;
+        end
+    else if (out_reg_stb)
         case (out_reg_addr)
             0: out_reg0 <= out_reg_data;
             1: out_reg1 <= out_reg_data;
