@@ -1,13 +1,13 @@
 [*]
-[*] GTKWave Analyzer v3.3.40 (w)1999-2012 BSI
-[*] Wed Aug  7 07:25:45 2013
+[*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
+[*] Wed Aug  7 22:05:19 2013
 [*]
-[dumpfile] "/home/seva/src/sevasoft/fpgamotion2/test/build/test.vcd"
-[dumpfile_mtime] "Wed Aug  7 07:25:24 2013"
-[dumpfile_size] 19966
-[savefile] "/home/seva/src/sevasoft/fpgamotion2/test/tb/s3g_rx_tb.sav"
-[timestart] 2484
-[size] 1398 818
+[dumpfile] "/Users/seva/src/sevasoft/fpgamotion2/test/build/test.vcd"
+[dumpfile_mtime] "Wed Aug  7 22:04:43 2013"
+[dumpfile_size] 41079
+[savefile] "/Users/seva/src/sevasoft/fpgamotion2/test/tb/s3g_rx_tb.sav"
+[timestart] 3723
+[size] 1398 790
 [pos] -1 -1
 *-8.356054 1157 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] s3g_rx_tb.
@@ -20,9 +20,8 @@
 @28
 s3g_rx_tb.dut.packet_done
 s3g_rx_tb.dut.packet_error
-@23
-s3g_rx_tb.dut.rx_data[7:0]
 @22
+s3g_rx_tb.dut.rx_data[7:0]
 s3g_rx_tb.dut.crc[7:0]
 @28
 s3g_rx_tb.dut3.next_state[1:0]
@@ -41,5 +40,9 @@ s3g_rx_tb.dut2.tx_done
 s3g_rx_tb.dut2.tx_wr
 s3g_rx_tb.dut2.busy
 s3g_rx_tb.dut3.state[1:0]
+@22
+s3g_rx_tb.dut3.out_reg13[31:0]
+@23
+s3g_rx_tb.dut3.out_reg12[31:0]
 [pattern_trace] 1
 [pattern_trace] 0

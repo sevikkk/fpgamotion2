@@ -59,6 +59,8 @@ module s3g_rx_tb;
     wire [7:0] tx_buf14;
     wire [7:0] tx_buf15;
 
+    wire [31:0] reg13;
+
     s3g_rx dut(
         .clk(clk),
         .rst(rst),
@@ -128,7 +130,10 @@ module s3g_rx_tb;
         .tx_buf12(tx_buf12),
         .tx_buf13(tx_buf13),
         .tx_buf14(tx_buf14),
-        .tx_buf15(tx_buf15)
+        .tx_buf15(tx_buf15),
+
+        .out_reg13(reg13),
+        .in_reg13(reg13)
     );
 
     s3g_tx dut2(
@@ -332,6 +337,29 @@ module s3g_rx_tb;
                         rx_data = 8'h88;
                         rx_done = 1;
                     end
+
+
+                    520: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    525: begin
+                        rx_data = 2;
+                        rx_done = 1;
+                    end
+                    530: begin
+                        rx_data = 61;
+                        rx_done = 1;
+                    end
+                    535: begin
+                        rx_data = 13;
+                        rx_done = 1;
+                    end
+                    540: begin
+                        rx_data = 8'h59;
+                        rx_done = 1;
+                    end
+
 
                     1000: $finish;
                 endcase
