@@ -25,7 +25,7 @@ module executor (
     input [7:0] rx_buf14,
     input [7:0] rx_buf15,
 
-    output [7:0] rx_buffer_addr,
+    output reg [7:0] next_rx_buffer_addr,
     input [7:0] rx_buffer_data,
 
     // s3g_tx interface
@@ -233,7 +233,7 @@ parameter EXT_VER_8 = 8'h00;
 
 localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6, CMD_INTERRUPT = 7;
 
-localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2, S_READ = 3, S_READ1 = 4, S_BUFFER0 = 5, S_BUFFER1 = 6, S_BUFFER2 = 7, S_BUFFER3 = 8, S_BUFFER4 = 9;
+localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2, S_READ = 3, S_READ1 = 4, S_BUFFER0 = 5, S_BUFFER1 = 6, S_BUFFER2 = 7, S_BUFFER3 = 8, S_BUFFER4 = 9, S_BUFFER5 = 10;
 
 reg [3:0] state = S_INIT;
 reg [3:0] next_state;
@@ -258,8 +258,11 @@ reg [31:0] ints_to_clear;
 reg [31:0] next_ints_timer;
 reg [31:0] ints_timer;
 
-reg [7:0] next_rx_buffer_addr;
+reg [7:0] rx_buffer_addr;
 reg [15:0] next_ext_buffer_addr;
+reg [39:0] next_ext_buffer_data;
+reg next_ext_buffer_wr;
+
 reg [7:0] word_cnt;
 reg [7:0] next_word_cnt;
 
@@ -271,7 +274,6 @@ begin
         ints_pending <= 0;
     else
         ints_pending <= (ints_pending & ~ints_to_clear) | ints_vector;
-
 end
 
 always @(posedge clk)
@@ -282,6 +284,11 @@ begin
             ints_mask <= 32'hFFFFFFFF;
             in_mux <= 0;
             ints_timer <= 0;
+            rx_buffer_addr <= 0;
+            word_cnt <= 0;
+            ext_buffer_addr <= 0;
+            ext_buffer_data <= 0;
+            ext_buffer_wr <= 0;
         end
     else
         begin
@@ -289,6 +296,11 @@ begin
             ints_mask <= next_ints_mask;
             in_mux <= next_in_mux;
             ints_timer <= next_ints_timer;
+            rx_buffer_addr <= next_rx_buffer_addr;
+            word_cnt <= next_word_cnt;
+            ext_buffer_addr <= next_ext_buffer_addr;
+            ext_buffer_data <= next_ext_buffer_data;
+            ext_buffer_wr <= next_ext_buffer_wr;
         end
 
     in_data <= 0;
@@ -363,7 +375,8 @@ end
 
 always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_len,
     rx_buf0, rx_buf1, rx_buf2, rx_buf3, rx_buf4, rx_buf5, rx_buf6, rx_buf7,
-    rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15, state, in_mux, ints_pending, ints_timer)
+    rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15, state, in_mux, ints_pending, ints_timer,
+    rx_buffer_addr, word_cnt, ext_buffer_addr)
     begin
         next_state <= state;
         next_tx_cmd <= CMD_NONE;
@@ -382,6 +395,12 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
 
         if (ints_timer == 0)
             next_ints_timer <= 0;
+
+        next_rx_buffer_addr <= rx_buffer_addr;
+        next_word_cnt <= word_cnt;
+        next_ext_buffer_addr <= ext_buffer_addr;
+        next_ext_buffer_data <= ext_buffer_data;
+        next_ext_buffer_wr <= 0;
 
         case (state)
             S_INIT:
@@ -427,6 +446,15 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                                         next_ints_mask <= {rx_buf4, rx_buf3, rx_buf2, rx_buf1};
                                         next_tx_cmd <= CMD_OK;
                                     end
+                                    65: // WRITE_BUF
+                                    begin
+                                        next_rx_buffer_addr <= 4;
+                                        next_word_cnt <= rx_buf1;
+                                        next_ext_buffer_addr <= {rx_buf3, rx_buf2};
+                                        next_ext_buffer_data <= 0;
+                                        next_state <= S_BUFFER0;
+                                        next_tx_cmd <= CMD_NONE;
+                                    end
                                 endcase
                         end
                     else if (rx_packet_error)
@@ -462,6 +490,52 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                 begin
                     next_state <= S_DELAY;
                     next_tx_cmd <= CMD_READ_REG;
+                end
+            S_BUFFER0:
+                begin
+                    next_state <= S_BUFFER1;
+                    next_rx_buffer_addr <= rx_buffer_addr + 1;
+                    next_ext_buffer_data[7:0] <= rx_buffer_data;
+                end
+            S_BUFFER1:
+                begin
+                    next_state <= S_BUFFER2;
+                    next_rx_buffer_addr <= rx_buffer_addr + 1;
+                    next_ext_buffer_data[15:8] <= rx_buffer_data;
+                end
+            S_BUFFER2:
+                begin
+                    next_state <= S_BUFFER3;
+                    next_rx_buffer_addr <= rx_buffer_addr + 1;
+                    next_ext_buffer_data[23:16] <= rx_buffer_data;
+                end
+            S_BUFFER3:
+                begin
+                    next_state <= S_BUFFER4;
+                    next_rx_buffer_addr <= rx_buffer_addr + 1;
+                    next_ext_buffer_data[31:24] <= rx_buffer_data;
+                end
+            S_BUFFER4:
+                begin
+                    next_state <= S_BUFFER5;
+                    next_ext_buffer_data[39:32] <= rx_buffer_data;
+                    next_ext_buffer_wr <= 1;
+                    next_word_cnt <= word_cnt - 1;
+                end
+            S_BUFFER5:
+                begin
+                    if (word_cnt == 0)
+                        begin
+                            next_state <= S_DELAY;
+                            next_tx_cmd <= CMD_OK;
+                        end
+                    else
+                        begin
+                            next_rx_buffer_addr <= rx_buffer_addr + 1;
+                            next_ext_buffer_addr <= ext_buffer_addr + 1;
+                            next_state <= S_BUFFER0;
+                            next_ext_buffer_data <= 0;
+                        end
                 end
             default:
                 next_state <= S_INIT;

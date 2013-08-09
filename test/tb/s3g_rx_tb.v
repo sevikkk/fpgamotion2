@@ -63,8 +63,8 @@ module s3g_rx_tb;
 
     reg int4;
     reg int14;
-    reg [7:0] buffer_addr;
-    wire [7:0] buffer_data;
+    wire [7:0] rx_buffer_addr;
+    wire [7:0] rx_buffer_data;
 
     s3g_rx dut(
         .clk(clk),
@@ -91,8 +91,8 @@ module s3g_rx_tb;
         .buf13(rx_buf13),
         .buf14(rx_buf14),
         .buf15(rx_buf15),
-        .buffer_addr(buffer_addr),
-        .buffer_data(buffer_data)
+        .buffer_addr(rx_buffer_addr),
+        .buffer_data(rx_buffer_data)
     );
 
 
@@ -118,6 +118,8 @@ module s3g_rx_tb;
         .rx_buf13(rx_buf13),
         .rx_buf14(rx_buf14),
         .rx_buf15(rx_buf15),
+        .next_rx_buffer_addr(rx_buffer_addr),
+        .rx_buffer_data(rx_buffer_data),
 
         .tx_busy(tx_busy),
         .tx_packet_wr(tx_packet_wr),
@@ -213,7 +215,6 @@ module s3g_rx_tb;
         rx_data = 0;
         rx_done = 0;
         tx_done = 0;
-        buffer_addr = 0;
         int4 = 0;
         int14 = 0;
         rst = 1;
@@ -542,18 +543,77 @@ module s3g_rx_tb;
                         int4 <= 1;
                     end
 
-                    995: begin
-                        buffer_addr = 1;
-                    end
-                    997: begin
-                        buffer_addr = 2;
-                    end
-                    999: begin
-                        buffer_addr = 3;
-                    end
-
                     1000: begin
                         int14 <= 1;
+                    end
+
+                    1020: begin
+                        rx_data = 8'hD5;
+                        rx_done = 1;
+                    end
+                    1025: begin
+                        rx_data = 14;
+                        rx_done = 1;
+                    end
+                    1030: begin
+                        rx_data = 65;
+                        rx_done = 1;
+                    end
+                    1035: begin
+                        rx_data = 2;
+                        rx_done = 1;
+                    end
+                    1040: begin
+                        rx_data = 8'h10;
+                        rx_done = 1;
+                    end
+                    1045: begin
+                        rx_data = 8'h11;
+                        rx_done = 1;
+                    end
+                    1050: begin
+                        rx_data = 8'h01;
+                        rx_done = 1;
+                    end
+                    1055: begin
+                        rx_data = 8'h02;
+                        rx_done = 1;
+                    end
+                    1060: begin
+                        rx_data = 8'h03;
+                        rx_done = 1;
+                    end
+                    1065: begin
+                        rx_data = 8'h04;
+                        rx_done = 1;
+                    end
+                    1070: begin
+                        rx_data = 8'h05;
+                        rx_done = 1;
+                    end
+                    1075: begin
+                        rx_data = 8'h11;
+                        rx_done = 1;
+                    end
+                    1080: begin
+                        rx_data = 8'h12;
+                        rx_done = 1;
+                    end
+                    1085: begin
+                        rx_data = 8'h13;
+                        rx_done = 1;
+                    end
+                    1090: begin
+                        rx_data = 8'h14;
+                        rx_done = 1;
+                    end
+                    1095: begin
+                        rx_data = 8'h15;
+                        rx_done = 1;
+                    end
+                    1100: begin
+                        rx_data = 8'h6E;
+                        rx_done = 1;
                     end
 
                     1500: $finish;
