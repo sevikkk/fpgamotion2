@@ -25,6 +25,9 @@ module executor (
     input [7:0] rx_buf14,
     input [7:0] rx_buf15,
 
+    output [7:0] rx_buffer_addr,
+    input [7:0] rx_buffer_data,
+
     // s3g_tx interface
     input tx_busy,
     output reg tx_packet_wr,
@@ -211,7 +214,11 @@ module executor (
     input int28,
     input int29,
     input int30,
-    input int31
+    input int31,
+
+    output reg [15:0] ext_buffer_addr,
+    output reg [39:0] ext_buffer_data,
+    output reg ext_buffer_wr
 );
 
 parameter INTS_TIMER = 1000000;
@@ -226,7 +233,7 @@ parameter EXT_VER_8 = 8'h00;
 
 localparam CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, CMD_VERSION = 5, CMD_EXT_VERSION = 6, CMD_INTERRUPT = 7;
 
-localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2, S_READ = 3, S_READ1 = 4;
+localparam S_INIT = 0, S_DELAY = 1, S_BUSY = 2, S_READ = 3, S_READ1 = 4, S_BUFFER0 = 5, S_BUFFER1 = 6, S_BUFFER2 = 7, S_BUFFER3 = 8, S_BUFFER4 = 9;
 
 reg [3:0] state = S_INIT;
 reg [3:0] next_state;
@@ -250,6 +257,11 @@ reg [31:0] ints_to_clear;
 
 reg [31:0] next_ints_timer;
 reg [31:0] ints_timer;
+
+reg [7:0] next_rx_buffer_addr;
+reg [15:0] next_ext_buffer_addr;
+reg [7:0] word_cnt;
+reg [7:0] next_word_cnt;
 
 assign ints_vector = { int31, int30, int29, int28, int27, int26, int25, int24, int23, int22, int21, int20, int19, int18, int17, int16, int15, int14, int13, int12, int11, int10, int9, int8, int7, int6, int5, int4, int3, int2, int1, int0 };
 

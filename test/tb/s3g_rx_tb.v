@@ -63,6 +63,8 @@ module s3g_rx_tb;
 
     reg int4;
     reg int14;
+    reg [7:0] buffer_addr;
+    wire [7:0] buffer_data;
 
     s3g_rx dut(
         .clk(clk),
@@ -88,7 +90,9 @@ module s3g_rx_tb;
         .buf12(rx_buf12),
         .buf13(rx_buf13),
         .buf14(rx_buf14),
-        .buf15(rx_buf15)
+        .buf15(rx_buf15),
+        .buffer_addr(buffer_addr),
+        .buffer_data(buffer_data)
     );
 
 
@@ -209,6 +213,7 @@ module s3g_rx_tb;
         rx_data = 0;
         rx_done = 0;
         tx_done = 0;
+        buffer_addr = 0;
         int4 = 0;
         int14 = 0;
         rst = 1;
@@ -535,6 +540,16 @@ module s3g_rx_tb;
 
                     990: begin
                         int4 <= 1;
+                    end
+
+                    995: begin
+                        buffer_addr = 1;
+                    end
+                    997: begin
+                        buffer_addr = 2;
+                    end
+                    999: begin
+                        buffer_addr = 3;
                     end
 
                     1000: begin
