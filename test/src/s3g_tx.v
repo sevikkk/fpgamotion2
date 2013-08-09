@@ -38,7 +38,7 @@ module s3g_tx(
     input packet_wr;
     output reg [7:0] tx_data;
     output reg tx_wr;
-    output reg busy = 0;
+    output reg busy;
 
     input [7:0] payload_len;
     input [7:0] buf0;

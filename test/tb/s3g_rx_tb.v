@@ -137,38 +137,38 @@ module s3g_rx_tb;
 
         .out_reg13(reg13),
         .in_reg13(reg13),
-        .int0(0),
-        .int1(0),
-        .int2(0),
-        .int3(0),
+        .int0(1'b0),
+        .int1(1'b0),
+        .int2(1'b0),
+        .int3(1'b0),
         .int4(int4),
-        .int5(0),
-        .int6(0),
-        .int7(0),
-        .int8(0),
-        .int9(0),
-        .int10(0),
-        .int11(0),
-        .int12(0),
-        .int13(0),
+        .int5(1'b0),
+        .int6(1'b0),
+        .int7(1'b0),
+        .int8(1'b0),
+        .int9(1'b0),
+        .int10(1'b0),
+        .int11(1'b0),
+        .int12(1'b0),
+        .int13(1'b0),
         .int14(int14),
-        .int15(0),
-        .int16(0),
-        .int17(0),
-        .int18(0),
-        .int19(0),
-        .int20(0),
-        .int21(0),
-        .int22(0),
-        .int23(0),
-        .int24(0),
-        .int25(0),
-        .int26(0),
-        .int27(0),
-        .int28(0),
-        .int29(0),
-        .int30(0),
-        .int31(0)
+        .int15(1'b0),
+        .int16(1'b0),
+        .int17(1'b0),
+        .int18(1'b0),
+        .int19(1'b0),
+        .int20(1'b0),
+        .int21(1'b0),
+        .int22(1'b0),
+        .int23(1'b0),
+        .int24(1'b0),
+        .int25(1'b0),
+        .int26(1'b0),
+        .int27(1'b0),
+        .int28(1'b0),
+        .int29(1'b0),
+        .int30(1'b0),
+        .int31(1'b0)
     );
 
     s3g_tx dut2(
@@ -201,9 +201,10 @@ module s3g_rx_tb;
 
     initial begin
         $dumpfile("test.vcd");
-        $dumpvars(0,dut);
+        $dumpvars;
+        /* $dumpvars(0,dut);
         $dumpvars(0,dut2);
-        $dumpvars(0,dut3);
+        $dumpvars(0,dut3); */
         
         rx_data = 0;
         rx_done = 0;

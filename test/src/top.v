@@ -1,44 +1,23 @@
-module top(osc_clk, 
-           rxd, 
-           txd,
-           led0, 
-           led1, 
-           led2, 
-           led3, 
-           led4, 
-           led5, 
-           led6, 
-           led7, 
-           j1,
-           j2,
-           j3,
-           j4,
-           j5,
-           j6,
-           sd
-       );
-
-
-    input osc_clk;
-
-   output reg led0;
-   output reg led1;
-   output reg led2;
-   output reg led3;
-   output reg led4;
-   output reg led5;
-   output reg led6;
-   output reg led7;
-   output [27:0] j1;
-   output [13:0] j2;
-   output [13:0] j3;
-   output [17:0] j4;
-   output j5;
-   output [4:0] j6;
-   output [3:0] sd;
-
-   input rxd;
-   output txd;
+module top(
+    input osc_clk, 
+    input rxd, 
+    output txd,
+    output reg led0, 
+    output reg led1, 
+    output reg led2, 
+    output reg led3, 
+    output reg led4, 
+    output reg led5, 
+    output reg led6, 
+    output reg led7, 
+    output reg [27:0] j1,
+    output reg [13:0] j2,
+    output reg [13:0] j3,
+    output reg [17:0] j4,
+    output reg j5,
+    output reg [4:0] j6,
+    output reg [3:0] sd
+);
    
    reg [31:0] cnt = 0;
 
