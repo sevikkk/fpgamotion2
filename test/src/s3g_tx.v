@@ -62,8 +62,8 @@ module s3g_tx(
 
     reg [2:0] state = S_INIT;
     reg [2:0] next_state;
-    reg [7:0] byte_cnt = 0;
-    reg [7:0] next_byte_cnt;
+    reg [3:0] byte_cnt = 0;
+    reg [3:0] next_byte_cnt;
     reg [7:0] crc = 0;
     reg [7:0] next_crc;
 
@@ -72,13 +72,13 @@ module s3g_tx(
     reg next_tx_wr;
 
     reg [7:0] buffer[0:15];
-    reg [7:0] saved_len;
+    reg [3:0] saved_len;
     reg save_buf;
 
     always @(posedge clk)
         if (save_buf)
         begin
-            saved_len <= payload_len;
+            saved_len <= payload_len[3:0];
             buffer[0] <= buf0;
             buffer[1] <= buf1;
             buffer[2] <= buf2;
@@ -97,7 +97,7 @@ module s3g_tx(
             buffer[15] <= buf15;
         end
 
-    always @(state, byte_cnt, crc, busy, tx_done, packet_wr)
+    always @(state, byte_cnt, crc, busy, tx_done, packet_wr, tx_data, saved_len, buffer)
         begin
             next_state <= state;
             next_byte_cnt <= byte_cnt;

@@ -81,7 +81,7 @@ module s3g_rx(
     reg [7:0] next_save_addr;
 
     reg [7:0] next_payload_len;
-    reg [7:0] next_buffer_valid;
+    reg next_buffer_valid;
     reg [7:0] next_buf0;
     reg [7:0] next_buf1;
     reg [7:0] next_buf2;
@@ -99,7 +99,9 @@ module s3g_rx(
     reg [7:0] next_buf14;
     reg [7:0] next_buf15;
    
-    always @(state, byte_cnt, crc, save_addr, rx_done, rx_data)
+    always @(state, byte_cnt, crc, save_addr, rx_done, rx_data, payload_len, buffer_valid, 
+        buf0, buf1, buf2, buf3, buf4, buf5, buf6, buf7, 
+        buf8, buf9, buf10, buf11, buf12, buf13, buf14, buf15)
         begin
             next_state <= state;
             next_byte_cnt <= byte_cnt;

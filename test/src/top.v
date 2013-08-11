@@ -183,10 +183,11 @@ module top(
     );
 
     executor #(100) dut3(
-        .clk(clk),
+        .clk(osc_clk),
         .rst(rst),
         .rx_packet_done(rx_packet_done),
         .rx_packet_error(rx_packet_error),
+        .rx_buffer_valid(rx_buffer_valid),
         .rx_payload_len(rx_payload_len),
         .rx_buf0(rx_buf0),
         .rx_buf1(rx_buf1),

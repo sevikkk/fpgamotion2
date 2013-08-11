@@ -376,7 +376,7 @@ end
 always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_len,
     rx_buf0, rx_buf1, rx_buf2, rx_buf3, rx_buf4, rx_buf5, rx_buf6, rx_buf7,
     rx_buf8, rx_buf9, rx_buf10, rx_buf11, rx_buf12, rx_buf13, rx_buf14, rx_buf15, state, in_mux, ints_pending, ints_timer,
-    rx_buffer_addr, word_cnt, ext_buffer_addr)
+    rx_buffer_addr, word_cnt, ext_buffer_addr, ints_mask, ext_buffer_data, rx_buffer_data)
     begin
         next_state <= state;
         next_tx_cmd <= CMD_NONE;
