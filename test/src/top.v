@@ -78,6 +78,7 @@ module top(
     wire [7:0] tx_buf15;
 
     wire [31:0] reg13;
+    wire [31:0] stbs;
 
    assign rst = 0;
 
@@ -228,12 +229,13 @@ module top(
         .tx_buf14(tx_buf14),
         .tx_buf15(tx_buf15),
 
+        .out_stbs(stbs),
         .out_reg13(reg13),
         .in_reg13(reg13),
 
-        .int0(1'b0),
-        .int1(1'b0),
-        .int2(1'b0),
+        .int0(stbs[0]),
+        .int1(stbs[1]),
+        .int2(stbs[2]),
         .int3(1'b0),
         .int4(1'b0),
         .int5(1'b0),
