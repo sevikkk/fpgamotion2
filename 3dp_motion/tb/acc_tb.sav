@@ -1,21 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.40 (w)1999-2012 BSI
-[*] Mon Aug 12 13:59:50 2013
+[*] Mon Aug 12 14:54:03 2013
 [*]
 [dumpfile] "/home/seva/src/sevasoft/fpgamotion2/3dp_motion/build/test.vcd"
-[dumpfile_mtime] "Mon Aug 12 13:58:51 2013"
-[dumpfile_size] 85207
+[dumpfile_mtime] "Mon Aug 12 14:53:47 2013"
+[dumpfile_size] 838766
 [savefile] "/home/seva/src/sevasoft/fpgamotion2/3dp_motion/tb/acc_tb.sav"
 [timestart] 0
-[size] 1600 1123
+[size] 1834 1107
 [pos] -1 -1
-*-8.571743 1805 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.117586 51100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] acc_tb.
 [sst_width] 225
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 415
-@25
+[sst_vpaned_height] 408
+@28
+acc_tb.reset
+@24
 acc_tb.cycle[31:0]
 @28
 acc_tb.clk
@@ -23,15 +25,19 @@ acc_tb.clk
 acc_tb.dt_val[31:0]
 acc_tb.steps_val[31:0]
 @28
+acc_tb.done
 acc_tb.load
-acc_tb.reset
-acc_tb.dut1.step_stb
+acc_tb.acc_step
+acc_tb.abort
 @22
-acc_tb.dut1.steps[31:0]
-acc_tb.dut1.dt[31:0]
+acc_tb.acc_profile_dut.j[31:0]
+acc_tb.acc_profile_dut.a[31:0]
+acc_tb.acc_profile_dut.v[31:0]
+acc_tb.acc_profile_dut.x[63:0]
 @28
-acc_tb.dut1.done
-@24
-acc_tb.dut1.abort
+acc_tb.acc_profile_dut.step
+acc_tb.acc_profile_dut.dir
+@29
+acc_tb.acc_profile_dut.stopped
 [pattern_trace] 1
 [pattern_trace] 0
