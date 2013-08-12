@@ -17,21 +17,21 @@
  */
 
 module uart_transceiver(
-	input sys_rst,
-	input sys_clk,
+           input sys_rst,
+           input sys_clk,
 
-	input uart_rx,
-	output reg uart_tx,
+           input uart_rx,
+           output reg uart_tx,
 
-	input enable_16,
+           input enable_16,
 
-	output reg [7:0] rx_data,
-	output reg rx_done,
+           output reg [7:0] rx_data,
+           output reg rx_done,
 
-	input [7:0] tx_data,
-	input tx_wr,
-	output reg tx_done
-);
+           input [7:0] tx_data,
+           input tx_wr,
+           output reg tx_done
+       );
 
 //-----------------------------------------------------------------
 // Synchronize uart_rx
@@ -40,9 +40,9 @@ reg uart_rx1;
 reg uart_rx2;
 
 always @(posedge sys_clk) begin
-	uart_rx1 <= uart_rx;
-	uart_rx2 <= uart_rx1;
-end
+        uart_rx1 <= uart_rx;
+        uart_rx2 <= uart_rx1;
+    end
 
 //-----------------------------------------------------------------
 // UART RX Logic
@@ -53,43 +53,53 @@ reg [3:0] rx_bitcount;
 reg [7:0] rx_reg;
 
 always @(posedge sys_clk) begin
-	if(sys_rst) begin
-		rx_done <= 1'b0;
-		rx_busy <= 1'b0;
-		rx_count16  <= 4'd0;
-		rx_bitcount <= 4'd0;
-	end else begin
-		rx_done <= 1'b0;
+        if(sys_rst)
+            begin
+                rx_done <= 1'b0;
+                rx_busy <= 1'b0;
+                rx_count16  <= 4'd0;
+                rx_bitcount <= 4'd0;
+            end else
+            begin
+                rx_done <= 1'b0;
 
-		if(enable_16) begin
-			if(~rx_busy) begin // look for start bit
-				if(~uart_rx2) begin // start bit found
-					rx_busy <= 1'b1;
-					rx_count16 <= 4'd7;
-					rx_bitcount <= 4'd0;
-				end
-			end else begin
-				rx_count16 <= rx_count16 + 4'd1;
+                if(enable_16)
+                    begin
+                        if(~rx_busy)
+                            begin // look for start bit
+                                if(~uart_rx2)
+                                    begin // start bit found
+                                        rx_busy <= 1'b1;
+                                        rx_count16 <= 4'd7;
+                                        rx_bitcount <= 4'd0;
+                                    end
+                            end else
+                            begin
+                                rx_count16 <= rx_count16 + 4'd1;
 
-				if(rx_count16 == 4'd0) begin // sample
-					rx_bitcount <= rx_bitcount + 4'd1;
+                                if(rx_count16 == 4'd0)
+                                    begin // sample
+                                        rx_bitcount <= rx_bitcount + 4'd1;
 
-					if(rx_bitcount == 4'd0) begin // verify startbit
-						if(uart_rx2)
-							rx_busy <= 1'b0;
-					end else if(rx_bitcount == 4'd9) begin
-						rx_busy <= 1'b0;
-						if(uart_rx2) begin // stop bit ok
-							rx_data <= rx_reg;
-							rx_done <= 1'b1;
-						end // ignore RX error
-					end else
-						rx_reg <= {uart_rx2, rx_reg[7:1]};
-				end
-			end
-		end
-	end
-end
+                                        if(rx_bitcount == 4'd0)
+                                            begin // verify startbit
+                                                if(uart_rx2)
+                                                    rx_busy <= 1'b0;
+                                            end else if(rx_bitcount == 4'd9)
+                                            begin
+                                                rx_busy <= 1'b0;
+                                                if(uart_rx2)
+                                                    begin // stop bit ok
+                                                        rx_data <= rx_reg;
+                                                        rx_done <= 1'b1;
+                                                    end // ignore RX error
+                                            end else
+                                            rx_reg <= {uart_rx2, rx_reg[7:1]};
+                                    end
+                            end
+                    end
+            end
+    end
 
 //-----------------------------------------------------------------
 // UART TX Logic
@@ -100,40 +110,48 @@ reg [3:0] tx_count16;
 reg [7:0] tx_reg;
 
 always @(posedge sys_clk) begin
-	if(sys_rst) begin
-		tx_done <= 1'b0;
-		tx_busy <= 1'b0;
-		uart_tx <= 1'b1;
-	end else begin
-		tx_done <= 1'b0;
-		if(tx_wr) begin
-			tx_reg <= tx_data;
-			tx_bitcount <= 4'd0;
-			tx_count16 <= 4'd1;
-			tx_busy <= 1'b1;
-			uart_tx <= 1'b0;
+        if(sys_rst)
+            begin
+                tx_done <= 1'b0;
+                tx_busy <= 1'b0;
+                uart_tx <= 1'b1;
+            end else
+            begin
+                tx_done <= 1'b0;
+                if(tx_wr)
+                    begin
+                        tx_reg <= tx_data;
+                        tx_bitcount <= 4'd0;
+                        tx_count16 <= 4'd1;
+                        tx_busy <= 1'b1;
+                        uart_tx <= 1'b0;
 `ifdef SIMULATION
-			$display("UART: %c", tx_data);
+                        $display("UART: %c", tx_data);
 `endif
-		end else if(enable_16 && tx_busy) begin
-			tx_count16  <= tx_count16 + 4'd1;
+                    end else if(enable_16 && tx_busy)
+                    begin
+                        tx_count16  <= tx_count16 + 4'd1;
 
-			if(tx_count16 == 4'd0) begin
-				tx_bitcount <= tx_bitcount + 4'd1;
-				
-				if(tx_bitcount == 4'd8) begin
-					uart_tx <= 1'b1;
-				end else if(tx_bitcount == 4'd9) begin
-					uart_tx <= 1'b1;
-					tx_busy <= 1'b0;
-					tx_done <= 1'b1;
-				end else begin
-					uart_tx <= tx_reg[0];
-					tx_reg <= {1'b0, tx_reg[7:1]};
-				end
-			end
-		end
-	end
-end
+                        if(tx_count16 == 4'd0)
+                            begin
+                                tx_bitcount <= tx_bitcount + 4'd1;
+
+                                if(tx_bitcount == 4'd8)
+                                    begin
+                                        uart_tx <= 1'b1;
+                                    end else if(tx_bitcount == 4'd9)
+                                    begin
+                                        uart_tx <= 1'b1;
+                                        tx_busy <= 1'b0;
+                                        tx_done <= 1'b1;
+                                    end else
+                                    begin
+                                        uart_tx <= tx_reg[0];
+                                        tx_reg <= {1'b0, tx_reg[7:1]};
+                                    end
+                            end
+                    end
+            end
+    end
 
 endmodule
