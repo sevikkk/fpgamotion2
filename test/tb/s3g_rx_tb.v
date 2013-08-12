@@ -1,6 +1,6 @@
 `include "../src/s3g_rx.v"
 `include "../src/s3g_tx.v"
-`include "../src/executor.v"
+`include "../src/s3g_executor.v"
 
 module s3g_rx_tb;
 
@@ -101,7 +101,7 @@ s3g_rx dut(
        );
 
 
-executor #(100) dut3(
+s3g_executor #(100) dut3(
              .clk(clk),
              .rst(rst),
              .rx_packet_done(rx_packet_done),

@@ -1,4 +1,4 @@
-module executor (
+module s3g_executor (
            input clk,
            input rst,
 
