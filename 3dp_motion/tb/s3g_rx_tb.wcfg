@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="./isim.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="s3g_rx_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="34" />
+   <wvobject fp_name="/s3g_rx_tb/dut/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/rst" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/state" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/crc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">crc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">crc[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/packet_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">packet_done</obj_property>
+      <obj_property name="ObjectShortName">packet_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/packet_error" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">packet_error</obj_property>
+      <obj_property name="ObjectShortName">packet_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/rx_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/rx_done" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rx_done</obj_property>
+      <obj_property name="ObjectShortName">rx_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/byte_cnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">byte_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">byte_cnt[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/cycle" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cycle[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cycle[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/payload_len" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">payload_len[7:0]</obj_property>
+      <obj_property name="ObjectShortName">payload_len[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buf0" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">buf0[7:0]</obj_property>
+      <obj_property name="ObjectShortName">buf0[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buf1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">buf1[7:0]</obj_property>
+      <obj_property name="ObjectShortName">buf1[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buf2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">buf2[7:0]</obj_property>
+      <obj_property name="ObjectShortName">buf2[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buf3" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">buf3[7:0]</obj_property>
+      <obj_property name="ObjectShortName">buf3[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buf4" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">buf4[7:0]</obj_property>
+      <obj_property name="ObjectShortName">buf4[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buffer_valid" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">buffer_valid</obj_property>
+      <obj_property name="ObjectShortName">buffer_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buffer[0]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[0,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[0,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buffer[1]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[1,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[1,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buffer[2]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[2,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[2,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buffer[3]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[3,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[3,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut/buffer[4]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[4,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[4,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/tx_data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tx_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/tx_wr" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">tx_wr</obj_property>
+      <obj_property name="ObjectShortName">tx_wr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/busy" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/state" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/crc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">crc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">crc[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/buffer[0]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[0,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[0,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/buffer[1]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[1,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[1,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/buffer[2]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[2,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[2,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/buffer[3]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[3,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[3,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/buffer[4]" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">[4,7:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[4,7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/saved_len" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">saved_len[7:0]</obj_property>
+      <obj_property name="ObjectShortName">saved_len[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/s3g_rx_tb/dut2/save_buf" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">save_buf</obj_property>
+      <obj_property name="ObjectShortName">save_buf</obj_property>
+   </wvobject>
+</wave_config>
