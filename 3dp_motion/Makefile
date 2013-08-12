@@ -22,6 +22,9 @@ SRC =	src/uart_transceiver.v \
 	src/s3g_rx.v \
 	src/s3g_tx.v \
 	src/s3g_executor.v \
+	src/acc_step_gen.v \
+	src/acc_profile_gen.v \
+	src/motor_step_gen.v \
 	src/top.v
 
 all:		bits
@@ -46,7 +49,7 @@ download: bits
 # Simulation
 #
 
-TB?= s3g_rx_tb
+TB?= acc_tb
 
 build/top_exe: $(SRC) tb/$(TB).v
 	@[ -d build ] || mkdir build
