@@ -183,7 +183,7 @@ s3g_tx s3g_tx1(
            .buf15(tx_buf15)
        );
 
-s3g_executor #(100) s3g_exec1(
+s3g_executor s3g_exec1(
              .clk(osc_clk),
              .rst(rst),
              .rx_packet_done(rx_packet_done),
