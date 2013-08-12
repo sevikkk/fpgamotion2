@@ -218,7 +218,12 @@ module executor (
 
            output reg [15:0] ext_buffer_addr,
            output reg [39:0] ext_buffer_data,
-           output reg ext_buffer_wr
+           output reg ext_buffer_wr,
+
+           input [5:0] ext_out_reg_addr,
+           input [31:0] ext_out_reg_data,
+           input ext_out_reg_stb,
+           output ext_out_reg_busy
        );
 
 parameter INTS_TIMER = 1000000;
@@ -245,9 +250,14 @@ reg [3:0] next_state;
 
 reg [3:0] next_tx_cmd;
 
-reg [5:0] out_reg_addr;
-reg [31:0] out_reg_data;
-reg out_reg_stb;
+reg [5:0] int_out_reg_addr;
+reg [31:0] int_out_reg_data;
+reg int_out_reg_stb;
+
+wire [5:0] out_reg_addr;
+wire [31:0] out_reg_data;
+wire out_reg_stb;
+
 reg [31:0] next_out_stbs;
 
 reg [5:0] next_in_mux;
@@ -394,9 +404,9 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
 
         next_ints_mask <= ints_mask;
 
-        out_reg_stb <= 0;
-        out_reg_addr <= 0;
-        out_reg_data <= 0;
+        int_out_reg_stb <= 0;
+        int_out_reg_addr <= 0;
+        int_out_reg_data <= 0;
 
         ints_to_clear <= 0;
 
@@ -430,9 +440,9 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                                         next_tx_cmd <= CMD_EXT_VERSION;
                                     60: // WRITE_OUT_REG
                                         begin
-                                            out_reg_stb <= 1;
-                                            out_reg_addr <= rx_buf1;
-                                            out_reg_data <= {rx_buf5, rx_buf4, rx_buf3, rx_buf2};
+                                            int_out_reg_stb <= 1;
+                                            int_out_reg_addr <= rx_buf1;
+                                            int_out_reg_data <= {rx_buf5, rx_buf4, rx_buf3, rx_buf2};
                                             next_tx_cmd <= CMD_OK;
                                         end
                                     61: // READ_IN_REG
@@ -648,6 +658,11 @@ always @(posedge clk)
                 end
         endcase
     end
+
+assign out_reg_stb = int_out_reg_stb | ext_out_reg_stb;
+assign out_reg_addr = int_out_reg_addr | ext_out_reg_addr;
+assign out_reg_data = int_out_reg_data | ext_out_reg_data;
+assign ext_out_reg_busy = int_out_reg_stb;
 
 always @(posedge clk)
     begin

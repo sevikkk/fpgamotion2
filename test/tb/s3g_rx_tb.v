@@ -59,7 +59,12 @@ wire [7:0] tx_buf13;
 wire [7:0] tx_buf14;
 wire [7:0] tx_buf15;
 
+wire ext_out_reg_busy;
 wire [31:0] reg13;
+
+reg [31:0] ext_out_reg_data;
+reg [5:0] ext_out_reg_addr;
+reg ext_out_reg_stb;
 
 reg int4;
 reg int14;
@@ -174,7 +179,11 @@ executor #(100) dut3(
              .int28(1'b0),
              .int29(1'b0),
              .int30(1'b0),
-             .int31(1'b0)
+             .int31(1'b0),
+             .ext_out_reg_busy(ext_out_reg_busy),
+             .ext_out_reg_data(ext_out_reg_data),
+             .ext_out_reg_addr(ext_out_reg_addr),
+             .ext_out_reg_stb(ext_out_reg_stb)
          );
 
 s3g_tx dut2(
@@ -218,6 +227,9 @@ initial
         tx_done = 0;
         int4 = 0;
         int14 = 0;
+        ext_out_reg_data = 0;
+        ext_out_reg_addr = 0;
+        ext_out_reg_stb = 0;
         rst = 1;
         clk = 0;
         #5;
@@ -474,6 +486,18 @@ initial
                             rx_done = 1;
                         end
 
+                    580:
+                        begin
+                            ext_out_reg_data = 32'h11223344;
+                            ext_out_reg_addr = 13;
+                            ext_out_reg_stb = 1;
+                        end
+                    581:
+                        begin
+                            ext_out_reg_data = 0;
+                            ext_out_reg_addr = 0;
+                            ext_out_reg_stb = 0;
+                        end
 
                     620:
                         begin
