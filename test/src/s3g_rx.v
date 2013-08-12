@@ -181,38 +181,22 @@ always @(state, byte_cnt, crc, save_addr, rx_done, rx_data, payload_len, buffer_
                         save_buf <= 1;
                         next_save_addr <= save_addr + 1;
                         case (save_addr)
-                            0:
-                                next_buf0 <= rx_data;
-                            1:
-                                next_buf1 <= rx_data;
-                            2:
-                                next_buf2 <= rx_data;
-                            3:
-                                next_buf3 <= rx_data;
-                            4:
-                                next_buf4 <= rx_data;
-                            5:
-                                next_buf5 <= rx_data;
-                            6:
-                                next_buf6 <= rx_data;
-                            7:
-                                next_buf7 <= rx_data;
-                            8:
-                                next_buf8 <= rx_data;
-                            9:
-                                next_buf9 <= rx_data;
-                            10:
-                                next_buf10 <= rx_data;
-                            11:
-                                next_buf11 <= rx_data;
-                            12:
-                                next_buf12 <= rx_data;
-                            13:
-                                next_buf13 <= rx_data;
-                            14:
-                                next_buf14 <= rx_data;
-                            15:
-                                next_buf15 <= rx_data;
+                            0: next_buf0 <= rx_data;
+                            1: next_buf1 <= rx_data;
+                            2: next_buf2 <= rx_data;
+                            3: next_buf3 <= rx_data;
+                            4: next_buf4 <= rx_data;
+                            5: next_buf5 <= rx_data;
+                            6: next_buf6 <= rx_data;
+                            7: next_buf7 <= rx_data;
+                            8: next_buf8 <= rx_data;
+                            9: next_buf9 <= rx_data;
+                            10: next_buf10 <= rx_data;
+                            11: next_buf11 <= rx_data;
+                            12: next_buf12 <= rx_data;
+                            13: next_buf13 <= rx_data;
+                            14: next_buf14 <= rx_data;
+                            15: next_buf15 <= rx_data;
                         endcase
 
                         if (byte_cnt == 1)
