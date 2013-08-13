@@ -1,15 +1,15 @@
 [*]
-[*] GTKWave Analyzer v3.3.40 (w)1999-2012 BSI
-[*] Mon Aug 12 14:54:03 2013
+[*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
+[*] Tue Aug 13 18:22:50 2013
 [*]
-[dumpfile] "/home/seva/src/sevasoft/fpgamotion2/3dp_motion/build/test.vcd"
-[dumpfile_mtime] "Mon Aug 12 14:53:47 2013"
-[dumpfile_size] 838766
-[savefile] "/home/seva/src/sevasoft/fpgamotion2/3dp_motion/tb/acc_tb.sav"
+[dumpfile] "/Users/seva/src/sevasoft/fpgamotion2/3dp_motion/build/test.vcd"
+[dumpfile_mtime] "Tue Aug 13 18:21:43 2013"
+[dumpfile_size] 907023
+[savefile] "/Users/seva/src/sevasoft/fpgamotion2/3dp_motion/tb/acc_tb.sav"
 [timestart] 0
-[size] 1834 1107
+[size] 1440 790
 [pos] -1 -1
-*-13.117586 51100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.659601 21285000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] acc_tb.
 [sst_width] 225
 [signals_width] 332
@@ -37,7 +37,11 @@ acc_tb.acc_profile_dut.x[63:0]
 @28
 acc_tb.acc_profile_dut.step
 acc_tb.acc_profile_dut.dir
-@29
 acc_tb.acc_profile_dut.stopped
+@29
+acc_tb.motor_step_dut.step
+@28
+acc_tb.motor_step_dut.dir
+acc_tb.motor_step_dut.missed
 [pattern_trace] 1
 [pattern_trace] 0
