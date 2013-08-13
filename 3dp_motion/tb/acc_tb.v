@@ -1,5 +1,6 @@
 `include "../src/acc_step_gen.v"
 `include "../src/acc_profile_gen.v"
+`include "../src/motor_step_gen.v"
 
 module acc_tb;
 
@@ -14,6 +15,9 @@ reg [31:0] cycle;
 wire acc_step;
 wire abort;
 wire done;
+
+wire motor_step;
+wire motor_dir;
 
 reg set_x;
 reg set_v;
@@ -47,7 +51,20 @@ acc_profile_gen acc_profile_dut(
            .j_val(j_val),
            .step_bit(15),
            .abort(abort),
-           .abort_a_val(1500)
+           .abort_a_val(1500),
+           .step(motor_step),
+           .dir(motor_dir)
+       );
+
+
+motor_step_gen motor_step_dut(
+           .clk(clk),
+           .reset(reset),
+           .step_stb(motor_step),
+           .step_dir(motor_dir),
+           .pre_n(5),
+           .pulse_n(10),
+           .post_n(5)
        );
 
 initial
