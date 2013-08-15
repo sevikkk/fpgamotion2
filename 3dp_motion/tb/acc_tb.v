@@ -23,6 +23,10 @@ reg set_x;
 reg set_v;
 reg set_a;
 reg set_j;
+reg set_dt_limit;
+reg set_steps_limit;
+reg reset_dt;
+reg reset_steps;
 
 reg [31:0] a_val;
 reg [31:0] j_val;
@@ -33,6 +37,10 @@ acc_step_gen acc_step_dut(
            .dt_val(dt_val),
            .steps_val(steps_val),
            .load(load),
+           .reset_dt(reset_dt),
+           .reset_steps(reset_steps),
+           .set_dt_limit(set_dt_limit),
+           .set_steps_limit(set_steps_limit),
            .step_stb(acc_step),
            .abort(abort),
            .done(done)
@@ -80,6 +88,10 @@ initial
         set_v = 0;
         set_a = 0;
         set_j = 0;
+        set_dt_limit = 0;
+        set_steps_limit = 0;
+        reset_dt = 0;
+        reset_steps = 0;
         a_val = 0;
         j_val = 0;
         clk = 0;
@@ -123,8 +135,14 @@ initial
                             load = 1;
                             a_val = 200;
                             set_a = 1;
+                            set_dt_limit = 1;
+                            set_steps_limit = 1;
                         end
-
+                    20:
+                        begin
+                            set_dt_limit = 0;
+                            reset_steps = 1;
+                        end
                     803:
                         begin
                             a_val = 1000;
