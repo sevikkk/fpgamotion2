@@ -77,8 +77,34 @@ wire [7:0] tx_buf13;
 wire [7:0] tx_buf14;
 wire [7:0] tx_buf15;
 
-wire [31:0] reg13;
+wire [31:0] reg63;
 wire [31:0] stbs;
+
+wire [31:0] out_reg0;
+wire [31:0] out_reg1;
+wire [31:0] out_reg2;
+wire [31:0] out_reg3;
+wire [31:0] out_reg4;
+wire [31:0] out_reg5;
+wire [31:0] out_reg6;
+wire [31:0] out_reg7;
+wire [31:0] out_reg8;
+wire [31:0] out_reg9;
+
+wire [31:0] in_reg0;
+wire [31:0] in_reg1;
+wire [31:0] in_reg2;
+wire [31:0] in_reg3;
+wire [31:0] in_reg4;
+wire [31:0] in_reg5;
+wire [31:0] in_reg6;
+wire [31:0] in_reg7;
+wire [31:0] in_reg8;
+wire [31:0] in_reg9;
+
+wire int0;
+wire abort;
+wire acc_step;
 
 assign rst = 0;
 
@@ -230,12 +256,36 @@ s3g_executor s3g_exec1(
              .tx_buf15(tx_buf15),
 
              .out_stbs(stbs),
-             .out_reg13(reg13),
-             .in_reg13(reg13),
 
-             .int0(stbs[0]),
-             .int1(stbs[1]),
-             .int2(stbs[2]),
+             .out_reg0(out_reg0),
+             .out_reg1(out_reg1),
+             .out_reg2(out_reg2),
+             .out_reg3(out_reg3),
+             .out_reg4(out_reg4),
+             .out_reg5(out_reg5),
+             .out_reg6(out_reg6),
+             .out_reg7(out_reg7),
+             .out_reg8(out_reg8),
+             .out_reg9(out_reg9),
+
+             .out_reg63(reg63),
+
+             .in_reg0(in_reg0),
+             .in_reg1(in_reg1),
+             .in_reg2(in_reg2),
+             .in_reg3(in_reg3),
+             .in_reg4(in_reg4),
+             .in_reg5(in_reg5),
+             .in_reg6(in_reg6),
+             .in_reg7(in_reg7),
+             .in_reg8(in_reg8),
+             .in_reg9(in_reg9),
+
+             .in_reg63(reg63),
+
+             .int0(int0),
+             .int1(1'b0),
+             .int2(1'b0),
              .int3(1'b0),
              .int4(1'b0),
              .int5(1'b0),
@@ -264,7 +314,42 @@ s3g_executor s3g_exec1(
              .int28(1'b0),
              .int29(1'b0),
              .int30(1'b0),
-             .int31(1'b0)
+             .int31(stbs[31])
          );
+
+acc_step_gen acc_step1 (
+             .clk(osc_clk),
+             .reset(rst),
+             .dt_val(out_reg1),
+             .steps_val(out_reg2),
+             .load(stbs[0]),
+             .set_dt_limit(out_reg0[0]),
+             .set_steps_limit(out_reg0[1]),
+             .reset_dt(out_reg0[2]),
+             .reset_steps(out_reg0[3]),
+             .dt(in_reg1),
+             .steps(in_reg2),
+             .abort(abort),
+             .step_stb(acc_step),
+             .done(int0)
+);
+
+acc_profile_gen acc_profile_x (
+             .clk(osc_clk),
+             .reset(rst),
+             .acc_step(acc_step),
+             .abort(abort),
+             .load(stbs[0]),
+             .set_x(out_reg0[4]),
+             .set_v(out_reg0[5]),
+             .set_a(out_reg0[6]),
+             .set_j(out_reg0[7]),
+             .x_val({out_reg4, out_reg3}),
+             .v_val(out_reg5),
+             .a_val(out_reg6),
+             .j_val(out_reg7),
+             .abort_a_val(out_reg8)
+);
+
 
 endmodule
