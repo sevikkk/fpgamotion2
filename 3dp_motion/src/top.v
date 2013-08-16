@@ -1,6 +1,7 @@
 module top(
            input osc_clk,
            input rxd,
+           input rst,
            output txd,
            output reg led0,
            output reg led1,
@@ -22,7 +23,6 @@ module top(
 reg [31:0] cnt = 0;
 
 wire enable_16;
-wire rst;
 
 wire [7:0] rx_data;
 wire rx_done;
@@ -90,6 +90,26 @@ wire [31:0] out_reg6;
 wire [31:0] out_reg7;
 wire [31:0] out_reg8;
 wire [31:0] out_reg9;
+wire [31:0] out_reg10;
+wire [31:0] out_reg11;
+wire [31:0] out_reg12;
+wire [31:0] out_reg13;
+wire [31:0] out_reg14;
+wire [31:0] out_reg15;
+wire [31:0] out_reg16;
+wire [31:0] out_reg17;
+wire [31:0] out_reg18;
+wire [31:0] out_reg19;
+wire [31:0] out_reg20;
+wire [31:0] out_reg21;
+wire [31:0] out_reg22;
+wire [31:0] out_reg23;
+wire [31:0] out_reg24;
+wire [31:0] out_reg25;
+wire [31:0] out_reg26;
+wire [31:0] out_reg27;
+wire [31:0] out_reg28;
+wire [31:0] out_reg29;
 
 wire [31:0] in_reg0;
 wire [31:0] in_reg1;
@@ -106,7 +126,14 @@ wire int0;
 wire abort;
 wire acc_step;
 
-assign rst = 0;
+wire x_step;
+wire x_dir;
+wire y_step;
+wire y_dir;
+wire z_step;
+wire z_dir;
+wire a_step;
+wire a_dir;
 
 always @(posedge osc_clk)
     begin
@@ -267,6 +294,26 @@ s3g_executor s3g_exec1(
              .out_reg7(out_reg7),
              .out_reg8(out_reg8),
              .out_reg9(out_reg9),
+             .out_reg10(out_reg10),
+             .out_reg11(out_reg11),
+             .out_reg12(out_reg12),
+             .out_reg13(out_reg13),
+             .out_reg14(out_reg14),
+             .out_reg15(out_reg15),
+             .out_reg16(out_reg16),
+             .out_reg17(out_reg17),
+             .out_reg18(out_reg18),
+             .out_reg19(out_reg19),
+             .out_reg20(out_reg20),
+             .out_reg21(out_reg21),
+             .out_reg22(out_reg22),
+             .out_reg23(out_reg23),
+             .out_reg24(out_reg24),
+             .out_reg25(out_reg25),
+             .out_reg26(out_reg26),
+             .out_reg27(out_reg27),
+             .out_reg28(out_reg28),
+             .out_reg29(out_reg29),
 
              .out_reg63(reg63),
 
@@ -348,8 +395,66 @@ acc_profile_gen acc_profile_x (
              .v_val(out_reg5),
              .a_val(out_reg6),
              .j_val(out_reg7),
-             .abort_a_val(out_reg8)
+             .abort_a_val(out_reg8),
+             .step(x_step),
+             .dir(x_dir)
 );
 
+acc_profile_gen acc_profile_y (
+             .clk(osc_clk),
+             .reset(rst),
+             .acc_step(acc_step),
+             .abort(abort),
+             .load(stbs[0]),
+             .set_x(out_reg0[8]),
+             .set_v(out_reg0[9]),
+             .set_a(out_reg0[10]),
+             .set_j(out_reg0[11]),
+             .x_val({out_reg10, out_reg9}),
+             .v_val(out_reg11),
+             .a_val(out_reg12),
+             .j_val(out_reg13),
+             .abort_a_val(out_reg14),
+             .step(y_step),
+             .dir(y_dir)
+);
+
+acc_profile_gen acc_profile_z (
+             .clk(osc_clk),
+             .reset(rst),
+             .acc_step(acc_step),
+             .abort(abort),
+             .load(stbs[0]),
+             .set_x(out_reg0[12]),
+             .set_v(out_reg0[13]),
+             .set_a(out_reg0[14]),
+             .set_j(out_reg0[15]),
+             .x_val({out_reg16, out_reg15}),
+             .v_val(out_reg17),
+             .a_val(out_reg18),
+             .j_val(out_reg19),
+             .abort_a_val(out_reg20),
+             .step(z_step),
+             .dir(z_dir)
+);
+
+acc_profile_gen acc_profile_a (
+             .clk(osc_clk),
+             .reset(rst),
+             .acc_step(acc_step),
+             .abort(abort),
+             .load(stbs[0]),
+             .set_x(out_reg0[16]),
+             .set_v(out_reg0[17]),
+             .set_a(out_reg0[18]),
+             .set_j(out_reg0[19]),
+             .x_val({out_reg22, out_reg21}),
+             .v_val(out_reg23),
+             .a_val(out_reg24),
+             .j_val(out_reg25),
+             .abort_a_val(out_reg26),
+             .step(a_step),
+             .dir(a_dir)
+);
 
 endmodule
