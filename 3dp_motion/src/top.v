@@ -165,7 +165,7 @@ assign j1[17] = 1'b0;
 assign j1[18] = 1'b0;
 assign j1[27:19] = 0;
 
-assign j2[13:0] = reg13[13:0];
+assign j2[13:0] = reg63[13:0];
 assign j3[13:0] = cnt[25:12];
 assign j4[17:0] = cnt[25:8];
 assign j5 = cnt[12];
