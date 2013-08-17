@@ -135,13 +135,36 @@ wire z_dir;
 wire a_step;
 wire a_dir;
 
+wire motor_x_step;
+wire motor_x_dir;
+wire motor_y_step;
+wire motor_y_dir;
+wire motor_z_step;
+wire motor_z_dir;
+wire motor_a_step;
+wire motor_a_dir;
+
 always @(posedge osc_clk)
     begin
         cnt <= cnt + 1;
     end
 
-assign j1[27:14] = cnt[25:12];
-assign j1[13:0] = cnt[25:12] & cnt[26:11];
+assign j1[0] = motor_x_step;
+assign j1[1] = motor_y_step;
+assign j1[2] = motor_z_step;
+assign j1[3] = motor_a_step;
+assign j1[6:4] = 0;
+assign j1[7] = motor_x_dir;
+assign j1[8] = motor_y_dir;
+assign j1[9] = motor_z_dir;
+assign j1[10] = motor_a_dir;
+assign j1[14:11] = 0;
+assign j1[15] = 1'b0;
+assign j1[16] = 1'b0;
+assign j1[17] = 1'b0;
+assign j1[18] = 1'b0;
+assign j1[27:19] = 0;
+
 assign j2[13:0] = reg13[13:0];
 assign j3[13:0] = cnt[25:12];
 assign j4[17:0] = cnt[25:8];
@@ -438,6 +461,7 @@ acc_profile_gen acc_profile_z (
              .dir(z_dir)
 );
 
+
 acc_profile_gen acc_profile_a (
              .clk(osc_clk),
              .reset(rst),
@@ -455,6 +479,55 @@ acc_profile_gen acc_profile_a (
              .abort_a_val(out_reg26),
              .step(a_step),
              .dir(a_dir)
+);
+
+
+motor_step_gen motor_x(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(out_reg27),
+    .pulse_n(out_reg28),
+    .post_n(out_reg29),
+    .step_stb(x_step),
+    .step_dir(x_dir),
+    .step(motor_x_step),
+    .dir(motor_x_dir)
+);
+
+motor_step_gen motor_y(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(out_reg27),
+    .pulse_n(out_reg28),
+    .post_n(out_reg29),
+    .step_stb(y_step),
+    .step_dir(y_dir),
+    .step(motor_y_step),
+    .dir(motor_y_dir)
+);
+
+motor_step_gen motor_z(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(out_reg27),
+    .pulse_n(out_reg28),
+    .post_n(out_reg29),
+    .step_stb(z_step),
+    .step_dir(z_dir),
+    .step(motor_z_step),
+    .dir(motor_z_dir)
+);
+
+motor_step_gen motor_a(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(out_reg27),
+    .pulse_n(out_reg28),
+    .post_n(out_reg29),
+    .step_stb(a_step),
+    .step_dir(a_dir),
+    .step(motor_a_step),
+    .dir(motor_a_dir)
 );
 
 endmodule
