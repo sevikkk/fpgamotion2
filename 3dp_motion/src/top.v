@@ -1,7 +1,6 @@
 module top(
            input osc_clk,
            input rxd,
-           input rst,
            output txd,
            output reg led0,
            output reg led1,
@@ -21,6 +20,8 @@ module top(
        );
 
 reg [31:0] cnt = 0;
+
+wire rst;
 
 wire enable_16;
 
@@ -125,6 +126,8 @@ wire [31:0] in_reg9;
 wire int0;
 wire abort;
 wire acc_step;
+wire debug_as;
+wire debug_ad;
 
 wire x_step;
 wire x_dir;
@@ -149,6 +152,7 @@ always @(posedge osc_clk)
         cnt <= cnt + 1;
     end
 
+assign rst = 0;
 assign j1[0] = motor_x_step;
 assign j1[1] = motor_y_step;
 assign j1[2] = motor_z_step;
@@ -159,11 +163,10 @@ assign j1[8] = motor_y_dir;
 assign j1[9] = motor_z_dir;
 assign j1[10] = motor_a_dir;
 assign j1[14:11] = 0;
-assign j1[15] = 1'b0;
-assign j1[16] = 1'b0;
-assign j1[17] = 1'b0;
-assign j1[18] = 1'b0;
-assign j1[27:19] = 0;
+assign j1[18:15] = out_reg0[29:26];
+assign j1[25:19] = 0;
+assign j1[26] = debug_ad;
+assign j1[27] = debug_as;
 
 assign j2[13:0] = reg63[13:0];
 assign j3[13:0] = cnt[25:12];
@@ -414,6 +417,7 @@ acc_profile_gen acc_profile_x (
              .set_v(out_reg0[5]),
              .set_a(out_reg0[6]),
              .set_j(out_reg0[7]),
+             .step_bit(out_reg0[25:20]),
              .x_val({out_reg4, out_reg3}),
              .v_val(out_reg5),
              .a_val(out_reg6),
@@ -433,6 +437,7 @@ acc_profile_gen acc_profile_y (
              .set_v(out_reg0[9]),
              .set_a(out_reg0[10]),
              .set_j(out_reg0[11]),
+             .step_bit(out_reg0[25:20]),
              .x_val({out_reg10, out_reg9}),
              .v_val(out_reg11),
              .a_val(out_reg12),
@@ -452,6 +457,7 @@ acc_profile_gen acc_profile_z (
              .set_v(out_reg0[13]),
              .set_a(out_reg0[14]),
              .set_j(out_reg0[15]),
+             .step_bit(out_reg0[25:20]),
              .x_val({out_reg16, out_reg15}),
              .v_val(out_reg17),
              .a_val(out_reg18),
@@ -472,6 +478,7 @@ acc_profile_gen acc_profile_a (
              .set_v(out_reg0[17]),
              .set_a(out_reg0[18]),
              .set_j(out_reg0[19]),
+             .step_bit(out_reg0[25:20]),
              .x_val({out_reg22, out_reg21}),
              .v_val(out_reg23),
              .a_val(out_reg24),
@@ -528,6 +535,28 @@ motor_step_gen motor_a(
     .step_dir(a_dir),
     .step(motor_a_step),
     .dir(motor_a_dir)
+);
+
+motor_step_gen debug_acc(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(250),
+    .pulse_n(750),
+    .post_n(1000),
+    .step_stb(acc_step),
+    .step_dir(0),
+    .step(debug_as)
+);
+
+motor_step_gen debug_done(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(25000),
+    .pulse_n(75000),
+    .post_n(100000),
+    .step_stb(int0),
+    .step_dir(0),
+    .step(debug_ad)
 );
 
 endmodule

@@ -1,18 +1,23 @@
 DESIGN		= FPGAMotion2
+
 PINS		= cfg/top.ucf
 DEVICE		= xc5vlx110t-2-ff1136
+
+#PINS		= cfg/small.ucf
+#DEVICE		= xc6slx9-2-tqg144
+
 BGFLAGS		= -g TdoPin:PULLUP -g DonePin:PULLUP \
 		  -g CRC:enable -g StartUpClk:CCLK
 
 # standard opts
-MAPFLAGS	= -ol std
+#MAPFLAGS	= -ol std
 # with optimizations
-#MAPFLAGS	= -bp -k 8 -ol high -timing -xe n -logic_opt on
+MAPFLAGS	= -bp -ol high -timing -xe n -logic_opt on
 
 # standard opts
-PARFLAGS	= -ol std
+#PARFLAGS	= -ol std
 # with optimizations
-#PARFLAGS	= -ol high
+PARFLAGS	= -ol high
 
 
 # Top 
