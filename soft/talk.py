@@ -85,8 +85,8 @@ def test():
 
             # motor step gen
             bot.FM_reg_write(27, 1000) # 1 + 3 + 1 us pulse
-            bot.FM_reg_write(28, 3000) # 0.5 seconds cycle
-            bot.FM_reg_write(29, 5000) # 0.5 seconds cycle
+            bot.FM_reg_write(28, 2000) # 0.5 seconds cycle
+            bot.FM_reg_write(29, 3000) # 0.5 seconds cycle
 
             #x profile
             bot.FM_reg_write(5, 0) # 100 Hz step rate
@@ -97,7 +97,7 @@ def test():
             #y profile
             bot.FM_reg_write(11, 0) # 100 Hz step rate
             bot.FM_reg_write(12, 10990*30) # a = 0
-            bot.FM_reg_write(13, -2000) # j = 0
+            bot.FM_reg_write(13, -3800) # j = 0
             bot.FM_reg_write(14, 10990*20) # abort_a = 0.1s for full stop
 
             bot.FM_reg_write(0, 15 + 
