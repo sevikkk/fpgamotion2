@@ -84,26 +84,26 @@ def test():
             bot.FM_reg_write(2, 500) # 0.5 seconds cycle
 
             # motor step gen
-            bot.FM_reg_write(27, 1000) # 1 + 3 + 1 us pulse
-            bot.FM_reg_write(28, 2000) # 0.5 seconds cycle
-            bot.FM_reg_write(29, 3000) # 0.5 seconds cycle
+            bot.FM_reg_write(27, 1000) # 1 + 1 + 1 us stepper pulse
+            bot.FM_reg_write(28, 2000) # 
+            bot.FM_reg_write(29, 3000) #
 
             #x profile
-            bot.FM_reg_write(5, 0) # 100 Hz step rate
-            bot.FM_reg_write(6, 10990*3) # a = 0
+            bot.FM_reg_write(5, 0) # Vx = 0
+            bot.FM_reg_write(6, 10990*3) # Ax = 3rpm/s/s
             bot.FM_reg_write(7, 0) # j = 0
-            bot.FM_reg_write(8, 10990) # abort_a = 0.1s for full stop
+            bot.FM_reg_write(8, 10990) # abort_a = 1rpm/s/s
 
             #y profile
-            bot.FM_reg_write(11, 0) # 100 Hz step rate
-            bot.FM_reg_write(12, 10990*30) # a = 0
-            bot.FM_reg_write(13, -3800) # j = 0
-            bot.FM_reg_write(14, 10990*20) # abort_a = 0.1s for full stop
+            bot.FM_reg_write(11, 0) # Vy = 0
+            bot.FM_reg_write(12, 10990*30) # Ay = 30rpm/s/s
+            bot.FM_reg_write(13, -3800) # Jy = XXX
+            bot.FM_reg_write(14, 10990*20) # abort_a = 20rpm/s/s
 
             bot.FM_reg_write(0, 15 + 
                     (1 << 5) + (1<<6) + (1<<7) + 
                     (1 << 9) + (1<<10) + (1<<11) + 
-                    (40<<20)) # set dt, steps, x_v, x_a, x_j, reset dt, reset_steps, step_bit = 40
+                    (40<<20)) # set dt, steps, x_v, x_a, x_j, y_x, y_a, y_j, reset dt, reset_steps, step_bit = 40
             bot.FM_stb_write(1) # load
             time.sleep(1.6)
     except:
