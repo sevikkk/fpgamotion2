@@ -54,7 +54,7 @@ download: bits
 # Simulation
 #
 
-TB?= acc_tb
+TB?= s3g_rx_tb
 
 build/top_exe: $(SRC) tb/$(TB).v
 	@[ -d build ] || mkdir build

@@ -1,6 +1,7 @@
 `include "../src/s3g_rx.v"
 `include "../src/s3g_tx.v"
 `include "../src/s3g_executor.v"
+`include "../src/buf_executor.v"
 
 module s3g_rx_tb;
 
@@ -62,14 +63,31 @@ wire [7:0] tx_buf15;
 wire ext_out_reg_busy;
 wire [31:0] reg13;
 
-reg [31:0] ext_out_reg_data;
-reg [5:0] ext_out_reg_addr;
-reg ext_out_reg_stb;
+wire [31:0] ext_out_reg_data;
+wire [5:0] ext_out_reg_addr;
+wire ext_out_reg_stb;
+
+wire [31:0] ext_out_stbs;
+wire [31:0] ext_pending_ints;
+wire [31:0] ext_clear_ints;
 
 reg int4;
 reg int14;
 wire [7:0] rx_buffer_addr;
 wire [7:0] rx_buffer_data;
+wire [7:0] ext_buffer_error;
+wire [15:0] ext_buffer_pc;
+wire [15:0] ext_buffer_addr;
+wire [39:0] ext_buffer_data;
+wire ext_buffer_wr;
+
+wire[31:0] out_stbs;
+wire int0;
+wire int1;
+
+reg done;
+
+wire[31:0] out_reg1;
 
 s3g_rx dut(
            .clk(clk),
@@ -107,6 +125,7 @@ s3g_executor #(100) dut3(
              .rx_packet_done(rx_packet_done),
              .rx_packet_error(rx_packet_error),
              .rx_payload_len(rx_payload_len),
+             .rx_buffer_valid(rx_buffer_valid),
              .rx_buf0(rx_buf0),
              .rx_buf1(rx_buf1),
              .rx_buf2(rx_buf2),
@@ -146,10 +165,14 @@ s3g_executor #(100) dut3(
              .tx_buf14(tx_buf14),
              .tx_buf15(tx_buf15),
 
+             .out_stbs(out_stbs),
+
+             .out_reg1(out_reg1),
              .out_reg13(reg13),
              .in_reg13(reg13),
-             .int0(1'b0),
-             .int1(1'b0),
+
+             .int0(int0),
+             .int1(int1),
              .int2(1'b0),
              .int3(1'b0),
              .int4(int4),
@@ -183,7 +206,15 @@ s3g_executor #(100) dut3(
              .ext_out_reg_busy(ext_out_reg_busy),
              .ext_out_reg_data(ext_out_reg_data),
              .ext_out_reg_addr(ext_out_reg_addr),
-             .ext_out_reg_stb(ext_out_reg_stb)
+             .ext_out_reg_stb(ext_out_reg_stb),
+
+             .ext_buffer_addr(ext_buffer_addr),
+             .ext_buffer_data(ext_buffer_data),
+             .ext_buffer_wr(ext_buffer_wr),
+             .ext_buffer_pc(ext_buffer_pc),
+             .ext_buffer_error(ext_buffer_error),
+             .ext_pending_ints(ext_pending_ints),
+             .ext_clear_ints(ext_clear_ints)
          );
 
 s3g_tx dut2(
@@ -212,12 +243,40 @@ s3g_tx dut2(
            .buf15(tx_buf15)
        );
 
+buf_executor dut4(
+           .clk(clk),
+           .rst(rst),
+
+           .ext_out_reg_addr(ext_out_reg_addr),
+           .ext_out_reg_data(ext_out_reg_data),
+           .ext_out_reg_stb(ext_out_reg_stb),
+           .ext_out_reg_busy(ext_out_reg_busy),
+
+           .ext_buffer_addr(ext_buffer_addr),
+           .ext_buffer_data(ext_buffer_data),
+           .ext_buffer_wr(ext_buffer_wr),
+           .pc(ext_buffer_pc),
+           .error(ext_buffer_error),
+
+           .start(out_stbs[0]),
+           .start_addr(out_reg1[15:0]),
+           .done(done),
+           .abort(out_stbs[1]),
+           .load(load),
+           .complete(int0),
+           .ext_pending_ints(ext_pending_ints),
+           .ext_clear_ints(ext_clear_ints)
+);
+
+
 reg [3:0] tx_delay;
+integer lp;
 
 initial
     begin
         $dumpfile("test.vcd");
         $dumpvars;
+        for (lp=0; lp<512; lp = lp+1) $dumpvars(0, dut4.buffer[lp]);
         /* $dumpvars(0,dut);
         $dumpvars(0,dut2);
         $dumpvars(0,dut3); */
@@ -227,9 +286,6 @@ initial
         tx_done = 0;
         int4 = 0;
         int14 = 0;
-        ext_out_reg_data = 0;
-        ext_out_reg_addr = 0;
-        ext_out_reg_stb = 0;
         rst = 1;
         clk = 0;
         #5;
@@ -486,19 +542,6 @@ initial
                             rx_done = 1;
                         end
 
-                    580:
-                        begin
-                            ext_out_reg_data = 32'h11223344;
-                            ext_out_reg_addr = 13;
-                            ext_out_reg_stb = 1;
-                        end
-                    581:
-                        begin
-                            ext_out_reg_data = 0;
-                            ext_out_reg_addr = 0;
-                            ext_out_reg_stb = 0;
-                        end
-
                     620:
                         begin
                             rx_data = 8'hD5;
@@ -665,12 +708,12 @@ initial
                         end
                     1045:
                         begin
-                            rx_data = 8'h11;
+                            rx_data = 8'h01;
                             rx_done = 1;
                         end
                     1050:
                         begin
-                            rx_data = 8'h01;
+                            rx_data = 8'h41;
                             rx_done = 1;
                         end
                     1055:
@@ -720,7 +763,7 @@ initial
                         end
                     1100:
                         begin
-                            rx_data = 8'h6E;
+                            rx_data = dut.crc;
                             rx_done = 1;
                         end
 

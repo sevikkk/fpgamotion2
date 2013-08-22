@@ -137,10 +137,18 @@ always @(state, byte_cnt, crc, save_addr, rx_done, rx_data, payload_len, buffer_
                 if (rx_done && rx_data == 8'hD5)
                     begin
                         next_state <= S_LEN;
+                    end
+            end
+        else if (state == S_LEN)
+            begin
+                if (rx_done)
+                    begin
+                        next_state <= S_DATA;
+                        next_byte_cnt <= rx_data;
+                        next_crc <= 0;
+                        next_payload_len <= rx_data;
+
                         next_buffer_valid <= 0;
-
-                        next_payload_len <= 0;
-
                         next_save_addr <= 0;
 
                         next_buf0 <= 0;
@@ -159,16 +167,6 @@ always @(state, byte_cnt, crc, save_addr, rx_done, rx_data, payload_len, buffer_
                         next_buf13 <= 0;
                         next_buf14 <= 0;
                         next_buf15 <= 0;
-                    end
-            end
-        else if (state == S_LEN)
-            begin
-                if (rx_done)
-                    begin
-                        next_state <= S_DATA;
-                        next_byte_cnt <= rx_data;
-                        next_crc <= 0;
-                        next_payload_len <= rx_data;
                     end
             end
         else if (state == S_DATA)

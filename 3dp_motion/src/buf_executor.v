@@ -7,6 +7,11 @@ module buf_executor (
            output reg ext_out_reg_stb,
            input ext_out_reg_busy,
 
+           output reg [31:0] ext_out_stbs,
+
+           input [31:0] ext_pending_ints,
+           output reg [31:0] ext_clear_ints,
+
            input [15:0] ext_buffer_addr,
            input [39:0] ext_buffer_data,
            input ext_buffer_wr,
@@ -15,15 +20,15 @@ module buf_executor (
            input [15:0] start_addr,
            input done,
            input abort,
-           output reg load
+           output reg load,
            output reg complete,
+           output reg [15:0] pc,
            output reg [7:0] error
 );
 
 reg [3:0] state;
 reg [3:0] next_state;
 
-reg [15:0] pc;
 reg [15:0] next_pc;
 
 reg [7:0] next_error;
@@ -53,6 +58,8 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
         load <= 0;
         ext_out_reg_stb <= 0;
         next_error <= 0;
+        ext_out_stbs <= 0;
+        ext_clear_ints <= 0;
 
         if (rst || abort)
             begin
@@ -67,13 +74,11 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
             case (state)
                 S_INIT:
                     begin
-                        complete <= 1;
                         next_error <= error;
                         if (start)
                             begin
                                 next_pc <= start_addr;
                                 next_state <= S_FETCH;
-                                complete <= 0;
                                 next_error <= 0;
                             end
                     end
@@ -97,40 +102,69 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
                                 end
                             2'b10: // Misc
                                 case (buffer_data[37:32])
-                                    0: // LOAD
+                                    0: // NOP
                                         begin
-                                            load <= 1;
                                             next_state <= S_FETCH;
                                             next_pc <= pc + 1;
                                         end
-                                    1: // WAIT
+                                    1: // STB
                                         begin
-                                            if (done)
+                                            ext_out_stbs <= buffer_data[31:0];
+                                            next_state <= S_FETCH;
+                                            next_pc <= pc + 1;
+                                        end
+                                    2: // WAIT_ALL
+                                        begin
+                                            if (ext_pending_ints & buffer_data[31:0] == buffer_data[31:0])
                                                 begin
                                                     next_state <= S_FETCH;
                                                     next_pc <= pc + 1;
                                                 end
+                                            else
+                                                next_error <= 2;
                                         end
-                                    2: // DONE
+                                    3: // WAIT_ANY
+                                        begin
+                                            if (ext_pending_ints & buffer_data[31:0] != 0)
+                                                begin
+                                                    next_state <= S_FETCH;
+                                                    next_pc <= pc + 1;
+                                                end
+                                            else
+                                                next_error <= 2;
+                                        end
+                                    1: // STB
+                                        begin
+                                            ext_clear_ints <= buffer_data[31:0];
+                                            next_state <= S_FETCH;
+                                            next_pc <= pc + 1;
+                                        end
+                                    127: // DONE
                                         begin
                                             next_state <= S_INIT;
-                                            next_error <= 1;
+                                            next_error <= 127;
+                                            complete <= 1;
                                         end
                                     default: // halt on error
                                         begin
                                             next_state <= S_INIT;
                                             next_error <= 8'h81;
+                                            complete <= 1;
                                         end
                                 endcase
                             default: // halt on error
                                 begin
                                     next_state <= S_INIT;
                                     next_error <= 8'h81;
+                                    complete <= 1;
                                 end
                         endcase
                     end
                 default:
-                    next_state <= S_INIT;
+                    begin
+                        next_state <= S_INIT;
+                        next_error <= 0;
+                    end
             endcase
     end
 

@@ -219,11 +219,16 @@ module s3g_executor (
            output reg [15:0] ext_buffer_addr,
            output reg [39:0] ext_buffer_data,
            output reg ext_buffer_wr,
+           input [15:0] ext_buffer_pc,
+           input [7:0] ext_buffer_error,
 
            input [5:0] ext_out_reg_addr,
            input [31:0] ext_out_reg_data,
            input ext_out_reg_stb,
-           output ext_out_reg_busy
+           output ext_out_reg_busy,
+           input [31:0] ext_out_stbs,
+           input [31:0] ext_clear_ints,
+           output [31:0] ext_pending_ints
        );
 
 parameter INTS_TIMER = 1000000;
@@ -238,7 +243,7 @@ parameter EXT_VER_8 = 8'h00;
 
 localparam
     CMD_NONE = 0, CMD_OK = 1, CMD_ERROR = 2, CMD_UNKNOWN = 3, CMD_READ_REG = 4, 
-    CMD_VERSION = 5, CMD_EXT_VERSION = 6, CMD_INTERRUPT = 7;
+    CMD_VERSION = 5, CMD_EXT_VERSION = 6, CMD_INTERRUPT = 7, CMD_WR_BUF_OK = 8, CMD_WR_BUF_ERR = 9;
 
 localparam 
     S_INIT = 0, S_DELAY = 1, S_BUSY = 2, S_READ = 3, S_READ1 = 4, 
@@ -277,6 +282,8 @@ reg [7:0] rx_buffer_addr;
 reg [15:0] next_ext_buffer_addr;
 reg [39:0] next_ext_buffer_data;
 reg next_ext_buffer_wr;
+reg [15:0] saved_ext_buffer_addr;
+reg [15:0] next_saved_ext_buffer_addr;
 
 reg [7:0] word_cnt;
 reg [7:0] next_word_cnt;
@@ -292,8 +299,10 @@ always @(posedge clk)
         if (rst)
             ints_pending <= 0;
         else
-            ints_pending <= (ints_pending & ~ints_to_clear) | ints_vector;
+            ints_pending <= (ints_pending & ~(ints_to_clear | ext_clear_ints)) | ints_vector;
     end
+
+assign ext_pending_ints = ints_pending;
 
 always @(posedge clk)
     begin
@@ -308,10 +317,11 @@ always @(posedge clk)
                 ext_buffer_addr <= 0;
                 ext_buffer_data <= 0;
                 ext_buffer_wr <= 0;
+                saved_ext_buffer_addr <= 0;
             end
         else
             begin
-                out_stbs <= next_out_stbs;
+                out_stbs <= next_out_stbs | ext_out_stbs;
                 ints_mask <= next_ints_mask;
                 in_mux <= next_in_mux;
                 ints_timer <= next_ints_timer;
@@ -320,6 +330,7 @@ always @(posedge clk)
                 ext_buffer_addr <= next_ext_buffer_addr;
                 ext_buffer_data <= next_ext_buffer_data;
                 ext_buffer_wr <= next_ext_buffer_wr;
+                saved_ext_buffer_addr <= next_saved_ext_buffer_addr;
             end
 
         in_data <= 0;
@@ -420,6 +431,7 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
         next_ext_buffer_addr <= ext_buffer_addr;
         next_ext_buffer_data <= ext_buffer_data;
         next_ext_buffer_wr <= 0;
+        next_saved_ext_buffer_addr <= saved_ext_buffer_addr;
 
         case (state)
             S_INIT:
@@ -472,9 +484,18 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                                             next_rx_buffer_addr <= 4;
                                             next_word_cnt <= rx_buf1;
                                             next_ext_buffer_addr <= {rx_buf3, rx_buf2};
-                                            next_ext_buffer_data <= 0;
-                                            next_state <= S_BUFFER0;
-                                            next_tx_cmd <= CMD_NONE;
+                                            next_saved_ext_buffer_addr <= {rx_buf3, rx_buf2};
+                                            if (rx_buf1 == 0)
+                                                begin
+                                                    next_state <= S_DELAY;
+                                                    next_tx_cmd <= CMD_WR_BUF_OK;
+                                                end
+                                            else
+                                                begin
+                                                    next_ext_buffer_data <= 0;
+                                                    next_state <= S_BUFFER0;
+                                                    next_tx_cmd <= CMD_NONE;
+                                                end
                                         end
                                 endcase
                         end
@@ -538,17 +559,26 @@ always @(tx_busy, rx_packet_done, rx_packet_done, rx_packet_error, rx_payload_le
                 end
             S_BUFFER4:
                 begin
-                    next_state <= S_BUFFER5;
                     next_ext_buffer_data[39:32] <= rx_buffer_data;
-                    next_ext_buffer_wr <= 1;
                     next_word_cnt <= word_cnt - 1;
+                    if (rx_buffer_valid)
+                        begin
+                            next_ext_buffer_wr <= 1;
+                            next_state <= S_BUFFER5;
+                        end
+                    else
+                        begin
+                            next_state <= S_DELAY;
+                            next_tx_cmd <= CMD_WR_BUF_ERR;
+                        end
+
                 end
             S_BUFFER5:
                 begin
                     if (word_cnt == 0)
                         begin
                             next_state <= S_DELAY;
-                            next_tx_cmd <= CMD_OK;
+                            next_tx_cmd <= CMD_WR_BUF_OK;
                         end
                     else
                         begin
@@ -655,6 +685,28 @@ always @(posedge clk)
                     tx_buf2 <= ints_pending[15:8];
                     tx_buf3 <= ints_pending[23:16];
                     tx_buf4 <= ints_pending[31:24];
+                end
+            CMD_WR_BUF_OK:
+                begin
+                    tx_packet_wr <= 1;
+                    tx_payload_len <= 5;
+                    tx_buf0 <= 8'h81;
+                    tx_buf1 <= saved_ext_buffer_addr[7:0];
+                    tx_buf2 <= saved_ext_buffer_addr[15:8];
+                    tx_buf3 <= ext_buffer_error[7:0];
+                    tx_buf4 <= ext_buffer_pc[7:0];
+                    tx_buf5 <= ext_buffer_pc[15:8];
+                end
+            CMD_WR_BUF_ERR:
+                begin
+                    tx_packet_wr <= 1;
+                    tx_payload_len <= 5;
+                    tx_buf0 <= 8'h82;
+                    tx_buf1 <= saved_ext_buffer_addr[7:0];
+                    tx_buf2 <= saved_ext_buffer_addr[15:8];
+                    tx_buf3 <= ext_buffer_error[7:0];
+                    tx_buf4 <= ext_buffer_pc[7:0];
+                    tx_buf5 <= ext_buffer_pc[15:8];
                 end
         endcase
     end
