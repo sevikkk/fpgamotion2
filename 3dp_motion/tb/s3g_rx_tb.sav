@@ -1,72 +1,76 @@
 [*]
-[*] GTKWave Analyzer v3.3.40 (w)1999-2012 BSI
-[*] Mon Aug 12 10:52:45 2013
+[*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
+[*] Sat Aug 24 21:19:32 2013
 [*]
-[dumpfile] "/home/seva/src/sevasoft/fpgamotion2/test/build/test.vcd"
-[dumpfile_mtime] "Mon Aug 12 10:51:39 2013"
-[dumpfile_size] 174717
-[savefile] "/home/seva/src/sevasoft/fpgamotion2/test/tb/s3g_rx_tb.sav"
-[timestart] 4506
-[size] 1600 1123
+[dumpfile] "/Users/seva/src/sevasoft/fpgamotion2/3dp_motion/build/test.vcd"
+[dumpfile_mtime] "Sat Aug 24 21:18:02 2013"
+[dumpfile_size] 323035
+[savefile] "/Users/seva/src/sevasoft/fpgamotion2/3dp_motion/tb/s3g_rx_tb.sav"
+[timestart] 18154
+[size] 1600 1178
 [pos] -1 -1
-*-7.569453 11129 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-7.610804 18729 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] s3g_rx_tb.
-[treeopen] s3g_rx_tb.dut.
-[treeopen] s3g_rx_tb.dut2.
+[treeopen] s3g_rx_tb.dut_rx.
 [sst_width] 225
-[signals_width] 332
+[signals_width] 360
 [sst_expanded] 1
-[sst_vpaned_height] 415
-@28
-s3g_rx_tb.dut.packet_done
-s3g_rx_tb.dut.packet_error
+[sst_vpaned_height] 499
+@24
+s3g_rx_tb.cycle[31:0]
 @22
-s3g_rx_tb.dut.rx_data[7:0]
-s3g_rx_tb.dut.crc[7:0]
-s3g_rx_tb.dut3.tx_payload_len[7:0]
+s3g_rx_tb.dut_rx.rx_data[7:0]
 @28
-s3g_rx_tb.dut3.tx_packet_wr
+s3g_rx_tb.dut_rx.rx_done
+s3g_rx_tb.dut_rx.packet_done
+s3g_rx_tb.dut_rx.packet_error
+s3g_rx_tb.dut_rx.buffer_valid
 @22
-s3g_rx_tb.dut3.tx_buf0[7:0]
-s3g_rx_tb.dut3.tx_buf1[7:0]
-s3g_rx_tb.dut3.tx_buf2[7:0]
-s3g_rx_tb.dut2.tx_data[7:0]
+s3g_rx_tb.dut_tx.tx_data[7:0]
 @28
-s3g_rx_tb.dut2.tx_done
-s3g_rx_tb.dut2.tx_wr
-s3g_rx_tb.dut2.busy
+s3g_rx_tb.dut_tx.tx_done
+s3g_rx_tb.dut_tx.tx_wr
 @22
-s3g_rx_tb.dut3.out_reg13[31:0]
-s3g_rx_tb.dut3.out_reg12[31:0]
-s3g_rx_tb.dut3.out_stbs[31:0]
+s3g_rx_tb.dut_exec.ext_pending_ints[31:0]
+s3g_rx_tb.reg13[31:0]
+s3g_rx_tb.out_stbs[31:0]
 @28
-s3g_rx_tb.dut3.ints_vector[31:0]
+s3g_rx_tb.int4
+s3g_rx_tb.int14
 @22
-s3g_rx_tb.dut3.ints_to_clear[31:0]
-s3g_rx_tb.dut3.ints_timer[31:0]
+s3g_rx_tb.dut_exec.ints_pending[31:0]
+s3g_rx_tb.dut_exec.ints_mask[31:0]
+s3g_rx_tb.dut_exec.ints_timer[31:0]
+s3g_rx_tb.dut_exec.ext_buffer_addr[15:0]
+s3g_rx_tb.dut_exec.ext_buffer_data[39:0]
 @28
-s3g_rx_tb.dut3.ints_pending[31:0]
+s3g_rx_tb.dut_exec.ext_buffer_wr
+s3g_rx_tb.dut_rx.state[2:0]
 @22
-s3g_rx_tb.dut3.ints_mask[31:0]
-s3g_rx_tb.dut3.state[3:0]
+s3g_rx_tb.dut_exec.out_reg13[31:0]
+s3g_rx_tb.dut_exec.out_reg14[31:0]
 @28
-s3g_rx_tb.dut3.int4
-s3g_rx_tb.dut3.int14
+s3g_rx_tb.int0
+s3g_rx_tb.dut_be.start
+s3g_rx_tb.dut_be.load
 @22
-s3g_rx_tb.dut.save_addr[7:0]
-s3g_rx_tb.dut3.rx_buffer_addr[7:0]
-s3g_rx_tb.dut3.rx_buffer_data[7:0]
-s3g_rx_tb.dut3.ext_buffer_addr[15:0]
-s3g_rx_tb.dut3.ext_buffer_data[39:0]
+s3g_rx_tb.dut_be.next_error[7:0]
+s3g_rx_tb.dut_be.next_pc[15:0]
+s3g_rx_tb.dut_be.\buffer[270][39:0]
+s3g_rx_tb.dut_be.\buffer[271][39:0]
+s3g_rx_tb.dut_be.\buffer[272][39:0]
+s3g_rx_tb.dut_be.\buffer[273][39:0]
+s3g_rx_tb.dut_be.\buffer[274][39:0]
+s3g_rx_tb.dut_be.\buffer[275][39:0]
+s3g_rx_tb.dut_be.\buffer[276][39:0]
+s3g_rx_tb.dut_be.start_addr[15:0]
 @28
-s3g_rx_tb.dut3.ext_buffer_wr
+s3g_rx_tb.dut_be.start
 @22
-s3g_rx_tb.ext_out_reg_addr[5:0]
+s3g_rx_tb.dut_be.state[3:0]
 @28
-s3g_rx_tb.ext_out_reg_busy
-@22
-s3g_rx_tb.ext_out_reg_data[31:0]
-@29
-s3g_rx_tb.ext_out_reg_stb
+s3g_rx_tb.dut_be.complete
+@23
+s3g_rx_tb.dut_be.buffer_data[39:0]
 [pattern_trace] 1
 [pattern_trace] 0

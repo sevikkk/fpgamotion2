@@ -56,6 +56,8 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
         next_state <= state;
         complete <= 0;
         load <= 0;
+        ext_out_reg_addr <= 0;
+        ext_out_reg_data <= 0;
         ext_out_reg_stb <= 0;
         next_error <= 0;
         ext_out_stbs <= 0;
@@ -133,13 +135,13 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
                                             else
                                                 next_error <= 2;
                                         end
-                                    1: // STB
+                                    4: // clean ints
                                         begin
                                             ext_clear_ints <= buffer_data[31:0];
                                             next_state <= S_FETCH;
                                             next_pc <= pc + 1;
                                         end
-                                    127: // DONE
+                                    63: // DONE
                                         begin
                                             next_state <= S_INIT;
                                             next_error <= 127;
@@ -166,6 +168,13 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
                         next_error <= 0;
                     end
             endcase
+    end
+
+always @(posedge clk)
+    begin
+        pc <= next_pc;
+        state <= next_state;
+        error <= next_error;
     end
 
 endmodule

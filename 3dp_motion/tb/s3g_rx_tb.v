@@ -83,13 +83,15 @@ wire ext_buffer_wr;
 
 wire[31:0] out_stbs;
 wire int0;
-wire int1;
 
 reg done;
 
 wire[31:0] out_reg1;
 
-s3g_rx dut(
+reg [2047:0] packet = 512'hD50123456789;
+reg send_packet = 0;
+
+s3g_rx dut_rx(
            .clk(clk),
            .rst(rst),
            .rx_data(rx_data),
@@ -119,7 +121,7 @@ s3g_rx dut(
        );
 
 
-s3g_executor #(100) dut3(
+s3g_executor #(100) dut_exec(
              .clk(clk),
              .rst(rst),
              .rx_packet_done(rx_packet_done),
@@ -172,7 +174,7 @@ s3g_executor #(100) dut3(
              .in_reg13(reg13),
 
              .int0(int0),
-             .int1(int1),
+             .int1(1'b0),
              .int2(1'b0),
              .int3(1'b0),
              .int4(int4),
@@ -214,10 +216,11 @@ s3g_executor #(100) dut3(
              .ext_buffer_pc(ext_buffer_pc),
              .ext_buffer_error(ext_buffer_error),
              .ext_pending_ints(ext_pending_ints),
-             .ext_clear_ints(ext_clear_ints)
+             .ext_clear_ints(ext_clear_ints),
+             .ext_out_stbs(ext_out_stbs)
          );
 
-s3g_tx dut2(
+s3g_tx dut_tx(
            .clk(clk),
            .rst(rst),
            .tx_done(tx_done),
@@ -243,7 +246,7 @@ s3g_tx dut2(
            .buf15(tx_buf15)
        );
 
-buf_executor dut4(
+buf_executor dut_be(
            .clk(clk),
            .rst(rst),
 
@@ -265,7 +268,8 @@ buf_executor dut4(
            .load(load),
            .complete(int0),
            .ext_pending_ints(ext_pending_ints),
-           .ext_clear_ints(ext_clear_ints)
+           .ext_clear_ints(ext_clear_ints),
+           .ext_out_stbs(ext_out_stbs)
 );
 
 
@@ -276,7 +280,7 @@ initial
     begin
         $dumpfile("test.vcd");
         $dumpvars;
-        for (lp=0; lp<512; lp = lp+1) $dumpvars(0, dut4.buffer[lp]);
+        for (lp=0; lp<512; lp = lp+1) $dumpvars(0, dut_be.buffer[lp]);
         /* $dumpvars(0,dut);
         $dumpvars(0,dut2);
         $dumpvars(0,dut3); */
@@ -342,245 +346,45 @@ initial
                 case (cycle)
                     10:
                         begin
-                            rx_data = 13;
-                            rx_done = 1;
+                            packet = 512'h0DD50301020304; // spare byte and wrong checksum
+                            send_packet = 1;
                         end
-                    20:
-                        begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    30:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    40:
-                        begin
-                            rx_data = 8'h01;
-                            rx_done = 1;
-                        end
-                    50:
-                        begin
-                            rx_data = 8'h02;
-                            rx_done = 1;
-                        end
-                    60:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    70:
-                        begin
-                            rx_data = 8'hCC;
-                            rx_done = 1;
-                        end
+
                     120:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    130:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    140:
-                        begin
-                            rx_data = 8'h01;
-                            rx_done = 1;
-                        end
-                    150:
-                        begin
-                            rx_data = 8'h02;
-                            rx_done = 1;
-                        end
-                    160:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    170:
-                        begin
-                            rx_data = 8'hD8;
-                            rx_done = 1;
+                            packet = 512'hD503010203; // unknown command
+                            send_packet = 1;
                         end
 
                     220:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    230:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    240:
-                        begin
-                            rx_data = 0;
-                            rx_done = 1;
-                        end
-                    250:
-                        begin
-                            rx_data = 8'h01;
-                            rx_done = 1;
-                        end
-                    260:
-                        begin
-                            rx_data = 8'h02;
-                            rx_done = 1;
-                        end
-                    270:
-                        begin
-                            rx_data = 8'h78;
-                            rx_done = 1;
+                            packet = 512'hD503000203; // version cmd
+                            send_packet = 1;
                         end
 
                     320:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
+                            packet = 512'hD5031B0102; // extended version cmd
+                            send_packet = 1;
                         end
-                    330:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    340:
-                        begin
-                            rx_data = 27;
-                            rx_done = 1;
-                        end
-                    350:
-                        begin
-                            rx_data = 8'h01;
-                            rx_done = 1;
-                        end
-                    360:
-                        begin
-                            rx_data = 8'h02;
-                            rx_done = 1;
-                        end
-                    370:
-                        begin
-                            rx_data = 8'hF3;
-                            rx_done = 1;
-                        end
-
 
                     420:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    425:
-                        begin
-                            rx_data = 6;
-                            rx_done = 1;
-                        end
-                    430:
-                        begin
-                            rx_data = 60;
-                            rx_done = 1;
-                        end
-                    435:
-                        begin
-                            rx_data = 13;
-                            rx_done = 1;
-                        end
-                    440:
-                        begin
-                            rx_data = 1;
-                            rx_done = 1;
-                        end
-                    445:
-                        begin
-                            rx_data = 2;
-                            rx_done = 1;
-                        end
-                    450:
-                        begin
-                            rx_data = 3;
-                            rx_done = 1;
-                        end
-                    455:
-                        begin
-                            rx_data = 4;
-                            rx_done = 1;
-                        end
-                    460:
-                        begin
-                            rx_data = 8'h88;
-                            rx_done = 1;
+                            packet = 512'hD5063C0D01020304; // write reg cmd
+                            send_packet = 1;
                         end
 
 
                     520:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    525:
-                        begin
-                            rx_data = 2;
-                            rx_done = 1;
-                        end
-                    530:
-                        begin
-                            rx_data = 61;
-                            rx_done = 1;
-                        end
-                    535:
-                        begin
-                            rx_data = 13;
-                            rx_done = 1;
-                        end
-                    540:
-                        begin
-                            rx_data = 8'h59;
-                            rx_done = 1;
+                            packet = 512'hD5023D0D; // read reg cmd
+                            send_packet = 1;
                         end
 
                     620:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    625:
-                        begin
-                            rx_data = 5;
-                            rx_done = 1;
-                        end
-                    630:
-                        begin
-                            rx_data = 62;
-                            rx_done = 1;
-                        end
-                    635:
-                        begin
-                            rx_data = 8'h01;
-                            rx_done = 1;
-                        end
-                    640:
-                        begin
-                            rx_data = 8'h02;
-                            rx_done = 1;
-                        end
-                    645:
-                        begin
-                            rx_data = 8'h04;
-                            rx_done = 1;
-                        end
-                    650:
-                        begin
-                            rx_data = 8'h08;
-                            rx_done = 1;
-                        end
-                    655:
-                        begin
-                            rx_data = 8'h1F;
-                            rx_done = 1;
+                            packet = 512'hD5053E01020408; // out stb cmd
+                            send_packet = 1;
                         end
 
                     700:
@@ -591,183 +395,50 @@ initial
 
                     820:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    825:
-                        begin
-                            rx_data = 5;
-                            rx_done = 1;
-                        end
-                    830:
-                        begin
-                            rx_data = 63;
-                            rx_done = 1;
-                        end
-                    835:
-                        begin
-                            rx_data = 8'hFF;
-                            rx_done = 1;
-                        end
-                    840:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
-                        end
-                    845:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
-                        end
-                    850:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
-                        end
-                    855:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
+                            packet = 512'hD5053FFF000000; // clear ints
+                            send_packet = 1;
                         end
 
                     920:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    925:
-                        begin
-                            rx_data = 5;
-                            rx_done = 1;
-                        end
-                    930:
-                        begin
-                            rx_data = 64;
-                            rx_done = 1;
-                        end
-                    935:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
-                        end
-                    940:
-                        begin
-                            rx_data = 8'hFF;
-                            rx_done = 1;
-                        end
-                    945:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
-                        end
-                    950:
-                        begin
-                            rx_data = 8'h00;
-                            rx_done = 1;
-                        end
-                    955:
-                        begin
-                            rx_data = 8'h3b;
-                            rx_done = 1;
+                            packet = 512'hD5054000FF0000; // set int mask
+                            send_packet = 1;
                         end
 
-                    990:
+                    1050:
                         begin
                             int4 <= 1;
                         end
 
-                    1000:
+                    1100:
                         begin
                             int14 <= 1;
                         end
 
-                    1020:
+                    1200:
                         begin
-                            rx_data = 8'hD5;
-                            rx_done = 1;
-                        end
-                    1025:
-                        begin
-                            rx_data = 14;
-                            rx_done = 1;
-                        end
-                    1030:
-                        begin
-                            rx_data = 65;
-                            rx_done = 1;
-                        end
-                    1035:
-                        begin
-                            rx_data = 2;
-                            rx_done = 1;
-                        end
-                    1040:
-                        begin
-                            rx_data = 8'h10;
-                            rx_done = 1;
-                        end
-                    1045:
-                        begin
-                            rx_data = 8'h01;
-                            rx_done = 1;
-                        end
-                    1050:
-                        begin
-                            rx_data = 8'h41;
-                            rx_done = 1;
-                        end
-                    1055:
-                        begin
-                            rx_data = 8'h02;
-                            rx_done = 1;
-                        end
-                    1060:
-                        begin
-                            rx_data = 8'h03;
-                            rx_done = 1;
-                        end
-                    1065:
-                        begin
-                            rx_data = 8'h04;
-                            rx_done = 1;
-                        end
-                    1070:
-                        begin
-                            rx_data = 8'h05;
-                            rx_done = 1;
-                        end
-                    1075:
-                        begin
-                            rx_data = 8'h11;
-                            rx_done = 1;
-                        end
-                    1080:
-                        begin
-                            rx_data = 8'h12;
-                            rx_done = 1;
-                        end
-                    1085:
-                        begin
-                            rx_data = 8'h13;
-                            rx_done = 1;
-                        end
-                    1090:
-                        begin
-                            rx_data = 8'h14;
-                            rx_done = 1;
-                        end
-                    1095:
-                        begin
-                            rx_data = 8'h15;
-                            rx_done = 1;
-                        end
-                    1100:
-                        begin
-                            rx_data = dut.crc;
-                            rx_done = 1;
+                            packet = 512'hD5053FFFFF0000; // clear ints
+                            send_packet = 1;
                         end
 
-                    1500:
+                    1300:
+                        begin
+                            packet = 512'hD51841041001010203044E111213144D040408088100000000BF; // write buffer
+                            send_packet = 1;
+                        end
+                    1650:
+                        begin
+                            packet = 512'hD5063C0110010000; // write reg cmd
+                            send_packet = 1;
+                        end
+
+                    1780:
+                        begin
+                            packet = 512'hD5053E01000000; // out stb cmd
+                            send_packet = 1;
+                        end
+
+                    2500:
                         $finish;
 
                 endcase
@@ -777,6 +448,43 @@ initial
                 #5;
                 cycle = cycle + 1;
             end
+    end
+
+integer ppos, first;
+always @(negedge clk)
+    begin
+        if (send_packet)
+        begin
+            $display("send", packet, $time);
+            send_packet <= 0;
+            first = 1;
+            for (ppos = 2047; ppos>0; ppos = ppos - 8)
+            begin
+                if (first)
+                    begin
+                        if (packet[ppos-:8] != 0)
+                            begin
+                                first = 0;
+                                rx_data = packet[ppos-:8];
+                                rx_done = 1;
+                                $display("time: %g send %h", $time, rx_data);
+                                #100;
+                            end
+                    end
+                else
+                    begin
+                        rx_data = packet[ppos-:8];
+                        rx_done = 1;
+                        $display("time: %g send %h", $time, rx_data);
+                        #100;
+                    end
+            end
+            rx_data = dut_rx.crc;
+            rx_done = 1;
+            $display("time: %g send crc %h", $time, rx_data);
+            #100;
+           
+        end
     end
 
 
