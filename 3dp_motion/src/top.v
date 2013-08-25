@@ -124,10 +124,12 @@ wire [31:0] in_reg8;
 wire [31:0] in_reg9;
 
 wire int0;
+wire int1;
 wire abort;
 wire acc_step;
 wire debug_as;
 wire debug_ad;
+wire debug_bd;
 
 wire x_step;
 wire x_dir;
@@ -147,6 +149,25 @@ wire motor_z_dir;
 wire motor_a_step;
 wire motor_a_dir;
 
+wire [15:0] ext_buffer_addr;
+wire [39:0] ext_buffer_data;
+wire ext_buffer_wr;
+
+wire [7:0] ext_buffer_error;
+wire [15:0] ext_buffer_pc;
+
+wire [31:0] ext_out_reg_data;
+wire [5:0] ext_out_reg_addr;
+wire ext_out_reg_stb;
+wire ext_out_reg_busy;
+
+wire [31:0] ext_out_stbs;
+wire [31:0] ext_pending_ints;
+wire [31:0] ext_clear_ints;
+
+wire load_be;
+wire load;
+
 always @(posedge osc_clk)
     begin
         cnt <= cnt + 1;
@@ -164,7 +185,8 @@ assign j1[9] = motor_z_dir;
 assign j1[10] = motor_a_dir;
 assign j1[14:11] = 0;
 assign j1[18:15] = out_reg0[29:26];
-assign j1[25:19] = 0;
+assign j1[24:19] = 0;
+assign j1[25] = debug_bd;
 assign j1[26] = debug_ad;
 assign j1[27] = debug_as;
 
@@ -174,6 +196,8 @@ assign j4[17:0] = cnt[25:8];
 assign j5 = cnt[12];
 assign j6[4:0] = cnt[16:12];
 assign sd[3:0] = cnt[15:12];
+
+assign load = stbs[0] | load_be;
 
 always @(posedge osc_clk)
     begin
@@ -357,7 +381,7 @@ s3g_executor s3g_exec1(
              .in_reg63(reg63),
 
              .int0(int0),
-             .int1(1'b0),
+             .int1(int1),
              .int2(1'b0),
              .int3(1'b0),
              .int4(1'b0),
@@ -387,15 +411,55 @@ s3g_executor s3g_exec1(
              .int28(1'b0),
              .int29(1'b0),
              .int30(1'b0),
-             .int31(stbs[31])
+             .int31(stbs[31]),
+
+             .ext_out_reg_busy(ext_out_reg_busy),
+             .ext_out_reg_data(ext_out_reg_data),
+             .ext_out_reg_addr(ext_out_reg_addr),
+             .ext_out_reg_stb(ext_out_reg_stb),
+
+             .ext_buffer_addr(ext_buffer_addr),
+             .ext_buffer_data(ext_buffer_data),
+             .ext_buffer_wr(ext_buffer_wr),
+             .ext_buffer_pc(ext_buffer_pc),
+             .ext_buffer_error(ext_buffer_error),
+             .ext_pending_ints(ext_pending_ints),
+             .ext_clear_ints(ext_clear_ints),
+             .ext_out_stbs(ext_out_stbs)
          );
+
+buf_executor buf_exec1(
+           .clk(osc_clk),
+           .rst(rst),
+
+           .ext_out_reg_addr(ext_out_reg_addr),
+           .ext_out_reg_data(ext_out_reg_data),
+           .ext_out_reg_stb(ext_out_reg_stb),
+           .ext_out_reg_busy(ext_out_reg_busy),
+
+           .ext_buffer_addr(ext_buffer_addr),
+           .ext_buffer_data(ext_buffer_data),
+           .ext_buffer_wr(ext_buffer_wr),
+           .pc(ext_buffer_pc),
+           .error(ext_buffer_error),
+
+           .start(stbs[1]),
+           .start_addr(out_reg1[15:0]),
+           .done(done),
+           .abort(stbs[2]),
+           .load(load_be),
+           .complete(int1),
+           .ext_pending_ints(ext_pending_ints),
+           .ext_clear_ints(ext_clear_ints),
+           .ext_out_stbs(ext_out_stbs)
+);
 
 acc_step_gen acc_step1 (
              .clk(osc_clk),
              .reset(rst),
              .dt_val(out_reg1),
              .steps_val(out_reg2),
-             .load(stbs[0]),
+             .load(load),
              .set_dt_limit(out_reg0[0]),
              .set_steps_limit(out_reg0[1]),
              .reset_dt(out_reg0[2]),
@@ -412,7 +476,7 @@ acc_profile_gen acc_profile_x (
              .reset(rst),
              .acc_step(acc_step),
              .abort(abort),
-             .load(stbs[0]),
+             .load(load),
              .set_x(out_reg0[4]),
              .set_v(out_reg0[5]),
              .set_a(out_reg0[6]),
@@ -432,7 +496,7 @@ acc_profile_gen acc_profile_y (
              .reset(rst),
              .acc_step(acc_step),
              .abort(abort),
-             .load(stbs[0]),
+             .load(load),
              .set_x(out_reg0[8]),
              .set_v(out_reg0[9]),
              .set_a(out_reg0[10]),
@@ -452,7 +516,7 @@ acc_profile_gen acc_profile_z (
              .reset(rst),
              .acc_step(acc_step),
              .abort(abort),
-             .load(stbs[0]),
+             .load(load),
              .set_x(out_reg0[12]),
              .set_v(out_reg0[13]),
              .set_a(out_reg0[14]),
@@ -473,7 +537,7 @@ acc_profile_gen acc_profile_a (
              .reset(rst),
              .acc_step(acc_step),
              .abort(abort),
-             .load(stbs[0]),
+             .load(load),
              .set_x(out_reg0[16]),
              .set_v(out_reg0[17]),
              .set_a(out_reg0[18]),
@@ -559,4 +623,14 @@ motor_step_gen debug_done(
     .step(debug_ad)
 );
 
+motor_step_gen debug_buf_done(
+    .clk(osc_clk),
+    .reset(rst),
+    .pre_n(25000),
+    .pulse_n(75000),
+    .post_n(100000),
+    .step_stb(int1),
+    .step_dir(0),
+    .step(debug_bd)
+);
 endmodule

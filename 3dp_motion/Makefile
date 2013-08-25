@@ -30,6 +30,7 @@ SRC =	src/uart_transceiver.v \
 	src/acc_step_gen.v \
 	src/acc_profile_gen.v \
 	src/motor_step_gen.v \
+	src/buf_executor.v \
 	src/top.v
 
 all:		bits
