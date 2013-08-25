@@ -3,8 +3,12 @@ DESIGN		= FPGAMotion2
 PINS		= cfg/top.ucf
 DEVICE		= xc5vlx110t-2-ff1136
 
-#PINS		= cfg/small.ucf
+#PINS		= cfg/lx9.ucf
 #DEVICE		= xc6slx9-2-tqg144
+
+# 10.1 ISE is required for virtex2
+#PINS		= cfg/xc2v1000.ucf
+#DEVICE		= xc2v1000-fg456-4
 
 BGFLAGS		= -g TdoPin:PULLUP -g DonePin:PULLUP \
 		  -g CRC:enable -g StartUpClk:CCLK

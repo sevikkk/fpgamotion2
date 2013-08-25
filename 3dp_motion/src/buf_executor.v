@@ -33,7 +33,7 @@ reg [15:0] next_pc;
 
 reg [7:0] next_error;
 
-parameter BUFFER_ADDR_LEN = 16;
+parameter BUFFER_ADDR_LEN = 13;
 
 localparam BUFFER_SIZE = (1 << BUFFER_ADDR_LEN);
 

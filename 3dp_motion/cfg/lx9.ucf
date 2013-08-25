@@ -1,0 +1,2 @@
+Net osc_clk TNM_NET = osc_clk_pin;
+TIMESPEC TS_osc_clk_pin = PERIOD osc_clk_pin 50000 kHz;
