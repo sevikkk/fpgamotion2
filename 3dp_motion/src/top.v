@@ -78,7 +78,6 @@ wire [7:0] tx_buf13;
 wire [7:0] tx_buf14;
 wire [7:0] tx_buf15;
 
-wire [31:0] reg63;
 wire [31:0] stbs;
 
 wire [31:0] out_reg0;
@@ -111,6 +110,40 @@ wire [31:0] out_reg26;
 wire [31:0] out_reg27;
 wire [31:0] out_reg28;
 wire [31:0] out_reg29;
+wire [31:0] out_reg30;
+wire [31:0] out_reg31;
+wire [31:0] out_reg32;
+wire [31:0] out_reg33;
+wire [31:0] out_reg34;
+wire [31:0] out_reg35;
+wire [31:0] out_reg36;
+wire [31:0] out_reg37;
+wire [31:0] out_reg38;
+wire [31:0] out_reg39;
+wire [31:0] out_reg40;
+wire [31:0] out_reg41;
+wire [31:0] out_reg42;
+wire [31:0] out_reg43;
+wire [31:0] out_reg44;
+wire [31:0] out_reg45;
+wire [31:0] out_reg46;
+wire [31:0] out_reg47;
+wire [31:0] out_reg48;
+wire [31:0] out_reg49;
+wire [31:0] out_reg50;
+wire [31:0] out_reg51;
+wire [31:0] out_reg52;
+wire [31:0] out_reg53;
+wire [31:0] out_reg54;
+wire [31:0] out_reg55;
+wire [31:0] out_reg56;
+wire [31:0] out_reg57;
+wire [31:0] out_reg58;
+wire [31:0] out_reg59;
+wire [31:0] out_reg60;
+wire [31:0] out_reg61;
+wire [31:0] out_reg62;
+wire [31:0] out_reg63;
 
 wire [31:0] in_reg0;
 wire [31:0] in_reg1;
@@ -124,7 +157,7 @@ wire [31:0] in_reg8;
 wire [31:0] in_reg9;
 
 wire int0;
-wire int1;
+wire int30;
 wire abort;
 wire acc_step;
 wire debug_as;
@@ -190,7 +223,7 @@ assign j1[25] = debug_bd;
 assign j1[26] = debug_ad;
 assign j1[27] = debug_as;
 
-assign j2[13:0] = reg63[13:0];
+assign j2[13:0] = out_reg63[13:0];
 assign j3[13:0] = cnt[25:12];
 assign j4[17:0] = cnt[25:8];
 assign j5 = cnt[12];
@@ -364,8 +397,40 @@ s3g_executor s3g_exec1(
              .out_reg27(out_reg27),
              .out_reg28(out_reg28),
              .out_reg29(out_reg29),
-
-             .out_reg63(reg63),
+             .out_reg30(out_reg30),
+             .out_reg31(out_reg31),
+             .out_reg32(out_reg32),
+             .out_reg33(out_reg33),
+             .out_reg34(out_reg34),
+             .out_reg35(out_reg35),
+             .out_reg36(out_reg36),
+             .out_reg37(out_reg37),
+             .out_reg38(out_reg38),
+             .out_reg39(out_reg39),
+             .out_reg40(out_reg40),
+             .out_reg41(out_reg41),
+             .out_reg42(out_reg42),
+             .out_reg43(out_reg43),
+             .out_reg44(out_reg44),
+             .out_reg45(out_reg45),
+             .out_reg46(out_reg46),
+             .out_reg47(out_reg47),
+             .out_reg48(out_reg48),
+             .out_reg49(out_reg49),
+             .out_reg50(out_reg50),
+             .out_reg51(out_reg51),
+             .out_reg52(out_reg52),
+             .out_reg53(out_reg53),
+             .out_reg54(out_reg54),
+             .out_reg55(out_reg55),
+             .out_reg56(out_reg56),
+             .out_reg57(out_reg57),
+             .out_reg58(out_reg58),
+             .out_reg59(out_reg59),
+             .out_reg60(out_reg60),
+             .out_reg61(out_reg61),
+             .out_reg62(out_reg62),
+             .out_reg63(out_reg63),
 
              .in_reg0(in_reg0),
              .in_reg1(in_reg1),
@@ -378,10 +443,10 @@ s3g_executor s3g_exec1(
              .in_reg8(in_reg8),
              .in_reg9(in_reg9),
 
-             .in_reg63(reg63),
+             .in_reg63(out_reg63),
 
              .int0(int0),
-             .int1(int1),
+             .int1(1'b0),
              .int2(1'b0),
              .int3(1'b0),
              .int4(1'b0),
@@ -410,7 +475,7 @@ s3g_executor s3g_exec1(
              .int27(1'b0),
              .int28(1'b0),
              .int29(1'b0),
-             .int30(1'b0),
+             .int30(int30),
              .int31(stbs[31]),
 
              .ext_out_reg_busy(ext_out_reg_busy),
@@ -443,12 +508,12 @@ buf_executor buf_exec1(
            .pc(ext_buffer_pc),
            .error(ext_buffer_error),
 
-           .start(stbs[1]),
-           .start_addr(out_reg1[15:0]),
+           .start(stbs[30]),
+           .start_addr(out_reg62[15:0]),
            .done(done),
-           .abort(stbs[2]),
+           .abort(stbs[29]),
            .load(load_be),
-           .complete(int1),
+           .complete(int30),
            .ext_pending_ints(ext_pending_ints),
            .ext_clear_ints(ext_clear_ints),
            .ext_out_stbs(ext_out_stbs)

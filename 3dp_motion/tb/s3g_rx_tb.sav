@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
-[*] Sat Aug 24 21:19:32 2013
+[*] Sun Aug 25 16:06:35 2013
 [*]
 [dumpfile] "/Users/seva/src/sevasoft/fpgamotion2/3dp_motion/build/test.vcd"
 [dumpfile_mtime] "Sat Aug 24 21:18:02 2013"
 [dumpfile_size] 323035
 [savefile] "/Users/seva/src/sevasoft/fpgamotion2/3dp_motion/tb/s3g_rx_tb.sav"
-[timestart] 18154
+[timestart] 24117
 [size] 1600 1178
 [pos] -1 -1
-*-7.610804 18729 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-7.610804 24344 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] s3g_rx_tb.
 [treeopen] s3g_rx_tb.dut_rx.
 [sst_width] 225
