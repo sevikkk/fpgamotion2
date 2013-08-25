@@ -689,7 +689,7 @@ always @(posedge clk)
             CMD_WR_BUF_OK:
                 begin
                     tx_packet_wr <= 1;
-                    tx_payload_len <= 5;
+                    tx_payload_len <= 6;
                     tx_buf0 <= 8'h81;
                     tx_buf1 <= saved_ext_buffer_addr[7:0];
                     tx_buf2 <= saved_ext_buffer_addr[15:8];
@@ -700,7 +700,7 @@ always @(posedge clk)
             CMD_WR_BUF_ERR:
                 begin
                     tx_packet_wr <= 1;
-                    tx_payload_len <= 5;
+                    tx_payload_len <= 6;
                     tx_buf0 <= 8'h82;
                     tx_buf1 <= saved_ext_buffer_addr[7:0];
                     tx_buf2 <= saved_ext_buffer_addr[15:8];

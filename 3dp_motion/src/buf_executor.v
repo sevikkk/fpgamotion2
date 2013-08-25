@@ -135,7 +135,7 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
                                             else
                                                 next_error <= 2;
                                         end
-                                    4: // clean ints
+                                    4: // CLEAR clear ints
                                         begin
                                             ext_clear_ints <= buffer_data[31:0];
                                             next_state <= S_FETCH;
@@ -144,7 +144,7 @@ always @(state, pc, rst, ext_out_reg_busy, start, start_addr, done, abort, error
                                     63: // DONE
                                         begin
                                             next_state <= S_INIT;
-                                            next_error <= 127;
+                                            next_error <= buffer_data[7:0];
                                             complete <= 1;
                                         end
                                     default: // halt on error
