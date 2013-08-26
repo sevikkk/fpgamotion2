@@ -1,14 +1,17 @@
 DESIGN		= FPGAMotion2
 
-PINS		= cfg/top.ucf
-DEVICE		= xc5vlx110t-2-ff1136
+#PINS		= cfg/top.ucf
+#DEVICE		= xc5vlx110t-2-ff1136
+#IMPACT		= cfg/impact.run
 
 #PINS		= cfg/lx9.ucf
 #DEVICE		= xc6slx9-2-tqg144
+#IMPACT		= cfg/impact.run
 
 # 10.1 ISE is required for virtex2
-#PINS		= cfg/xc2v1000.ucf
-#DEVICE		= xc2v1000-fg456-4
+PINS		= cfg/xc2v1000.ucf
+DEVICE		= xc2v1000-fg456-4
+IMPACT		= cfg/impact_v2.run
 
 BGFLAGS		= -g TdoPin:PULLUP -g DonePin:PULLUP \
 		  -g CRC:enable -g StartUpClk:CCLK
@@ -53,7 +56,7 @@ cleanall:	clean
 bits:		$(DESIGN).bit
 
 download: bits
-		impact -batch cfg/impact.run
+		impact -batch ${IMPACT}
 
 #
 # Simulation
