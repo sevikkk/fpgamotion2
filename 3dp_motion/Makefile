@@ -3,6 +3,7 @@ DESIGN		= FPGAMotion2
 #PINS		= cfg/top.ucf
 #DEVICE		= xc5vlx110t-2-ff1136
 #IMPACT		= cfg/impact.run
+#TOP		= top
 
 #PINS		= cfg/lx9.ucf
 #DEVICE		= xc6slx9-2-tqg144
@@ -12,6 +13,7 @@ DESIGN		= FPGAMotion2
 PINS		= cfg/xc2v1000.ucf
 DEVICE		= xc2v1000-fg456-4
 IMPACT		= cfg/impact_v2.run
+TOP		= top_xc2v
 
 BGFLAGS		= -g TdoPin:PULLUP -g DonePin:PULLUP \
 		  -g CRC:enable -g StartUpClk:CCLK
@@ -38,7 +40,8 @@ SRC =	src/uart_transceiver.v \
 	src/acc_profile_gen.v \
 	src/motor_step_gen.v \
 	src/buf_executor.v \
-	src/top.v
+	src/fpgamotion.v \
+	src/$(TOP).v
 
 all:		bits
 
@@ -96,7 +99,7 @@ build/project.src:
 
 build/project.xst: build/project.src
 		echo "run" > $@
-		echo "-top top" >> $@
+		echo "-top $(TOP)" >> $@
 		echo "-p $(DEVICE)" >> $@
 		echo "-opt_mode Speed" >> $@
 		echo "-opt_level 1" >> $@
