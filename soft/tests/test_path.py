@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from fpgamotion.path_plan import make_junction, Point, expand_path, speed_path
+from fpgamotion.path_plan import make_junction, Point, expand_path, speed_path, format_path, reverse_pass, forward_pass, path_to_svg
 from math import sin, cos, pi
 
 class BasicTestCase(TestCase):
@@ -41,16 +41,6 @@ class BasicTestCase(TestCase):
 
             self.assertEqual(len(result), exp_r)
 
-    def format_path(self, path):
-        txt = []
-        for p in path:
-            if len(p)>2 and p[2]:
-                txt.append("(%.2f, %.2f) at (%.2f, %.2f) r=%.2f" % (p[0].x, p[0].y, p[1].x, p[1].y, p[2]))
-            else:
-                txt.append("(%.2f, %.2f) at (%.2f, %.2f)" % (p[0].x, p[0].y, p[1].x, p[1].y))
-
-        return txt
-
     def test_expand1(self):
         path = [
                 Point( 0.0,  5.0),
@@ -62,7 +52,7 @@ class BasicTestCase(TestCase):
         ]
 
         p = expand_path(path, 0.1)
-        txt = self.format_path(p)
+        txt = format_path(p)
         print "\n".join(txt)
         self.assertEqual(txt, [
                 "(0.00, 5.00) at (0.00, 0.00)",
@@ -89,7 +79,7 @@ class BasicTestCase(TestCase):
             path.append(Point(sin(angle) * 50, cos(angle) * 50))
 
         p = expand_path(path, 0.3)
-        txt = self.format_path(p)
+        txt = format_path(p)
         print "\n".join(txt)
         self.assertEqual(txt, [
                 "(0.00, 50.00) at (0.00, 0.00)",
@@ -113,7 +103,7 @@ class BasicTestCase(TestCase):
             ] 
 
         p = expand_path(path, 0.3)
-        txt = self.format_path(p)
+        txt = format_path(p)
         print "\n".join(txt)
         self.assertEqual(txt, [
                 "(0.00, 0.00) at (0.00, 0.00)",
@@ -129,7 +119,7 @@ class BasicTestCase(TestCase):
             ] 
 
         p = expand_path(path, 0.3)
-        txt = self.format_path(p)
+        txt = format_path(p)
         print "\n".join(txt)
         self.assertEqual(txt, [
                 "(0.00, 0.00) at (0.00, 0.00)",
@@ -148,7 +138,7 @@ class BasicTestCase(TestCase):
             ] 
 
         p = expand_path(path, 0.3)
-        txt = self.format_path(p)
+        txt = format_path(p)
         print "\n".join(txt)
         self.assertEqual(txt, [
                 "(0.00, 0.00) at (0.00, 0.00)",
@@ -170,7 +160,7 @@ class BasicTestCase(TestCase):
         ]
 
         p = expand_path(path, 0.1, 0.1)
-        txt = self.format_path(p)
+        txt = format_path(p)
         print "\n".join(txt)
         self.assertEqual(txt, [
                 "(0.00, 5.00) at (0.00, 0.00)",
@@ -199,17 +189,10 @@ class BasicTestCase(TestCase):
                 Point( 0.0, 10.0),
             ] 
 
-        p = expand_path(path, 0.3)
-        txt = self.format_path(p)
-        print "\n".join(txt)
-        self.assertEqual(txt, [
-                "(0.00, 0.00) at (0.00, 0.00)",
-                "(0.00, 10.00) at (0.00, 0.00)"
-            ])
-
-        sp = speed_path(p, 100, 1000)
-        print sp
-        self.assertEqual(`sp`, '[Segment(l, (0.0, 0.0, 0.0), (0.0, 10.0, 0.0), (0, 0, 0), (0.0, 100.0, 0.0), (0, 0, 0))]')
+        sp = speed_path(path, 100, 1000, 0.1)
+        for s in sp:
+            print s
+        self.assertEqual(`sp`, '[LinearSegment(s_pos=(0.0, 0.0, 0.0), e_pos=(0.0, 10.0, 0.0), s_v=0, t_v=100, e_v=0)]')
 
 
     def test_speed_simple(self):
@@ -219,18 +202,7 @@ class BasicTestCase(TestCase):
                 Point( 10.0, 10.0),
             ] 
 
-        p = expand_path(path, 0.3)
-        txt = self.format_path(p)
-        print "\n".join(txt)
-        self.assertEqual(txt, [
-                "(0.00, 0.00) at (0.00, 0.00)",
-                "(0.00, 9.28) at (0.00, 1.00) r=0.72",
-                "(0.15, 9.85) at (0.50, 0.50) r=0.72",
-                "(0.72, 10.00) at (1.00, 0.00)",
-                "(10.00, 10.00) at (0.00, 0.00)",
-            ])
-
-        sp = speed_path(p, 100, 1000)
+        sp = speed_path(path, 100, 1000, 0.1)
         for s in sp:
             print s
 
@@ -242,14 +214,60 @@ class BasicTestCase(TestCase):
             angle = pi/10 * i / segments
             path.append(Point(sin(angle) * 50, cos(angle) * 50))
 
-        p = expand_path(path, 0.3)
-        txt = self.format_path(p)
-        print "\n".join(txt)
-
-        sp = speed_path(p, 100, 1000)
+        sp = speed_path(path, 100.0, 1000.0, 0.1)
         for s in sp:
             print s
 
+    def test_reverse_circle(self):
+        path = []
+        segments = 5
+        for i in range(0, segments):
+            angle = pi/10 * i / segments
+            path.append(Point(sin(angle) * 50, cos(angle) * 50))
+
+        sp = speed_path(path, 100.0, 100.0, 0.1)
+
+        for s in sp:
+            print s
+
+        reverse_pass(sp, 1000.0)
+
+        for s in sp:
+            print s
+
+    def test_reverse_quad(self):
+        path = [
+                Point( 0.0,  50.0),
+                Point( 0.0, 100.0),
+                Point(100.0, 100.0),
+                Point(70.0, 70.0),
+                Point(100.0, 30.0),
+                Point(100.0, 20.0),
+                Point(60.0, 60.0),
+                Point(50.0, 50.0),
+                Point(100.0,  0.0),
+                Point( 0.0,  0.0),
+                Point( 0.0,  50.0)
+        ]
+        speed = 100.0
+        accel = 100.0
+
+        print "===== speed ====="
+        sp = speed_path(path, speed, accel, 1)
+
+        for s in sp:
+            print s
+
+        print "===== reverse ====="
+        reverse_pass(sp, accel)
+
+        for s in sp:
+            print s
+
+        print "===== forward ====="
+        forward_pass(sp, accel)
+
+        open("p1.svg", "w").write(path_to_svg(sp))
 
 
 
