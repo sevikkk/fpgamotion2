@@ -267,7 +267,7 @@ class BasicTestCase(TestCase):
         print "===== forward ====="
         forward_pass(sp, accel)
 
-        open("p1.svg", "w").write(path_to_svg(sp))
+        open("p1.svg", "w").write(path_to_svg(sp, 3.0))
 
 
 

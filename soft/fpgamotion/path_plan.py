@@ -94,10 +94,10 @@ class LinearSegment(object):
     def adjust_end_speed(self, speed):
         self.end_speed = min(speed, self.end_speed)
 
-    def to_svg(self):
+    def to_svg(self, scale = 10.0):
         return '<path d="M%.2f,%.2f L%.2f,%.2f" stroke="blue" fill="none" stroke-width="3"/>' % (
-                self.start_pos.x, self.start_pos.y,
-                self.end_pos.x, self.end_pos.y,
+                self.start_pos.x * scale, self.start_pos.y * scale,
+                self.end_pos.x * scale, self.end_pos.y * scale,
             )
         
 
@@ -119,31 +119,31 @@ class RadiusSegment(object):
     def adjust_end_speed(self, speed):
         self.speed = min(speed, self.speed)
 
-    def to_svg(self):
+    def to_svg(self, scale = 10.0):
         k = abs(self.start_pos - self.end_pos)/2
         c1 = self.start_pos + self.start_vec * k
         c2 = self.end_pos - self.end_vec * k
 
         txt = '<path d="M%.4f,%.4f C %.4f,%.4f %.4f,%.4f %.4f,%.4f" stroke="green" fill="none" stroke-width="3"/>' % (
-                self.start_pos.x, self.start_pos.y,
-                c1.x, c1.y,
-                c2.x, c2.y,
-                self.end_pos.x, self.end_pos.y,
+                self.start_pos.x * scale, self.start_pos.y * scale,
+                c1.x * scale, c1.y * scale,
+                c2.x * scale, c2.y * scale,
+                self.end_pos.x * scale, self.end_pos.y * scale,
             )
 
         txt += '<path d="M%.4f,%.4f L%.4f,%.4f" stroke="gray" fill="none" stroke-width="1"/>' % (
-                self.start_pos.x, self.start_pos.y,
-                c1.x, c1.y,
+                self.start_pos.x * scale, self.start_pos.y * scale,
+                c1.x * scale, c1.y * scale,
             )
 
         txt += '<path d="M%.4f,%.4f L%.4f,%.4f" stroke="black" fill="none" stroke-width="1"/>' % (
-                self.end_pos.x, self.end_pos.y,
-                c2.x, c2.y,
+                self.end_pos.x * scale, self.end_pos.y * scale,
+                c2.x * scale, c2.y * scale,
             )
 
         return txt
 
-def path_to_svg(sp):
+def path_to_svg(sp, scale=10.0):
 
     txt = [
         '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">',
@@ -159,7 +159,7 @@ def path_to_svg(sp):
     txt1 = []
 
     for s in sp:
-        txt1.append(s.to_svg())
+        txt1.append(s.to_svg(scale))
         min_x = min(min_x, s.start_pos.x)
         min_x = min(min_x, s.end_pos.x)
         max_x = max(max_x, s.start_pos.x)
@@ -182,12 +182,12 @@ def path_to_svg(sp):
 
     for x in range(min_x, max_x + 10, 10):
         txt.append(
-            '<path d="M%.2f,%.2f L%.2f,%.2f" stroke="gray" fill="none" stroke-width="1"/>' % (x, min_y, x, max_y)
+            '<path d="M%.2f,%.2f L%.2f,%.2f" stroke="gray" fill="none" stroke-width="1"/>' % (x * scale, min_y * scale, x * scale, max_y * scale)
         )
 
     for y in range(min_y, max_y + 10, 10):
         txt.append(
-            '<path d="M%.2f,%.2f L%.2f,%.2f" stroke="gray" fill="none" stroke-width="1"/>' % (min_x, y, max_x, y)
+            '<path d="M%.2f,%.2f L%.2f,%.2f" stroke="gray" fill="none" stroke-width="1"/>' % (min_x * scale, y * scale, max_x * scale, y * scale)
         )
 
     txt += txt1
