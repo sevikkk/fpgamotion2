@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from vector3 import Vector3 as Point
-from math import sqrt, pow
+from math import sqrt, pow, acos, pi
+from cubic import Cubic
 
 EPS = 0.000001
 
@@ -15,9 +16,11 @@ def make_junction(p1, p2, p3, deviation, target_r = None):
         return []
 
     sin_theta_d2 = sqrt(0.5*(1.0-cos_theta))
+    print "----"
 
     print "cos_theta:", cos_theta
     print "sin_theta_d2:", sin_theta_d2
+    arc_angle = acos(sin_theta_d2)
     r = deviation * sin_theta_d2/(1.0-sin_theta_d2)
     print "r:", r
     seg = sqrt(pow(r+deviation,2) - r*r)
@@ -38,13 +41,21 @@ def make_junction(p1, p2, p3, deviation, target_r = None):
         deviation *= k
         seg *= k
 
+    arc_len = arc_angle * r
+    print "arc_angle:", arc_angle / pi * 180
+    print "arc_len:", arc_len
+    print "k * r:", r
+    print "k * deviation:", deviation
+    print "k * seg:", seg
     pr1 = p2 - v1 * seg
-    vm = (v2 - v1)/2
-    vt = (v1 + v2)/2
+    vm = ((v2 - v1)/2).getNormalized()
+    vt = ((v1 + v2)/2).getNormalized()
     pr2 = p2 + vm * deviation
     pr3 = p2 + v2 * seg
+    print "delta:", abs(pr1-pr2)
+    print "delta:", abs(pr3-pr2)
 
-    return [(pr1, v1, r), (pr2, vt, r), (pr3, v2, None)]
+    return [(pr1, v1, r, arc_len), (pr2, vt, r, arc_len), (pr3, v2, None, 0)]
 
 def format_path(path):
     txt = []
@@ -59,7 +70,7 @@ def format_path(path):
 def expand_path(points, deviation, target_r = None):
     num_points = len(points)
     cur_point = 2
-    path = [(points[0], Point(0,0,0), None)]
+    path = [(points[0], Point(0,0,0), None, None)]
 
     for i in range(1, num_points - 1):
         add_points = make_junction(
@@ -72,7 +83,7 @@ def expand_path(points, deviation, target_r = None):
 
         path += add_points
 
-    path += [(points[-1], Point(0,0,0), None)]
+    path += [(points[-1], Point(0,0,0), None, None)]
 
     return path
 
@@ -102,16 +113,17 @@ class LinearSegment(object):
         
 
 class RadiusSegment(object):
-    def __init__(self, start_pos, end_pos, start_vec, end_vec, speed):
+    def __init__(self, start_pos, end_pos, start_vec, end_vec, speed, eq_len):
         self.start_pos = start_pos
         self.end_pos = end_pos
         self.start_vec = start_vec
         self.end_vec = end_vec
         self.speed = speed
+        self.eq_len = eq_len
         self.kind = "r"
 
     def __repr__(self):
-        return "RadiusSegment(s_pos=%s, e_pos=%s, s_v=%s, e_v=%s, speed=%s)" % (self.start_pos, self.end_pos, self.start_vec, self.end_vec, self.speed)
+        return "RadiusSegment(s_pos=%s, e_pos=%s, s_v=%s, e_v=%s, speed=%s, eq_len=%s)" % (self.start_pos, self.end_pos, self.start_vec, self.end_vec, self.speed, self.eq_len)
 
     def set_start_speed(self, speed):
         self.speed = speed
@@ -208,11 +220,12 @@ def speed_path(path, speed, acceleration, deviation):
     cur_point = 0
 
     new_path = []
-    s_pos, s_v, s_r  = path[0]
+    s_pos, s_v, s_r, s_el  = path[0]
 
     for i in range(1, num_points):
-        e_pos, e_v, e_r  = path[i]
+        e_pos, e_v, e_r, e_el  = path[i]
         s_r = s_r or path[i - 1][2]
+        s_el = s_el or path[i - 1][3]
 
         if abs(e_pos - s_pos) < EPS:
             continue
@@ -231,11 +244,26 @@ def speed_path(path, speed, acceleration, deviation):
             new_path.append(LinearSegment(s_pos, e_pos, start_speed, speed, end_speed))
         else:
             linear_v = min(speed, sqrt(acceleration * s_r))
-            new_path.append(RadiusSegment(s_pos, e_pos, s_v, e_v, linear_v))
+            new_path.append(RadiusSegment(s_pos, e_pos, s_v, e_v, linear_v, s_el))
 
-        s_pos, s_v, s_r = e_pos, e_v, e_r 
+        s_pos, s_v, s_r, s_el = e_pos, e_v, e_r, e_el
 
     return new_path
+
+def max_allowable_speed(acceleration, target_speed, distance):
+    """ Maximum reachable for given acceleration and distance """
+
+    return sqrt(target_speed * target_speed + 2.0 * acceleration * distance)
+
+def estimate_acceleration_distance(initial_speed, target_speed, acceleration):
+    """ Distance to reach given speed with given acceleration """
+
+    return (1.0 * target_speed * target_speed - initial_speed * initial_speed) / (2 * acceleration)
+
+def intersection_distance(initial_speed, target_speed, acceleration, distance):
+    """Constant acceleration distance for non plateau trapezoid"""
+
+    return (2.0 * acceleration * distance - initial_speed * initial_speed + target_speed * target_speed) / (4 * acceleration)
 
 def reverse_pass(path, acceleration):
     num_points = len(path)
@@ -248,14 +276,14 @@ def reverse_pass(path, acceleration):
         #print i, cur, prev
 
         if cur.kind == 'l':
-            dt = abs(cur.end_speed - cur.start_speed)/acceleration
-            dx = (cur.start_speed + cur.end_speed) * dt / 2.0
-            real_dx = abs(cur.end_pos - cur.start_pos)
+            if cur.end_speed < cur.start_speed:
+                dx = estimate_acceleration_distance(cur.end_speed, cur.start_speed, acceleration)
+                real_dx = abs(cur.end_pos - cur.start_pos)
+                #print cur.start_speed, cur.end_speed, acceleration, dx, real_dx
 
-            if real_dx < dx:
-                if cur.end_speed < cur.start_speed:
-                    speed = sqrt(cur.end_speed * cur.end_speed + 2 * acceleration * real_dx)
-                    print "need slowdown for decel, ss=%s, es=%s, dt=%s, dx=%s, rdx=%s, ms=%s" % ( cur.start_speed, cur.end_speed, dt, dx, real_dx, speed)
+                if real_dx < dx:
+                    speed = max_allowable_speed(acceleration, cur.end_speed, real_dx)
+                    print "need slowdown for decel, ss=%s, es=%s, dx=%s, rdx=%s, ms=%s" % ( cur.start_speed, cur.end_speed, dx, real_dx, speed)
                     cur.start_speed = speed
                     if prev:
                         prev.adjust_end_speed(speed)
@@ -266,7 +294,7 @@ def reverse_pass(path, acceleration):
 
 def forward_pass(path, acceleration):
     num_points = len(path)
-    for i in range(0, num_points - 1):
+    for i in range(0, num_points):
         cur = path[i]
         if i < num_points - 1:
             next = path[i+1]
@@ -276,18 +304,158 @@ def forward_pass(path, acceleration):
         #print i, cur, next
 
         if cur.kind == 'l':
-            dt = abs(cur.end_speed - cur.start_speed)/acceleration
-            dx = (cur.start_speed + cur.end_speed) * dt / 2.0
-            real_dx = abs(cur.end_pos - cur.start_pos)
+            if cur.end_speed > cur.start_speed:
+                dx = estimate_acceleration_distance(cur.start_speed, cur.end_speed, acceleration)
+                real_dx = abs(cur.end_pos - cur.start_pos)
+                #print cur.start_speed, cur.end_speed, acceleration, dx, real_dx
 
-            if real_dx < dx:
-                if cur.end_speed > cur.start_speed:
-                    speed = sqrt(cur.start_speed * cur.start_speed + 2 * acceleration * real_dx)
-                    print "need slowdown for accel, ss=%s, es=%s, dt=%s, dx=%s, rdx=%s, ms=%s" % ( cur.start_speed, cur.end_speed, dt, dx, real_dx, speed)
+                if real_dx < dx:
+                    speed = max_allowable_speed(acceleration, cur.start_speed, real_dx)
+                    print "need slowdown for accel, ss=%s, es=%s, dx=%s, rdx=%s, ms=%s" % ( cur.start_speed, cur.end_speed, dx, real_dx, speed)
                     cur.end_speed = speed
                     if next:
                         next.set_start_speed(speed)
         else:
             if next:
                 next.set_start_speed(cur.speed)
+
+class AccProfileStep(object):
+    def __init__(self):
+        pass
+
+def make_profile(path, accels):
+    profile = []
+    for s in path:
+        if s.kind == 'l':
+            print "------- linear ---------"
+            s_pos = s.start_pos
+            e_pos = s.end_pos
+
+            vec = (e_pos - s_pos).getNormalized()
+
+            s_v = vec * s.start_speed
+            e_v = vec * s.end_speed
+            t_v = vec * s.top_speed
+           
+            main_v = -1
+            main_axis = None
+            
+            for axis in range(3):
+                if abs(vec[axis]) > main_v:
+                    main_v = abs(vec[axis])
+                    main_axis = axis
+
+            main_accel = accels[main_axis]
+            working_accels = Point()
+
+            k = 1.0
+
+            for axis in range(3):
+                working_accels[axis] = main_accel / main_v * abs(vec[axis])
+                if working_accels[axis] > accels[axis]:
+                    k = min(k, accels[axis]/working_accels[axis])
+
+            for axis in range(3):
+                working_accels[axis] *= k
+            
+            axis = main_axis
+            axis_name = ["X", "Y", "Z"][axis]
+
+            x_0 = s_pos[axis]
+            x_n = e_pos[axis]
+
+            v_0 = abs(s_v[axis])
+            v_n = abs(e_v[axis])
+            v_t = abs(t_v[axis])
+
+            a = working_accels[axis]
+
+            print "%s:" % axis_name, x_0, x_n, v_0, v_n, a
+
+            dx = abs(x_n - x_0)
+            if dx < EPS:
+                print "idle"
+                continue
+
+            dx_accel = estimate_acceleration_distance(v_0, v_t, a)
+            dx_decel = estimate_acceleration_distance(v_t, v_n, -a)
+
+            dx_plato = dx - dx_accel - dx_decel
+            if dx_plato>0:
+                print "full profile", dx_accel, dx_plato, dx_decel
+                top_speed = v_t
+                dt_accel = (v_t - v_0)/a
+                dt_decel = (v_t - v_n)/a
+                dt_plato = dx_plato/v_t
+            else:
+                dx_accel = intersection_distance(v_0, v_n, a, dx)
+                print "partial profile", v_0, v_n, a, dx, dx_accel
+                top_speed = max_allowable_speed(a, v_0, dx_accel)
+                dt_accel = (top_speed - v_0)/a
+                dt_decel = (top_speed - v_n)/a
+                dt_plato = 0
+                dx_decel = dx - dx_accel
+                dx_plato = 0
+
+            t0 = 0
+            p0 = s_pos
+            v0 = s_v
+
+            t1 = dt_accel
+            p1 = s_pos + vec * (dx_accel/main_v)
+            v1 = vec * top_speed / main_v
+
+            t2 = dt_accel + dt_plato
+            p2 = e_pos - vec * (dx_decel/main_v)
+            v2 = vec * top_speed / main_v
+
+            t3 = dt_accel + dt_plato + dt_decel
+            p3 = e_pos
+            v3 = e_v
+
+            points = [[t0, p0, v0]]
+
+            if dt_accel>EPS:
+                points.append([t1, p1, v1])
+
+            if dt_plato>EPS:
+                points.append([t2, p2, v2])
+
+            if dt_decel>EPS:
+                points.append([t3, p3, v3])
+
+        else:
+            print "------- radial ---------"
+            s_pos = s.start_pos
+            e_pos = s.end_pos
+
+            s_v = s.start_vec * s.speed
+            e_v = s.end_vec * s.speed
+
+            dt = s.eq_len / s.speed
+            print abs(e_pos - s_pos), s.eq_len
+
+            points = [
+                    [0, s_pos, s_v],
+                    [dt, e_pos, e_v]
+                ]
+
+        i = 0
+        for t, x, v in points:
+            print "%.3f: (%.3f, %.3f, %.3f) (%.3f, %.3f, %.3f)" % (t, x.x, x.y, x.z, v.x, v.y, v.z)
+            if i < len(points)-1:
+                n_t, n_x, n_v = points[i+1]
+                try:
+                    c_x = Cubic(x.x, v.x, n_x.x, n_v.x, n_t - t)
+                    print "%8.2f %8.2f %s" % (c_x.get_max_v(n_t - t), c_x.get_max_a(n_t - t), c_x)
+                    c_y = Cubic(x.y, v.y, n_x.y, n_v.y, n_t - t)
+                    print "%8.2f %8.2f %s" % (c_y.get_max_v(n_t - t), c_y.get_max_a(n_t - t), c_y)
+                    c_z = Cubic(x.z, v.z, n_x.z, n_v.z, n_t - t)
+                    print "%8.2f %8.2f %s" % (c_z.get_max_v(n_t - t), c_z.get_max_a(n_t - t), c_z)
+                except Exception, e:
+                    raise
+                i += 1
+
+
+
 

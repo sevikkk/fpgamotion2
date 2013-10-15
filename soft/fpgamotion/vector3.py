@@ -163,6 +163,20 @@ class Vector3:
 		'Get a new Vector3 by true dividing each component of this one.'
 		return Vector3( operator.truediv( self.x, other ), operator.truediv( self.y, other ), operator.truediv( self.z, other ) )
 
+	def __getitem__(self, key):
+		return (self.x, self.y, self.z)[key]
+
+	def __setitem__(self, key, value):
+		l = [self.x, self.y, self.z]
+		l[key] = value
+		self.x, self.y, self.z = l
+
+	def __iter__(self):
+		return iter((self.x, self.y, self.z))
+
+	def __len__(self):
+		return 3
+
 	def _getAccessibleAttribute(self, attributeName):
 		'Get the accessible attribute.'
 		if attributeName in globalGetAccessibleAttributeSet:
