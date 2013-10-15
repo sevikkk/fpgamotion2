@@ -95,6 +95,7 @@ class LinearSegment(object):
         self.top_speed = top_speed
         self.end_speed = end_speed
         self.kind = "l"
+        self.cubics = None
 
     def __repr__(self):
         return "LinearSegment(s_pos=%s, e_pos=%s, s_v=%s, t_v=%s, e_v=%s)" % (self.start_pos, self.end_pos, self.start_speed, self.top_speed, self.end_speed)
@@ -105,12 +106,23 @@ class LinearSegment(object):
     def adjust_end_speed(self, speed):
         self.end_speed = min(speed, self.end_speed)
 
-    def to_svg(self, scale = 10.0):
-        return '<path d="M%.2f,%.2f L%.2f,%.2f" stroke="blue" fill="none" stroke-width="3"/>' % (
+    def to_svg(self, scale = 10.0, t = 0.0):
+        txt = ['<path d="M%.2f,%.2f L%.2f,%.2f" stroke="blue" fill="none" stroke-width="3"/>' % (
                 self.start_pos.x * scale, self.start_pos.y * scale,
                 self.end_pos.x * scale, self.end_pos.y * scale,
-            )
-        
+            )]
+
+        if self.cubics:
+            for dt, c_x, c_y, c_z in self.cubics:
+                while t < dt:
+                    x = c_x.get_x(t)
+                    y = c_y.get_x(t)
+                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.1" fill="red" stroke="red"/>' % (x * scale,y * scale))
+                    t += 0.03
+                t -= dt
+
+
+        return "\n".join(txt), t
 
 class RadiusSegment(object):
     def __init__(self, start_pos, end_pos, start_vec, end_vec, speed, eq_len):
@@ -121,6 +133,7 @@ class RadiusSegment(object):
         self.speed = speed
         self.eq_len = eq_len
         self.kind = "r"
+        self.cubics = None
 
     def __repr__(self):
         return "RadiusSegment(s_pos=%s, e_pos=%s, s_v=%s, e_v=%s, speed=%s, eq_len=%s)" % (self.start_pos, self.end_pos, self.start_vec, self.end_vec, self.speed, self.eq_len)
@@ -131,29 +144,38 @@ class RadiusSegment(object):
     def adjust_end_speed(self, speed):
         self.speed = min(speed, self.speed)
 
-    def to_svg(self, scale = 10.0):
+    def to_svg(self, scale = 10.0, t = 0.0):
         k = abs(self.start_pos - self.end_pos)/2
         c1 = self.start_pos + self.start_vec * k
         c2 = self.end_pos - self.end_vec * k
 
-        txt = '<path d="M%.4f,%.4f C %.4f,%.4f %.4f,%.4f %.4f,%.4f" stroke="green" fill="none" stroke-width="3"/>' % (
+        txt = ['<path d="M%.4f,%.4f C %.4f,%.4f %.4f,%.4f %.4f,%.4f" stroke="green" fill="none" stroke-width="3"/>' % (
                 self.start_pos.x * scale, self.start_pos.y * scale,
                 c1.x * scale, c1.y * scale,
                 c2.x * scale, c2.y * scale,
                 self.end_pos.x * scale, self.end_pos.y * scale,
-            )
+            )]
 
-        txt += '<path d="M%.4f,%.4f L%.4f,%.4f" stroke="gray" fill="none" stroke-width="1"/>' % (
+        txt.append('<path d="M%.4f,%.4f L%.4f,%.4f" stroke="gray" fill="none" stroke-width="1"/>' % (
                 self.start_pos.x * scale, self.start_pos.y * scale,
                 c1.x * scale, c1.y * scale,
-            )
+            ))
 
-        txt += '<path d="M%.4f,%.4f L%.4f,%.4f" stroke="black" fill="none" stroke-width="1"/>' % (
+        txt.append('<path d="M%.4f,%.4f L%.4f,%.4f" stroke="black" fill="none" stroke-width="1"/>' % (
                 self.end_pos.x * scale, self.end_pos.y * scale,
                 c2.x * scale, c2.y * scale,
-            )
+            ))
 
-        return txt
+        if self.cubics:
+            for dt, c_x, c_y, c_z in self.cubics:
+                while t < dt:
+                    x = c_x.get_x(t)
+                    y = c_y.get_x(t)
+                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.1" fill="red" stroke="red"/>' % (x * scale,y * scale))
+                    t += 0.03
+                t -= dt
+
+        return "\n".join(txt), t
 
 def path_to_svg(sp, scale=10.0):
 
@@ -169,9 +191,12 @@ def path_to_svg(sp, scale=10.0):
     max_y = sp[0].start_pos.y
 
     txt1 = []
+    
+    t = 0.0
 
     for s in sp:
-        txt1.append(s.to_svg(scale))
+        xml, t = s.to_svg(scale, t)
+        txt1.append(xml)
         min_x = min(min_x, s.start_pos.x)
         min_x = min(min_x, s.end_pos.x)
         max_x = max(max_x, s.start_pos.x)
@@ -319,10 +344,6 @@ def forward_pass(path, acceleration):
             if next:
                 next.set_start_speed(cur.speed)
 
-class AccProfileStep(object):
-    def __init__(self):
-        pass
-
 def make_profile(path, accels):
     profile = []
     for s in path:
@@ -440,6 +461,7 @@ def make_profile(path, accels):
                     [dt, e_pos, e_v]
                 ]
 
+        cubics = []
         i = 0
         for t, x, v in points:
             print "%.3f: (%.3f, %.3f, %.3f) (%.3f, %.3f, %.3f)" % (t, x.x, x.y, x.z, v.x, v.y, v.z)
@@ -454,7 +476,10 @@ def make_profile(path, accels):
                     print "%8.2f %8.2f %s" % (c_z.get_max_v(n_t - t), c_z.get_max_a(n_t - t), c_z)
                 except Exception, e:
                     raise
+                cubics.append([n_t - t, c_x, c_y, c_z])
                 i += 1
+
+        s.cubics = cubics
 
 
 

@@ -236,7 +236,7 @@ class BasicTestCase(TestCase):
             print s
 
     def test_reverse_quad(self):
-        for accel in (1000,):
+        for accel in (100, 1000):
             for speed in (100,1000):
                 for deviation in (0.1, 1.0):
                     print "=========== CASE %d %d %f =============" % (speed, accel, deviation)
@@ -271,10 +271,10 @@ class BasicTestCase(TestCase):
                     for s in sp:
                         print s
 
-                    open("p_%04d_%05d_%f.svg" % (speed, accel, deviation), "w").write(path_to_svg(sp, 3.0))
-
                     print "===== profile ====="
                     make_profile(sp, Point(accel*1.5, accel, accel/10.0))
+
+                    open("p_%04d_%05d_%f.svg" % (speed, accel, deviation), "w").write(path_to_svg(sp, 3.0))
 
     def test_max_speed(self):
         n = 0
