@@ -325,7 +325,7 @@ class BasicTestCase(TestCase):
                     make_profile(sp, Point(accel*1.5, accel, accel/10.0))
 
                     txt = path_to_svg(sp, 3.0)
-                    open("tests/expected/p_%04d_%05d_%f.svg" % (speed, accel, deviation), "w").write(txt)
+                    #open("tests/expected/p_%04d_%05d_%f.svg" % (speed, accel, deviation), "w").write(txt)
                     exp_txt = open("tests/expected/p_%04d_%05d_%f.svg" % (speed, accel, deviation), "r").read()
                     self.assertEqual(txt, exp_txt)
 
@@ -337,7 +337,7 @@ class BasicTestCase(TestCase):
                                 txt.append("%6.3f | %11.3f %11.3f %11.3f | %11.3f %11.3f %11.3f" % (t, c_x.get_a(0), c_x.get_j(0), c_x.get_max_a(t), c_y.get_a(0), c_y.get_j(0), c_y.get_max_a(t)))
 
                     txt = "\n".join(txt)
-                    open("tests/expected/p_%04d_%05d_%f.profile" % (speed, accel, deviation), "w").write(txt)
+                    #open("tests/expected/p_%04d_%05d_%f.profile" % (speed, accel, deviation), "w").write(txt)
                     exp_txt = open("tests/expected/p_%04d_%05d_%f.profile" % (speed, accel, deviation), "r").read()
                     self.assertEqual(txt, exp_txt)
 

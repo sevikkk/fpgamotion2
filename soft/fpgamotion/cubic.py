@@ -92,7 +92,7 @@ class HwCubic(Cubic):
             if a > max_int:
                 raise ValueError, "a is out of range at %d: %d" % (t, a)
 
-            print "sim:", t * 1.0/self.acc_hz, x / self.bit_k, self.get_x(t * 1.0/self.acc_hz), v / self.bit_k * self.step_hz, self.get_v(t * 1.0/self.acc_hz), a / self.bit_k * self.step_hz * self.acc_hz, self.get_a(t * 1.0/self.acc_hz), j / self.bit_k * self.step_hz * self.acc_hz, self.get_j(t * 1.0/self.acc_hz)
+            #print "sim:", t * 1.0/self.acc_hz, x / self.bit_k, self.get_x(t * 1.0/self.acc_hz), v / self.bit_k * self.step_hz, self.get_v(t * 1.0/self.acc_hz), a / self.bit_k * self.step_hz * self.acc_hz, self.get_a(t * 1.0/self.acc_hz), j / self.bit_k * self.step_hz * self.acc_hz, self.get_j(t * 1.0/self.acc_hz)
             yield t * 1.0/self.acc_hz, x / self.bit_k, v / self.bit_k * self.step_hz
 
     def get_last(self):

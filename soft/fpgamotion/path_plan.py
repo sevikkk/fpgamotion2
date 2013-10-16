@@ -114,18 +114,14 @@ class LinearSegment(object):
             )]
 
         if self.cubics:
-            print "AAAA", self.cubics
             for dt, c_x, c_y, c_z in self.cubics:
                 emu_x = list(c_x.emu())
                 emu_y = list(c_y.emu())
-                print "EEEE", emu_x, emu_y
 
                 for i in range(len(emu_x)):
-                    print "BBB", i, t
                     if (int(t) % 10) != 0:
                         t+=1
                         continue
-                    print "CCC", i, t
                     
                     x = emu_x[i][1]
                     y = emu_y[i][1]
@@ -187,19 +183,15 @@ class RadiusSegment(object):
             ))
 
 
-        print "RRRR", self.cubics
         if self.cubics:
-            print "FFFF", self.cubics
             for dt, c_x, c_y, c_z in self.cubics:
                 emu_x = list(c_x.emu())
                 emu_y = list(c_y.emu())
-                print "JJJJ", emu_x, emu_y
 
                 for i in range(len(emu_x)):
                     if (int(t) % 10) != 0:
                         t+=1
                         continue
-                    print "ZZZZ", emu_x, emu_y
                     
                     x = emu_x[i][1]
                     y = emu_y[i][1]
@@ -543,7 +535,6 @@ def make_profile(path, accels):
                 i += 1
 
         s.cubics = cubics
-        print s.cubics
 
     return profile
 
