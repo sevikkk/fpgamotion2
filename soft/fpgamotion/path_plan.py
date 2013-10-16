@@ -117,7 +117,16 @@ class LinearSegment(object):
                 while t < dt:
                     x = c_x.get_x(t)
                     y = c_y.get_x(t)
-                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.1" fill="red" stroke="red"/>' % (x * scale,y * scale))
+
+                    a_x = c_x.get_a(t)
+                    a_y = c_y.get_a(t)
+
+                    if abs(a_x) + abs(a_y) > EPS:
+                        color = "red"
+                    else:
+                        color = "yellow"
+
+                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.5" fill="%s" stroke="%s" stroke-width="0.5"/>' % (x * scale,y * scale, color, color))
                     t += 0.03
                 t -= dt
 
@@ -171,7 +180,7 @@ class RadiusSegment(object):
                 while t < dt:
                     x = c_x.get_x(t)
                     y = c_y.get_x(t)
-                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.1" fill="red" stroke="red"/>' % (x * scale,y * scale))
+                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.5" fill="red" stroke="red" stroke-width="0.5"/>' % (x * scale,y * scale))
                     t += 0.03
                 t -= dt
 

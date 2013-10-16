@@ -235,47 +235,6 @@ class BasicTestCase(TestCase):
         for s in sp:
             print s
 
-    def test_reverse_quad(self):
-        for accel in (100, 1000):
-            for speed in (100,1000):
-                for deviation in (0.1, 1.0):
-                    print "=========== CASE %d %d %f =============" % (speed, accel, deviation)
-                    path = [
-                            Point( 0.0,  50.0),
-                            Point( 0.0, 100.0),
-                            Point(100.0, 100.0),
-                            Point(70.0, 70.0),
-                            Point(100.0, 30.0),
-                            Point(100.0, 20.0),
-                            Point(60.0, 60.0),
-                            Point(50.0, 50.0),
-                            Point(100.0,  0.0),
-                            Point( 0.0,  0.0),
-                            Point( 0.0,  50.0)
-                    ]
-
-                    print "===== speed ====="
-                    sp = speed_path(path, speed, accel, deviation)
-
-                    for s in sp:
-                        print s
-
-                    print "===== reverse ====="
-                    reverse_pass(sp, accel)
-
-                    for s in sp:
-                        print s
-
-                    print "===== forward ====="
-                    forward_pass(sp, accel)
-                    for s in sp:
-                        print s
-
-                    print "===== profile ====="
-                    make_profile(sp, Point(accel*1.5, accel, accel/10.0))
-
-                    open("p_%04d_%05d_%f.svg" % (speed, accel, deviation), "w").write(path_to_svg(sp, 3.0))
-
     def test_max_speed(self):
         n = 0
         ok = 0
@@ -326,7 +285,61 @@ class BasicTestCase(TestCase):
                         dist2 = (top_speed + end_speed) / 2.0 * dt2
                         self.assertAlmostEqual(distance, dist1 + dist2)
 
+    def test_reverse_quad(self):
+        for accel in (100, 1000):
+            for speed in (100,1000):
+                for deviation in (0.1, 1.0):
+                    print "=========== CASE %d %d %f =============" % (speed, accel, deviation)
+                    path = [
+                            Point( 0.0,  50.0),
+                            Point( 0.0, 100.0),
+                            Point(100.0, 100.0),
+                            Point(70.0, 70.0),
+                            Point(100.0, 30.0),
+                            Point(100.0, 20.0),
+                            Point(60.0, 60.0),
+                            Point(50.0, 50.0),
+                            Point(100.0,  0.0),
+                            Point( 0.0,  0.0),
+                            Point( 0.0,  50.0)
+                    ]
 
+                    print "===== speed ====="
+                    sp = speed_path(path, speed, accel, deviation)
+
+                    for s in sp:
+                        print s
+
+                    print "===== reverse ====="
+                    reverse_pass(sp, accel)
+
+                    for s in sp:
+                        print s
+
+                    print "===== forward ====="
+                    forward_pass(sp, accel)
+                    for s in sp:
+                        print s
+
+                    print "===== profile ====="
+                    make_profile(sp, Point(accel*1.5, accel, accel/10.0))
+
+                    txt = path_to_svg(sp, 3.0)
+                    #open("tests/expected/p_%04d_%05d_%f.svg" % (speed, accel, deviation), "w").write(txt)
+                    exp_txt = open("tests/expected/p_%04d_%05d_%f.svg" % (speed, accel, deviation), "r").read()
+                    self.assertEqual(txt, exp_txt)
+
+                    txt = []
+
+                    for s in sp:
+                        if s.cubics:
+                            for t, c_x, c_y, c_z in s.cubics:
+                                txt.append("%6.3f | %11.3f %11.3f | %11.3f %11.3f " % (t, c_x.get_a(0), c_x.get_j(0), c_y.get_a(0), c_y.get_j(0)))
+
+                    txt = "\n".join(txt)
+                    #open("tests/expected/p_%04d_%05d_%f.profile" % (speed, accel, deviation), "w").write(txt)
+                    exp_txt = open("tests/expected/p_%04d_%05d_%f.profile" % (speed, accel, deviation), "r").read()
+                    self.assertEqual(txt, exp_txt)
 
 
 
