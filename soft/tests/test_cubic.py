@@ -63,3 +63,15 @@ class HwTestCase(TestCase):
         c.calc_hw_coefs(0.1)
 
         self.assertRaises(ValueError, c.get_last)
+
+    def test_big_error(self):
+        c = HwCubic(0, 0, 5, 100, 0.1) # 1000 mm/s^2
+        c.step_bit = 20
+        c.acc_hz = 100
+        c.calc_hw_coefs(0.1)
+
+        for t,x, v in c.emu():
+            print t, x, x - c.get_x(t), v, v - c.get_v(t)
+
+        self.assertRaises(ValueError, c.get_last)
+

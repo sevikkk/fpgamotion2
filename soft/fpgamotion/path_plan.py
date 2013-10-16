@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from vector3 import Vector3 as Point
 from math import sqrt, pow, acos, pi
-from cubic import Cubic
+from cubic import HwCubic
 
 EPS = 0.000001
 
@@ -114,23 +114,32 @@ class LinearSegment(object):
             )]
 
         if self.cubics:
+            print "AAAA", self.cubics
             for dt, c_x, c_y, c_z in self.cubics:
-                while t < dt:
-                    x = c_x.get_x(t)
-                    y = c_y.get_x(t)
+                emu_x = list(c_x.emu())
+                emu_y = list(c_y.emu())
+                print "EEEE", emu_x, emu_y
 
-                    a_x = c_x.get_a(t)
-                    a_y = c_y.get_a(t)
+                for i in range(len(emu_x)):
+                    print "BBB", i, t
+                    if (int(t) % 10) != 0:
+                        t+=1
+                        continue
+                    print "CCC", i, t
+                    
+                    x = emu_x[i][1]
+                    y = emu_y[i][1]
 
-                    if abs(a_x) + abs(a_y) > EPS:
+                    a_x = c_x.get_a(emu_x[i][0])
+                    a_y = c_y.get_a(emu_x[i][0])
+
+                    if abs(a_x) + abs(a_y) > 10:
                         color = "red"
                     else:
                         color = "yellow"
 
                     txt.append('<circle cx="%.2f" cy="%.2f" r="0.5" fill="%s" stroke="%s" stroke-width="0.5"/>' % (x * scale,y * scale, color, color))
-                    t += 0.03
-                t -= dt
-
+                    t += 1
 
         return "\n".join(txt), t
 
@@ -177,14 +186,34 @@ class RadiusSegment(object):
                 c2.x * scale, c2.y * scale,
             ))
 
+
+        print "RRRR", self.cubics
         if self.cubics:
+            print "FFFF", self.cubics
             for dt, c_x, c_y, c_z in self.cubics:
-                while t < dt:
-                    x = c_x.get_x(t)
-                    y = c_y.get_x(t)
-                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.5" fill="red" stroke="red" stroke-width="0.5"/>' % (x * scale,y * scale))
-                    t += 0.03
-                t -= dt
+                emu_x = list(c_x.emu())
+                emu_y = list(c_y.emu())
+                print "JJJJ", emu_x, emu_y
+
+                for i in range(len(emu_x)):
+                    if (int(t) % 10) != 0:
+                        t+=1
+                        continue
+                    print "ZZZZ", emu_x, emu_y
+                    
+                    x = emu_x[i][1]
+                    y = emu_y[i][1]
+
+                    a_x = c_x.get_a(t)
+                    a_y = c_y.get_a(t)
+
+                    if abs(a_x) + abs(a_y) > EPS:
+                        color = "red"
+                    else:
+                        color = "yellow"
+
+                    txt.append('<circle cx="%.2f" cy="%.2f" r="0.5" fill="%s" stroke="%s" stroke-width="0.5"/>' % (x * scale,y * scale, color, color))
+                    t += 1
 
         return "\n".join(txt), t
 
@@ -357,6 +386,9 @@ def forward_pass(path, acceleration):
 
 def make_profile(path, accels):
     profile = []
+    last_x = None
+    last_v = None
+
     for s in path:
         if s.kind == 'l':
             print "------- linear ---------"
@@ -480,19 +512,40 @@ def make_profile(path, accels):
             print "%.3f: (%.3f, %.3f, %.3f) (%.3f, %.3f, %.3f)" % (t, x.x, x.y, x.z, v.x, v.y, v.z)
             if i < len(points)-1:
                 n_t, n_x, n_v = points[i+1]
+
+                if not last_x:
+                    last_x = x
+                    last_v = v
+
                 try:
-                    c_x = Cubic(x.x, v.x, n_x.x, n_v.x, n_t - t)
+                    c_x = HwCubic(last_x.x, last_v.x, n_x.x, n_v.x, n_t - t)
                     print "%8.2f %8.2f %s" % (c_x.get_max_v(n_t - t), c_x.get_max_a(n_t - t), c_x)
-                    c_y = Cubic(x.y, v.y, n_x.y, n_v.y, n_t - t)
+                    c_y = HwCubic(last_x.y, last_v.y, n_x.y, n_v.y, n_t - t)
                     print "%8.2f %8.2f %s" % (c_y.get_max_v(n_t - t), c_y.get_max_a(n_t - t), c_y)
-                    c_z = Cubic(x.z, v.z, n_x.z, n_v.z, n_t - t)
+                    c_z = HwCubic(last_x.z, last_v.z, n_x.z, n_v.z, n_t - t)
                     print "%8.2f %8.2f %s" % (c_z.get_max_v(n_t - t), c_z.get_max_a(n_t - t), c_z)
+
+                    c_x.calc_hw_coefs(n_t - t)
+                    c_y.calc_hw_coefs(n_t - t)
+                    c_z.calc_hw_coefs(n_t - t)
+
+                    _, rx_x, rv_x = c_x.get_last()
+                    _, rx_y, rv_y = c_y.get_last()
+                    _, rx_z, rv_z = c_z.get_last()
+
+                    last_x = Point(rx_x, rx_y, rx_z)
+                    last_v = Point(rv_x, rv_y, rv_z)
+
                 except Exception, e:
                     raise
                 cubics.append([n_t - t, c_x, c_y, c_z])
+                profile.append([n_t - t, c_x, c_y, c_z])
                 i += 1
 
         s.cubics = cubics
+        print s.cubics
+
+    return profile
 
 
 

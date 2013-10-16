@@ -51,7 +51,7 @@ class Cubic(object):
 
 class HwCubic(Cubic):
     steps_per_unit = 80
-    step_bit = 32
+    step_bit = 39
     step_hz = 25000000
     acc_hz = 1000
 
@@ -60,7 +60,7 @@ class HwCubic(Cubic):
         self.hw_x0 = int(round(self.get_x(0) * self.bit_k))
         self.hw_v0 = int(round(self.get_v(0) * self.bit_k / self.step_hz))
         self.hw_a0 = int(round(self.get_a(0) * self.bit_k / self.step_hz / self.acc_hz))
-        self.hw_j0 = int(round(self.get_j(0) * self.bit_k / self.step_hz / self.acc_hz))
+        self.hw_j0 = int(round(self.get_j(0) * self.bit_k / self.step_hz / self.acc_hz / self.acc_hz))
 
         self.hw_t = int(round(dt * self.acc_hz))
 
@@ -69,13 +69,15 @@ class HwCubic(Cubic):
         a = self.hw_a0
         v = self.hw_v0
         x = self.hw_x0
+        print "x: %f v: %f, a: %f, j: %f" % (x, v, a, j)
+
         t = 0
         max_int = 1<<31 - 1
 
         while t < self.hw_t:
             t += 1
             x += (v + a/2) * (self.step_hz / self.acc_hz)
-            v += a
+            v += (a + j/2)
             a += j
 
             if v < -max_int:
@@ -90,10 +92,20 @@ class HwCubic(Cubic):
             if a > max_int:
                 raise ValueError, "a is out of range at %d: %d" % (t, a)
 
+            print "sim:", t * 1.0/self.acc_hz, x / self.bit_k, self.get_x(t * 1.0/self.acc_hz), v / self.bit_k * self.step_hz, self.get_v(t * 1.0/self.acc_hz), a / self.bit_k * self.step_hz * self.acc_hz, self.get_a(t * 1.0/self.acc_hz), j / self.bit_k * self.step_hz * self.acc_hz, self.get_j(t * 1.0/self.acc_hz)
             yield t * 1.0/self.acc_hz, x / self.bit_k, v / self.bit_k * self.step_hz
 
     def get_last(self):
-        return list(self.emu())[-1]
+        last = list(self.emu())[-1]
+        t, x, v = last
+
+        if abs(x - self.get_x(t)) > 0.15:
+            raise ValueError, "Hardware simulation divergence is too big, hw x: %f cubic x: %f" % (x, self.get_x(t))
+
+        if abs(v - self.get_v(t)) > 0.15:
+            raise ValueError, "Hardware simulation divergence is too big, hw v: %f cubic v: %f" % (v, self.get_v(t))
+
+        return last
         
 
 
