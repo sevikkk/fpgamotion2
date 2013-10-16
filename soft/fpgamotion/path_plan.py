@@ -96,6 +96,7 @@ class LinearSegment(object):
         self.end_speed = end_speed
         self.kind = "l"
         self.cubics = None
+        self.profile_points = None
 
     def __repr__(self):
         return "LinearSegment(s_pos=%s, e_pos=%s, s_v=%s, t_v=%s, e_v=%s)" % (self.start_pos, self.end_pos, self.start_speed, self.top_speed, self.end_speed)
@@ -143,6 +144,7 @@ class RadiusSegment(object):
         self.eq_len = eq_len
         self.kind = "r"
         self.cubics = None
+        self.profile_points = None
 
     def __repr__(self):
         return "RadiusSegment(s_pos=%s, e_pos=%s, s_v=%s, e_v=%s, speed=%s, eq_len=%s)" % (self.start_pos, self.end_pos, self.start_vec, self.end_vec, self.speed, self.eq_len)
@@ -469,6 +471,8 @@ def make_profile(path, accels):
                     [0, s_pos, s_v],
                     [dt, e_pos, e_v]
                 ]
+
+        s.profile_points = points
 
         cubics = []
         i = 0

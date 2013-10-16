@@ -49,3 +49,51 @@ class Cubic(object):
     def __str__(self):
         return "Cubic(a=%f,b=%f,c=%f,d=%f)" % (self.a, self.b, self.c, self.d)
 
+class HwCubic(Cubic):
+    steps_per_unit = 80
+    step_bit = 32
+    step_hz = 25000000
+    acc_hz = 1000
+
+    def calc_hw_coefs(self, dt):
+        self.bit_k = (1 << self.step_bit) * self.steps_per_unit * 1.0 
+        self.hw_x0 = int(round(self.get_x(0) * self.bit_k))
+        self.hw_v0 = int(round(self.get_v(0) * self.bit_k / self.step_hz))
+        self.hw_a0 = int(round(self.get_a(0) * self.bit_k / self.step_hz / self.acc_hz))
+        self.hw_j0 = int(round(self.get_j(0) * self.bit_k / self.step_hz / self.acc_hz))
+
+        self.hw_t = int(round(dt * self.acc_hz))
+
+    def emu(self):
+        j = self.hw_j0
+        a = self.hw_a0
+        v = self.hw_v0
+        x = self.hw_x0
+        t = 0
+        max_int = 1<<31 - 1
+
+        while t < self.hw_t:
+            t += 1
+            x += (v + a/2) * (self.step_hz / self.acc_hz)
+            v += a
+            a += j
+
+            if v < -max_int:
+                raise ValueError, "v is out of range at %d: %d" % (t, v)
+
+            if v > max_int:
+                raise ValueError, "v is out of range at %d: %d" % (t, v)
+
+            if a < -max_int:
+                raise ValueError, "a is out of range at %d: %d" % (t, a)
+
+            if a > max_int:
+                raise ValueError, "a is out of range at %d: %d" % (t, a)
+
+            yield t * 1.0/self.acc_hz, x / self.bit_k, v / self.bit_k * self.step_hz
+
+    def get_last(self):
+        return list(self.emu())[-1]
+        
+
+
