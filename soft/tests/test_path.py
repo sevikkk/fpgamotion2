@@ -1,7 +1,7 @@
 from unittest import TestCase
+from math import sin, cos, pi
 
 from fpgamotion.path_plan import *
-from math import sin, cos, pi
 
 
 class BasicTestCase(TestCase):

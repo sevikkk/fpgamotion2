@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from fpgamotion.cubic import Cubic, HwCubic
 
+
 class BasicTestCase(TestCase):
     def test1(self):
         c = Cubic(0, 0, 0.5, 1, 1)
@@ -36,6 +37,7 @@ class BasicTestCase(TestCase):
         self.assertEqual(at, -6.0)
         self.assertEqual(vm, 1.5)
 
+
 class HwTestCase(TestCase):
     def test_basic(self):
         c = HwCubic(0, 0, 5, 100, 0.1) # 1000 mm/s^2
@@ -47,14 +49,14 @@ class HwTestCase(TestCase):
         print "a:", c.hw_a0
         print "j:", c.hw_j0
 
-        for t,x, v in c.emu():
+        for t, x, v in c.emu():
             print t, x, x - c.get_x(t), v, v - c.get_v(t)
 
         last = c.get_last()
         print last
         self.assertAlmostEqual(last[0], 0.1)
-        self.assertAlmostEqual(last[1], 5.0, places = 2)
-        self.assertAlmostEqual(last[2], 100.0, places = 2)
+        self.assertAlmostEqual(last[1], 5.0, places=2)
+        self.assertAlmostEqual(last[2], 100.0, places=2)
 
     def test_out_of_range(self):
         c = HwCubic(0, 0, 5, 100, 0.1) # 1000 mm/s^2
@@ -70,7 +72,7 @@ class HwTestCase(TestCase):
         c.acc_hz = 100
         c.calc_hw_coefs(0.1)
 
-        for t,x, v in c.emu():
+        for t, x, v in c.emu():
             print t, x, x - c.get_x(t), v, v - c.get_v(t)
 
         self.assertRaises(ValueError, c.get_last)

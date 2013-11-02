@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from fpgamotion.path_plan import Point
 
+
 class BasicTestCase(TestCase):
     def test_no_args(self):
         p = Point()
