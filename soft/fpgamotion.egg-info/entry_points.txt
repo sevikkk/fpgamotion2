@@ -1,0 +1,3 @@
+[console_scripts]
+fm_talk = fpgamotion.talk:test
+

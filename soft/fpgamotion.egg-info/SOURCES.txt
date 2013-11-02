@@ -1,0 +1,10 @@
+setup.py
+fpgamotion/cubic.py
+fpgamotion/path_plan.py
+fpgamotion/talk.py
+fpgamotion.egg-info/PKG-INFO
+fpgamotion.egg-info/SOURCES.txt
+fpgamotion.egg-info/dependency_links.txt
+fpgamotion.egg-info/entry_points.txt
+fpgamotion.egg-info/requires.txt
+fpgamotion.egg-info/top_level.txt
