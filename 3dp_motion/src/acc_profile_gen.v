@@ -87,7 +87,7 @@ always @(reset, acc_step, load, set_v, set_a, set_j, v_val, a_val, j_val, v, a, 
                     end
                 else
                     begin
-                        next_v <= v + a;
+                        next_v <= v + a + (j>>1);
                         next_a <= a + j;
                     end
             end
@@ -98,7 +98,7 @@ reg next_step;
 reg signed [63:0] next_x;
 wire signed [63:0] x_acc;
 
-assign x_acc = x + v;
+assign x_acc = x + v + (a>>1);
 
 always @(reset, load, set_x, x_val, x, v, step_bit)
     begin
