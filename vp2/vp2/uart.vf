@@ -1,0 +1,127 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1.03
+//  \   \         Application : sch2verilog
+//  /   /         Filename : uart.vf
+// /___/   /\     Timestamp : 02/07/2012 20:24:11
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: /opt/Xilinx/10.1/ISE/bin/lin64/unwrapped/sch2verilog -intstyle ise -family virtex2p -w /home/seva/src/vp2/rtl/vp2/uart.sch uart.vf
+//Design Name: uart
+//Device: virtex2p
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 1ns / 1ps
+
+module uart(bgen_divider, 
+            clk, 
+            reset, 
+            rxd, 
+            rx_read, 
+            tx_data, 
+            tx_we, 
+            rx_data, 
+            rx_empty, 
+            rx_ferr, 
+            rx_oerr, 
+            txd, 
+            tx_done, 
+            tx_empty, 
+            tx_full);
+
+    input [15:0] bgen_divider;
+    input clk;
+    input reset;
+    input rxd;
+    input rx_read;
+    input [7:0] tx_data;
+    input tx_we;
+   output [7:0] rx_data;
+   output rx_empty;
+   output rx_ferr;
+   output rx_oerr;
+   output txd;
+   output tx_done;
+   output tx_empty;
+   output tx_full;
+   
+   wire XLXN_2;
+   wire [7:0] XLXN_3;
+   wire [7:0] XLXN_4;
+   wire XLXN_6;
+   wire XLXN_7;
+   wire XLXN_29;
+   wire XLXN_30;
+   wire XLXN_31;
+   wire XLXN_79;
+   wire XLXN_80;
+   wire XLXN_88;
+   wire XLXN_107;
+   wire XLXN_108;
+   wire XLXN_109;
+   wire tx_empty_DUMMY;
+   
+   assign tx_empty = tx_empty_DUMMY;
+   RxUnit XLXI_4 (.Clk(clk), 
+                  .Enable(XLXN_88), 
+                  .RD(XLXN_6), 
+                  .Reset(reset), 
+                  .RxD(rxd), 
+                  .DataIn(XLXN_4[7:0]), 
+                  .DRdy(XLXN_31), 
+                  .FErr(rx_ferr), 
+                  .OErr(rx_oerr));
+   TxUnit XLXI_6 (.Clk(clk), 
+                  .DataO(XLXN_3[7:0]), 
+                  .Enable(XLXN_2), 
+                  .Load(XLXN_7), 
+                  .Reset(reset), 
+                  .TBufE(XLXN_109), 
+                  .TRegE(XLXN_108), 
+                  .TxD(txd));
+   fifo32 XLXI_8 (.clk(clk), 
+                  .clr(XLXN_79), 
+                  .din(tx_data[7:0]), 
+                  .re(XLXN_7), 
+                  .rst(reset), 
+                  .we(tx_we), 
+                  .dout(XLXN_3[7:0]), 
+                  .empty(tx_empty_DUMMY), 
+                  .full(tx_full));
+   fifo32 XLXI_9 (.clk(clk), 
+                  .clr(XLXN_80), 
+                  .din(XLXN_4[7:0]), 
+                  .re(rx_read), 
+                  .rst(reset), 
+                  .we(XLXN_6), 
+                  .dout(rx_data[7:0]), 
+                  .empty(rx_empty), 
+                  .full(XLXN_29));
+   ClkUnit38400 XLXI_12 (.Divider(bgen_divider[15:0]), 
+                         .Reset(reset), 
+                         .SysClk(clk), 
+                         .EnableRx(XLXN_88), 
+                         .EnableTx(XLXN_2));
+   AND2 XLXI_14 (.I0(XLXN_109), 
+                 .I1(XLXN_107), 
+                 .O(XLXN_7));
+   INV XLXI_15 (.I(tx_empty_DUMMY), 
+                .O(XLXN_107));
+   INV XLXI_16 (.I(XLXN_29), 
+                .O(XLXN_30));
+   AND2 XLXI_17 (.I0(XLXN_31), 
+                 .I1(XLXN_30), 
+                 .O(XLXN_6));
+   GND XLXI_27 (.G(XLXN_79));
+   GND XLXI_28 (.G(XLXN_80));
+   AND2 XLXI_31 (.I0(XLXN_109), 
+                 .I1(XLXN_108), 
+                 .O(tx_done));
+endmodule

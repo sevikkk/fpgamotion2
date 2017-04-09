@@ -1,0 +1,1139 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1.03
+//  \   \         Application : sch2verilog
+//  /   /         Filename : top.vf
+// /___/   /\     Timestamp : 02/07/2012 20:24:10
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: /opt/Xilinx/10.1/ISE/bin/lin64/unwrapped/sch2verilog -intstyle ise -family virtex2p -w /home/seva/src/vp2/rtl/vp2/top.sch top.vf
+//Design Name: top
+//Device: virtex2p
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 1ns / 1ps
+
+module FTCE_MXILINX_top(C, 
+                        CE, 
+                        CLR, 
+                        T, 
+                        Q);
+
+    input C;
+    input CE;
+    input CLR;
+    input T;
+   output Q;
+   
+   wire TQ;
+   wire Q_DUMMY;
+   
+   assign Q = Q_DUMMY;
+   XOR2 I_36_32 (.I0(T), 
+                 .I1(Q_DUMMY), 
+                 .O(TQ));
+   FDCE I_36_35 (.C(C), 
+                 .CE(CE), 
+                 .CLR(CLR), 
+                 .D(TQ), 
+                 .Q(Q_DUMMY));
+   // synthesis attribute RLOC of I_36_35 is "X0Y0"
+   defparam I_36_35.INIT = 1'b0;
+endmodule
+`timescale 1ns / 1ps
+
+module CB4CE_MXILINX_top(C, 
+                         CE, 
+                         CLR, 
+                         CEO, 
+                         Q0, 
+                         Q1, 
+                         Q2, 
+                         Q3, 
+                         TC);
+
+    input C;
+    input CE;
+    input CLR;
+   output CEO;
+   output Q0;
+   output Q1;
+   output Q2;
+   output Q3;
+   output TC;
+   
+   wire T2;
+   wire T3;
+   wire XLXN_1;
+   wire Q0_DUMMY;
+   wire Q1_DUMMY;
+   wire Q2_DUMMY;
+   wire Q3_DUMMY;
+   wire TC_DUMMY;
+   
+   assign Q0 = Q0_DUMMY;
+   assign Q1 = Q1_DUMMY;
+   assign Q2 = Q2_DUMMY;
+   assign Q3 = Q3_DUMMY;
+   assign TC = TC_DUMMY;
+   FTCE_MXILINX_top I_Q0 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(XLXN_1), 
+                          .Q(Q0_DUMMY));
+   // synthesis attribute HU_SET of I_Q0 is "I_Q0_0"
+   FTCE_MXILINX_top I_Q1 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(Q0_DUMMY), 
+                          .Q(Q1_DUMMY));
+   // synthesis attribute HU_SET of I_Q1 is "I_Q1_1"
+   FTCE_MXILINX_top I_Q2 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T2), 
+                          .Q(Q2_DUMMY));
+   // synthesis attribute HU_SET of I_Q2 is "I_Q2_2"
+   FTCE_MXILINX_top I_Q3 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T3), 
+                          .Q(Q3_DUMMY));
+   // synthesis attribute HU_SET of I_Q3 is "I_Q3_3"
+   AND4 I_36_31 (.I0(Q3_DUMMY), 
+                 .I1(Q2_DUMMY), 
+                 .I2(Q1_DUMMY), 
+                 .I3(Q0_DUMMY), 
+                 .O(TC_DUMMY));
+   AND3 I_36_32 (.I0(Q2_DUMMY), 
+                 .I1(Q1_DUMMY), 
+                 .I2(Q0_DUMMY), 
+                 .O(T3));
+   AND2 I_36_33 (.I0(Q1_DUMMY), 
+                 .I1(Q0_DUMMY), 
+                 .O(T2));
+   VCC I_36_58 (.P(XLXN_1));
+   AND2 I_36_67 (.I0(CE), 
+                 .I1(TC_DUMMY), 
+                 .O(CEO));
+endmodule
+`timescale 1ns / 1ps
+
+module CB8CE_MXILINX_top(C, 
+                         CE, 
+                         CLR, 
+                         CEO, 
+                         Q, 
+                         TC);
+
+    input C;
+    input CE;
+    input CLR;
+   output CEO;
+   output [7:0] Q;
+   output TC;
+   
+   wire T2;
+   wire T3;
+   wire T4;
+   wire T5;
+   wire T6;
+   wire T7;
+   wire XLXN_1;
+   wire [7:0] Q_DUMMY;
+   wire TC_DUMMY;
+   
+   assign Q[7:0] = Q_DUMMY[7:0];
+   assign TC = TC_DUMMY;
+   FTCE_MXILINX_top I_Q0 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(XLXN_1), 
+                          .Q(Q_DUMMY[0]));
+   // synthesis attribute HU_SET of I_Q0 is "I_Q0_10"
+   FTCE_MXILINX_top I_Q1 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(Q_DUMMY[0]), 
+                          .Q(Q_DUMMY[1]));
+   // synthesis attribute HU_SET of I_Q1 is "I_Q1_11"
+   FTCE_MXILINX_top I_Q2 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T2), 
+                          .Q(Q_DUMMY[2]));
+   // synthesis attribute HU_SET of I_Q2 is "I_Q2_7"
+   FTCE_MXILINX_top I_Q3 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T3), 
+                          .Q(Q_DUMMY[3]));
+   // synthesis attribute HU_SET of I_Q3 is "I_Q3_8"
+   FTCE_MXILINX_top I_Q4 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T4), 
+                          .Q(Q_DUMMY[4]));
+   // synthesis attribute HU_SET of I_Q4 is "I_Q4_9"
+   FTCE_MXILINX_top I_Q5 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T5), 
+                          .Q(Q_DUMMY[5]));
+   // synthesis attribute HU_SET of I_Q5 is "I_Q5_6"
+   FTCE_MXILINX_top I_Q6 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T6), 
+                          .Q(Q_DUMMY[6]));
+   // synthesis attribute HU_SET of I_Q6 is "I_Q6_5"
+   FTCE_MXILINX_top I_Q7 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T7), 
+                          .Q(Q_DUMMY[7]));
+   // synthesis attribute HU_SET of I_Q7 is "I_Q7_4"
+   AND5 I_36_1 (.I0(Q_DUMMY[7]), 
+                .I1(Q_DUMMY[6]), 
+                .I2(Q_DUMMY[5]), 
+                .I3(Q_DUMMY[4]), 
+                .I4(T4), 
+                .O(TC_DUMMY));
+   AND2 I_36_2 (.I0(Q_DUMMY[4]), 
+                .I1(T4), 
+                .O(T5));
+   AND3 I_36_11 (.I0(Q_DUMMY[5]), 
+                 .I1(Q_DUMMY[4]), 
+                 .I2(T4), 
+                 .O(T6));
+   AND4 I_36_15 (.I0(Q_DUMMY[3]), 
+                 .I1(Q_DUMMY[2]), 
+                 .I2(Q_DUMMY[1]), 
+                 .I3(Q_DUMMY[0]), 
+                 .O(T4));
+   VCC I_36_16 (.P(XLXN_1));
+   AND2 I_36_24 (.I0(Q_DUMMY[1]), 
+                 .I1(Q_DUMMY[0]), 
+                 .O(T2));
+   AND3 I_36_26 (.I0(Q_DUMMY[2]), 
+                 .I1(Q_DUMMY[1]), 
+                 .I2(Q_DUMMY[0]), 
+                 .O(T3));
+   AND4 I_36_28 (.I0(Q_DUMMY[6]), 
+                 .I1(Q_DUMMY[5]), 
+                 .I2(Q_DUMMY[4]), 
+                 .I3(T4), 
+                 .O(T7));
+   AND2 I_36_31 (.I0(CE), 
+                 .I1(TC_DUMMY), 
+                 .O(CEO));
+endmodule
+`timescale 1ns / 1ps
+
+module CB16CE_MXILINX_top(C, 
+                          CE, 
+                          CLR, 
+                          CEO, 
+                          Q, 
+                          TC);
+
+    input C;
+    input CE;
+    input CLR;
+   output CEO;
+   output [15:0] Q;
+   output TC;
+   
+   wire T2;
+   wire T3;
+   wire T4;
+   wire T5;
+   wire T6;
+   wire T7;
+   wire T8;
+   wire T9;
+   wire T10;
+   wire T11;
+   wire T12;
+   wire T13;
+   wire T14;
+   wire T15;
+   wire XLXN_1;
+   wire [15:0] Q_DUMMY;
+   wire TC_DUMMY;
+   
+   assign Q[15:0] = Q_DUMMY[15:0];
+   assign TC = TC_DUMMY;
+   FTCE_MXILINX_top I_Q0 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(XLXN_1), 
+                          .Q(Q_DUMMY[0]));
+   // synthesis attribute HU_SET of I_Q0 is "I_Q0_13"
+   FTCE_MXILINX_top I_Q1 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(Q_DUMMY[0]), 
+                          .Q(Q_DUMMY[1]));
+   // synthesis attribute HU_SET of I_Q1 is "I_Q1_12"
+   FTCE_MXILINX_top I_Q2 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T2), 
+                          .Q(Q_DUMMY[2]));
+   // synthesis attribute HU_SET of I_Q2 is "I_Q2_15"
+   FTCE_MXILINX_top I_Q3 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T3), 
+                          .Q(Q_DUMMY[3]));
+   // synthesis attribute HU_SET of I_Q3 is "I_Q3_14"
+   FTCE_MXILINX_top I_Q4 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T4), 
+                          .Q(Q_DUMMY[4]));
+   // synthesis attribute HU_SET of I_Q4 is "I_Q4_19"
+   FTCE_MXILINX_top I_Q5 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T5), 
+                          .Q(Q_DUMMY[5]));
+   // synthesis attribute HU_SET of I_Q5 is "I_Q5_18"
+   FTCE_MXILINX_top I_Q6 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T6), 
+                          .Q(Q_DUMMY[6]));
+   // synthesis attribute HU_SET of I_Q6 is "I_Q6_17"
+   FTCE_MXILINX_top I_Q7 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T7), 
+                          .Q(Q_DUMMY[7]));
+   // synthesis attribute HU_SET of I_Q7 is "I_Q7_16"
+   FTCE_MXILINX_top I_Q8 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T8), 
+                          .Q(Q_DUMMY[8]));
+   // synthesis attribute HU_SET of I_Q8 is "I_Q8_20"
+   FTCE_MXILINX_top I_Q9 (.C(C), 
+                          .CE(CE), 
+                          .CLR(CLR), 
+                          .T(T9), 
+                          .Q(Q_DUMMY[9]));
+   // synthesis attribute HU_SET of I_Q9 is "I_Q9_21"
+   FTCE_MXILINX_top I_Q10 (.C(C), 
+                           .CE(CE), 
+                           .CLR(CLR), 
+                           .T(T10), 
+                           .Q(Q_DUMMY[10]));
+   // synthesis attribute HU_SET of I_Q10 is "I_Q10_22"
+   FTCE_MXILINX_top I_Q11 (.C(C), 
+                           .CE(CE), 
+                           .CLR(CLR), 
+                           .T(T11), 
+                           .Q(Q_DUMMY[11]));
+   // synthesis attribute HU_SET of I_Q11 is "I_Q11_23"
+   FTCE_MXILINX_top I_Q12 (.C(C), 
+                           .CE(CE), 
+                           .CLR(CLR), 
+                           .T(T12), 
+                           .Q(Q_DUMMY[12]));
+   // synthesis attribute HU_SET of I_Q12 is "I_Q12_24"
+   FTCE_MXILINX_top I_Q13 (.C(C), 
+                           .CE(CE), 
+                           .CLR(CLR), 
+                           .T(T13), 
+                           .Q(Q_DUMMY[13]));
+   // synthesis attribute HU_SET of I_Q13 is "I_Q13_25"
+   FTCE_MXILINX_top I_Q14 (.C(C), 
+                           .CE(CE), 
+                           .CLR(CLR), 
+                           .T(T14), 
+                           .Q(Q_DUMMY[14]));
+   // synthesis attribute HU_SET of I_Q14 is "I_Q14_26"
+   FTCE_MXILINX_top I_Q15 (.C(C), 
+                           .CE(CE), 
+                           .CLR(CLR), 
+                           .T(T15), 
+                           .Q(Q_DUMMY[15]));
+   // synthesis attribute HU_SET of I_Q15 is "I_Q15_27"
+   AND3 I_36_3 (.I0(Q_DUMMY[2]), 
+                .I1(Q_DUMMY[1]), 
+                .I2(Q_DUMMY[0]), 
+                .O(T3));
+   AND2 I_36_4 (.I0(Q_DUMMY[1]), 
+                .I1(Q_DUMMY[0]), 
+                .O(T2));
+   VCC I_36_9 (.P(XLXN_1));
+   AND4 I_36_10 (.I0(Q_DUMMY[3]), 
+                 .I1(Q_DUMMY[2]), 
+                 .I2(Q_DUMMY[1]), 
+                 .I3(Q_DUMMY[0]), 
+                 .O(T4));
+   AND5 I_36_14 (.I0(Q_DUMMY[7]), 
+                 .I1(Q_DUMMY[6]), 
+                 .I2(Q_DUMMY[5]), 
+                 .I3(Q_DUMMY[4]), 
+                 .I4(T4), 
+                 .O(T8));
+   AND2 I_36_15 (.I0(Q_DUMMY[4]), 
+                 .I1(T4), 
+                 .O(T5));
+   AND3 I_36_19 (.I0(Q_DUMMY[5]), 
+                 .I1(Q_DUMMY[4]), 
+                 .I2(T4), 
+                 .O(T6));
+   AND4 I_36_21 (.I0(Q_DUMMY[6]), 
+                 .I1(Q_DUMMY[5]), 
+                 .I2(Q_DUMMY[4]), 
+                 .I3(T4), 
+                 .O(T7));
+   AND5 I_36_22 (.I0(Q_DUMMY[15]), 
+                 .I1(Q_DUMMY[14]), 
+                 .I2(Q_DUMMY[13]), 
+                 .I3(Q_DUMMY[12]), 
+                 .I4(T12), 
+                 .O(TC_DUMMY));
+   AND2 I_36_23 (.I0(Q_DUMMY[12]), 
+                 .I1(T12), 
+                 .O(T13));
+   AND3 I_36_24 (.I0(Q_DUMMY[13]), 
+                 .I1(Q_DUMMY[12]), 
+                 .I2(T12), 
+                 .O(T14));
+   AND4 I_36_25 (.I0(Q_DUMMY[14]), 
+                 .I1(Q_DUMMY[13]), 
+                 .I2(Q_DUMMY[12]), 
+                 .I3(T12), 
+                 .O(T15));
+   AND4 I_36_26 (.I0(Q_DUMMY[10]), 
+                 .I1(Q_DUMMY[9]), 
+                 .I2(Q_DUMMY[8]), 
+                 .I3(T8), 
+                 .O(T11));
+   AND3 I_36_27 (.I0(Q_DUMMY[9]), 
+                 .I1(Q_DUMMY[8]), 
+                 .I2(T8), 
+                 .O(T10));
+   AND2 I_36_28 (.I0(Q_DUMMY[8]), 
+                 .I1(T8), 
+                 .O(T9));
+   AND5 I_36_29 (.I0(Q_DUMMY[11]), 
+                 .I1(Q_DUMMY[10]), 
+                 .I2(Q_DUMMY[9]), 
+                 .I3(Q_DUMMY[8]), 
+                 .I4(T8), 
+                 .O(T12));
+   AND2 I_36_54 (.I0(CE), 
+                 .I1(TC_DUMMY), 
+                 .O(CEO));
+endmodule
+`timescale 1ns / 1ps
+
+module top(clk, 
+           flashspi_do, 
+           gpin0, 
+           gpin1, 
+           gpin2, 
+           gpin3, 
+           gpin4, 
+           gpin5, 
+           gpin6, 
+           gpin7, 
+           gpin8, 
+           gpin9, 
+           gpin10, 
+           gpin11, 
+           gpin12, 
+           gpin13, 
+           gpin14, 
+           gpin15, 
+           gpin16, 
+           gpin17, 
+           gpin18, 
+           gpin19, 
+           gpin20, 
+           gpin21, 
+           gpin22, 
+           gpin23, 
+           gpin24, 
+           gpin25, 
+           gpin26, 
+           gpin27, 
+           gpin28, 
+           gpin29, 
+           gpin30, 
+           gpin31, 
+           RS485_RX, 
+           SD_DI, 
+           SYSRESET, 
+           UART_RX, 
+           x_endstop, 
+           y_endstop, 
+           z_endstop, 
+           beep, 
+           dir_a, 
+           dir_x, 
+           dir_y, 
+           dir_z, 
+           enable_a, 
+           enable_xyz, 
+           flashspi_clk, 
+           flashspi_di, 
+           flashspi_ss, 
+           gpout0, 
+           gpout1, 
+           gpout2, 
+           gpout3, 
+           gpout4, 
+           gpout5, 
+           gpout6, 
+           gpout7, 
+           gpout8, 
+           gpout9, 
+           gpout10, 
+           gpout11, 
+           gpout12, 
+           gpout13, 
+           gpout14, 
+           gpout15, 
+           gpout16, 
+           gpout17, 
+           gpout18, 
+           gpout19, 
+           gpout20, 
+           gpout21, 
+           gpout22, 
+           gpout23, 
+           gpout24, 
+           gpout25, 
+           gpout26, 
+           gpout27, 
+           gpout28, 
+           gpout29, 
+           gpout30, 
+           gpout31, 
+           led1, 
+           led2, 
+           led3, 
+           led4, 
+           led5, 
+           osram_clk, 
+           osram_data, 
+           osram_load, 
+           RS485_DE, 
+           RS485_TX, 
+           SD_CLK, 
+           SD_CS, 
+           SD_DO, 
+           step_a, 
+           step_x, 
+           step_y, 
+           step_z, 
+           UART_TX, 
+           U38_DIR, 
+           U38_OE, 
+           gpio0, 
+           gpio1, 
+           gpio2, 
+           gpio3, 
+           gpio4, 
+           gpio5, 
+           gpio6, 
+           gpio7, 
+           gpio8, 
+           gpio9, 
+           gpio10, 
+           gpio11, 
+           gpio12, 
+           gpio13, 
+           gpio14, 
+           gpio15, 
+           gpio16, 
+           gpio17, 
+           gpio18, 
+           gpio19, 
+           gpio20, 
+           gpio21, 
+           gpio22, 
+           gpio23, 
+           gpio24, 
+           gpio25, 
+           gpio26, 
+           gpio27, 
+           gpio28, 
+           gpio29, 
+           gpio30, 
+           gpio31);
+
+    input clk;
+    input flashspi_do;
+    input gpin0;
+    input gpin1;
+    input gpin2;
+    input gpin3;
+    input gpin4;
+    input gpin5;
+    input gpin6;
+    input gpin7;
+    input gpin8;
+    input gpin9;
+    input gpin10;
+    input gpin11;
+    input gpin12;
+    input gpin13;
+    input gpin14;
+    input gpin15;
+    input gpin16;
+    input gpin17;
+    input gpin18;
+    input gpin19;
+    input gpin20;
+    input gpin21;
+    input gpin22;
+    input gpin23;
+    input gpin24;
+    input gpin25;
+    input gpin26;
+    input gpin27;
+    input gpin28;
+    input gpin29;
+    input gpin30;
+    input gpin31;
+    input RS485_RX;
+    input SD_DI;
+    input SYSRESET;
+    input UART_RX;
+    input x_endstop;
+    input y_endstop;
+    input z_endstop;
+   output beep;
+   output dir_a;
+   output dir_x;
+   output dir_y;
+   output dir_z;
+   output enable_a;
+   output enable_xyz;
+   output flashspi_clk;
+   output flashspi_di;
+   output flashspi_ss;
+   output gpout0;
+   output gpout1;
+   output gpout2;
+   output gpout3;
+   output gpout4;
+   output gpout5;
+   output gpout6;
+   output gpout7;
+   output gpout8;
+   output gpout9;
+   output gpout10;
+   output gpout11;
+   output gpout12;
+   output gpout13;
+   output gpout14;
+   output gpout15;
+   output gpout16;
+   output gpout17;
+   output gpout18;
+   output gpout19;
+   output gpout20;
+   output gpout21;
+   output gpout22;
+   output gpout23;
+   output gpout24;
+   output gpout25;
+   output gpout26;
+   output gpout27;
+   output gpout28;
+   output gpout29;
+   output gpout30;
+   output gpout31;
+   output led1;
+   output led2;
+   output led3;
+   output led4;
+   output led5;
+   output osram_clk;
+   output osram_data;
+   output osram_load;
+   output RS485_DE;
+   output RS485_TX;
+   output SD_CLK;
+   output SD_CS;
+   output SD_DO;
+   output step_a;
+   output step_x;
+   output step_y;
+   output step_z;
+   output UART_TX;
+   output U38_DIR;
+   output U38_OE;
+    inout gpio0;
+    inout gpio1;
+    inout gpio2;
+    inout gpio3;
+    inout gpio4;
+    inout gpio5;
+    inout gpio6;
+    inout gpio7;
+    inout gpio8;
+    inout gpio9;
+    inout gpio10;
+    inout gpio11;
+    inout gpio12;
+    inout gpio13;
+    inout gpio14;
+    inout gpio15;
+    inout gpio16;
+    inout gpio17;
+    inout gpio18;
+    inout gpio19;
+    inout gpio20;
+    inout gpio21;
+    inout gpio22;
+    inout gpio23;
+    inout gpio24;
+    inout gpio25;
+    inout gpio26;
+    inout gpio27;
+    inout gpio28;
+    inout gpio29;
+    inout gpio30;
+    inout gpio31;
+   
+   wire clk_cpu;
+   wire [7:0] cnt;
+   wire [15:0] cnt1;
+   wire [15:0] cpu_addr;
+   wire [15:0] cpu_addr_reg;
+   wire [7:0] cpu_di;
+   wire [7:0] cpu_do;
+   wire [7:0] cpu_do_reg;
+   wire cpu_enable;
+   wire [7:0] gpio_data;
+   wire gpio_rd;
+   wire gpio_wr;
+   wire locked;
+   wire [7:0] maxspi_data;
+   wire maxspi_rd;
+   wire maxspi_wr;
+   wire nreset;
+   wire [7:0] ram_data;
+   wire ram_we;
+   wire reset;
+   wire [7:0] rom_data;
+   wire spi_ack;
+   wire [7:0] spi_data;
+   wire spi_stb;
+   wire spi_we;
+   wire [7:0] steppers_data;
+   wire steppers_rd;
+   wire steppers_wr;
+   wire [7:0] uart_data;
+   wire uart_rd;
+   wire uart_wr;
+   wire XLXN_2;
+   wire XLXN_4;
+   wire XLXN_5;
+   wire XLXN_6;
+   wire XLXN_222;
+   wire XLXN_433;
+   wire XLXN_434;
+   wire XLXN_1188;
+   wire XLXN_1251;
+   wire [7:0] XLXN_1299;
+   wire XLXN_1511;
+   wire XLXN_1512;
+   wire [7:0] XLXN_1513;
+   wire XLXN_1514;
+   wire XLXN_1516;
+   wire [7:0] XLXN_1517;
+   wire [31:0] XLXN_1933;
+   wire [31:0] XLXN_1934;
+   wire [31:0] XLXN_1935;
+   wire [31:0] XLXN_1936;
+   wire XLXN_1946;
+   wire XLXN_2035;
+   wire XLXN_2036;
+   wire XLXN_2037;
+   wire XLXN_2038;
+   wire XLXN_2039;
+   wire XLXN_2040;
+   wire XLXN_2041;
+   wire XLXN_2042;
+   wire XLXN_2043;
+   wire XLXN_2044;
+   wire XLXN_2184;
+   wire XLXN_2191;
+   wire flashspi_di_DUMMY;
+   wire flashspi_ss_DUMMY;
+   wire flashspi_clk_DUMMY;
+   
+   assign flashspi_clk = flashspi_clk_DUMMY;
+   assign flashspi_di = flashspi_di_DUMMY;
+   assign flashspi_ss = flashspi_ss_DUMMY;
+   CB16CE_MXILINX_top XLXI_6 (.C(clk_cpu), 
+                              .CE(XLXN_4), 
+                              .CLR(XLXN_5), 
+                              .CEO(XLXN_2), 
+                              .Q(cnt1[15:0]), 
+                              .TC());
+   // synthesis attribute HU_SET of XLXI_6 is "XLXI_6_28"
+   CB8CE_MXILINX_top XLXI_7 (.C(clk_cpu), 
+                             .CE(XLXN_2), 
+                             .CLR(XLXN_6), 
+                             .CEO(), 
+                             .Q(cnt[7:0]), 
+                             .TC());
+   // synthesis attribute HU_SET of XLXI_7 is "XLXI_7_29"
+   VCC XLXI_8 (.P(XLXN_4));
+   GND XLXI_9 (.G(XLXN_5));
+   GND XLXI_10 (.G(XLXN_6));
+   BUF XLXI_11 (.I(cnt[7]), 
+                .O(led1));
+   BUF XLXI_12 (.I(cnt1[15]), 
+                .O(beep));
+   cpu6502_sync XLXI_100 (.clk(clk_cpu), 
+                          .di(cpu_di[7:0]), 
+                          .enable(cpu_enable), 
+                          .irq_n(XLXN_222), 
+                          .nmi_n(XLXN_222), 
+                          .reset(reset), 
+                          .so_n(XLXN_222), 
+                          .addr(cpu_addr_reg[15:0]), 
+                          .debugA(), 
+                          .debugOpcode(), 
+                          .debugPc(), 
+                          .debugS(), 
+                          .debugX(), 
+                          .debugY(), 
+                          .do(cpu_do_reg[7:0]), 
+                          .next_addr(cpu_addr[15:0]), 
+                          .next_do(cpu_do[7:0]), 
+                          .next_rd(XLXN_433), 
+                          .next_we(XLXN_434), 
+                          .rd(), 
+                          .we());
+   cpu_ram cpu_ram (.addr(cpu_addr[14:0]), 
+                     .Clk(clk_cpu), 
+                     .dataIn(cpu_do[7:0]), 
+                     .writeEn(ram_we), 
+                     .dataOut(ram_data[7:0]));
+   VCC XLXI_102 (.P(XLXN_222));
+   cpu_rom cpu_rom (.addr(cpu_addr[12:0]), 
+                     .clk(clk_cpu), 
+                     .dataOut(rom_data[7:0]));
+   CB4CE_MXILINX_top XLXI_362 (.C(clk_cpu), 
+                               .CE(XLXN_1188), 
+                               .CLR(XLXN_1251), 
+                               .CEO(), 
+                               .Q0(), 
+                               .Q1(), 
+                               .Q2(), 
+                               .Q3(nreset), 
+                               .TC());
+   // synthesis attribute HU_SET of XLXI_362 is "XLXI_362_30"
+   AND2 XLXI_363 (.I0(locked), 
+                  .I1(reset), 
+                  .O(XLXN_1188));
+   INV XLXI_365 (.I(nreset), 
+                 .O(reset));
+   spiMaster XLXI_367 (.address_i(cpu_addr[7:0]), 
+                       .clk_i(clk_cpu), 
+                       .data_i(cpu_do[7:0]), 
+                       .rst_i(reset), 
+                       .spiDataIn(SD_DI), 
+                       .spiSysClk(clk_cpu), 
+                       .strobe_i(spi_stb), 
+                       .we_i(spi_we), 
+                       .ack_o(spi_ack), 
+                       .data_o(spi_data[7:0]), 
+                       .spiClkOut(SD_CLK), 
+                       .spiCS_n(SD_CS), 
+                       .spiDataOut(SD_DO));
+   INV XLXI_377 (.I(SYSRESET), 
+                 .O(XLXN_1251));
+   BUF XLXI_378 (.I(flashspi_do), 
+                 .O(led5));
+   BUF XLXI_382 (.I(reset), 
+                 .O(led3));
+   BUF XLXI_383 (.I(flashspi_ss_DUMMY), 
+                 .O(led4));
+   BUF XLXI_384 (.I(locked), 
+                 .O(led2));
+   clockgen XLXI_402 (.CLKIN_IN(clk), 
+                      .USER_RST_IN(XLXN_1251), 
+                      .CLKDV_OUT(clk_cpu), 
+                      .CLKIN_IBUFG_OUT(), 
+                      .CLK0_OUT(), 
+                      .LOCKED_OUT(locked));
+   readWriteSPIWireData XLXI_507 (.clk(clk_cpu), 
+                                  .clkDelay(XLXN_1299[7:0]), 
+                                  .rst(reset), 
+                                  .spiDataIn(flashspi_do), 
+                                  .txDataFull(XLXN_1516), 
+                                  .txDataIn(XLXN_1517[7:0]), 
+                                  .rxDataOut(XLXN_1513[7:0]), 
+                                  .rxDataRdySet(XLXN_1514), 
+                                  .spiClkOut(flashspi_clk_DUMMY), 
+                                  .spiDataOut(flashspi_di_DUMMY), 
+                                  .txDataEmpty(XLXN_1512), 
+                                  .txDataFullClr(XLXN_1511));
+   spi_master_ctrl XLXI_592 (.addr(cpu_addr[7:0]), 
+                             .clk(clk_cpu), 
+                             .cpu_di(cpu_do[7:0]), 
+                             .rd(maxspi_rd), 
+                             .reset(reset), 
+                             .rxData(XLXN_1513[7:0]), 
+                             .rxDataRdySet(XLXN_1514), 
+                             .txDataEmpty(XLXN_1512), 
+                             .txDataFullClr(XLXN_1511), 
+                             .wr(maxspi_wr), 
+                             .clkDelay(XLXN_1299[7:0]), 
+                             .cpu_do(maxspi_data[7:0]), 
+                             .spiSS0(flashspi_ss_DUMMY), 
+                             .spiSS1(osram_load), 
+                             .spiSS2(), 
+                             .spiSS3(), 
+                             .txData(XLXN_1517[7:0]), 
+                             .txDataFull(XLXN_1516));
+   INV XLXI_596 (.I(flashspi_clk_DUMMY), 
+                 .O(osram_clk));
+   INV XLXI_597 (.I(flashspi_di_DUMMY), 
+                 .O(osram_data));
+   gpin_buf XLXI_634 (.gpin0(gpin0), 
+                      .gpin1(gpin1), 
+                      .gpin2(gpin2), 
+                      .gpin3(gpin3), 
+                      .gpin4(gpin4), 
+                      .gpin5(gpin5), 
+                      .gpin6(gpin6), 
+                      .gpin7(gpin7), 
+                      .gpin8(gpin8), 
+                      .gpin9(gpin9), 
+                      .gpin10(gpin10), 
+                      .gpin11(gpin11), 
+                      .gpin12(gpin12), 
+                      .gpin13(gpin13), 
+                      .gpin14(gpin14), 
+                      .gpin15(gpin15), 
+                      .gpin16(gpin16), 
+                      .gpin17(gpin17), 
+                      .gpin18(gpin18), 
+                      .gpin19(gpin19), 
+                      .gpin20(gpin20), 
+                      .gpin21(gpin21), 
+                      .gpin22(gpin22), 
+                      .gpin23(gpin23), 
+                      .gpin24(gpin24), 
+                      .gpin25(gpin25), 
+                      .gpin26(gpin26), 
+                      .gpin27(gpin27), 
+                      .gpin28(gpin28), 
+                      .gpin29(gpin29), 
+                      .gpin30(gpin30), 
+                      .gpin31(gpin31), 
+                      .gpin(XLXN_1936[31:0]));
+   gpout_buf XLXI_636 (.gpout(XLXN_1935[31:0]), 
+                       .gpout0(gpout0), 
+                       .gpout1(gpout1), 
+                       .gpout2(gpout2), 
+                       .gpout3(gpout4), 
+                       .gpout4(gpout3), 
+                       .gpout5(gpout5), 
+                       .gpout6(gpout6), 
+                       .gpout7(gpout7), 
+                       .gpout8(gpout8), 
+                       .gpout9(gpout9), 
+                       .gpout10(gpout10), 
+                       .gpout11(gpout11), 
+                       .gpout12(gpout12), 
+                       .gpout13(gpout13), 
+                       .gpout14(gpout14), 
+                       .gpout15(gpout15), 
+                       .gpout16(gpout16), 
+                       .gpout17(gpout17), 
+                       .gpout18(gpout19), 
+                       .gpout19(gpout18), 
+                       .gpout20(gpout20), 
+                       .gpout21(gpout21), 
+                       .gpout22(gpout22), 
+                       .gpout23(gpout23), 
+                       .gpout24(gpout24), 
+                       .gpout25(gpout25), 
+                       .gpout26(gpout26), 
+                       .gpout27(gpout27), 
+                       .gpout28(gpout28), 
+                       .gpout29(gpout29), 
+                       .gpout30(gpout30), 
+                       .gpout31(gpout31));
+   gpio_buf XLXI_641 (.clk(clk_cpu), 
+                      .gpio_in(XLXN_1933[31:0]), 
+                      .gpio_oe(XLXN_1946), 
+                      .reset(reset), 
+                      .gpio_ext_dir(U38_DIR), 
+                      .gpio_ext_oe(U38_OE), 
+                      .gpio_out(XLXN_1934[31:0]), 
+                      .gpio0(gpio0), 
+                      .gpio1(gpio1), 
+                      .gpio2(gpio2), 
+                      .gpio3(gpio3), 
+                      .gpio4(gpio4), 
+                      .gpio5(gpio5), 
+                      .gpio6(gpio6), 
+                      .gpio7(gpio7), 
+                      .gpio8(gpio8), 
+                      .gpio9(gpio9), 
+                      .gpio10(gpio10), 
+                      .gpio11(gpio11), 
+                      .gpio12(gpio12), 
+                      .gpio13(gpio13), 
+                      .gpio14(gpio14), 
+                      .gpio15(gpio15), 
+                      .gpio16(gpio16), 
+                      .gpio17(gpio17), 
+                      .gpio18(gpio18), 
+                      .gpio19(gpio19), 
+                      .gpio20(gpio20), 
+                      .gpio21(gpio21), 
+                      .gpio22(gpio22), 
+                      .gpio23(gpio23), 
+                      .gpio24(gpio24), 
+                      .gpio25(gpio25), 
+                      .gpio26(gpio26), 
+                      .gpio27(gpio27), 
+                      .gpio28(gpio28), 
+                      .gpio29(gpio29), 
+                      .gpio30(gpio30), 
+                      .gpio31(gpio31));
+   gpio_ctrl XLXI_642 (.clk(clk_cpu), 
+                       .cpu_addr(cpu_addr[7:0]), 
+                       .cpu_do(cpu_do[7:0]), 
+                       .gpin(XLXN_1936[31:0]), 
+                       .gpio_out(XLXN_1934[31:0]), 
+                       .rd(gpio_rd), 
+                       .reset(reset), 
+                       .wr(gpio_wr), 
+                       .cpu_di(gpio_data[7:0]), 
+                       .gpio_in(XLXN_1933[31:0]), 
+                       .gpio_oe(XLXN_1946), 
+                       .gpout(XLXN_1935[31:0]));
+   steppers_module XLXI_644 (.clk(clk_cpu), 
+                             .cpu_addr(cpu_addr[7:0]), 
+                             .cpu_data_in(cpu_do[7:0]), 
+                             .rd(steppers_rd), 
+                             .reset(reset), 
+                             .wr(steppers_wr), 
+                             .x_endstop(x_endstop), 
+                             .y_endstop(y_endstop), 
+                             .z_endstop(z_endstop), 
+                             .cpu_data_out(steppers_data[7:0]), 
+                             .dir_a(XLXN_2041), 
+                             .dir_x(XLXN_2035), 
+                             .dir_y(XLXN_2037), 
+                             .dir_z(XLXN_2039), 
+                             .enable_a(XLXN_2044), 
+                             .enable_xyz(XLXN_2043), 
+                             .step_a(XLXN_2042), 
+                             .step_x(XLXN_2036), 
+                             .step_y(XLXN_2038), 
+                             .step_z(XLXN_2040));
+   INV XLXI_647 (.I(XLXN_2035), 
+                 .O(dir_x));
+   INV XLXI_648 (.I(XLXN_2036), 
+                 .O(step_x));
+   INV XLXI_649 (.I(XLXN_2037), 
+                 .O(dir_y));
+   INV XLXI_650 (.I(XLXN_2038), 
+                 .O(step_y));
+   INV XLXI_651 (.I(XLXN_2039), 
+                 .O(dir_z));
+   INV XLXI_652 (.I(XLXN_2040), 
+                 .O(step_z));
+   INV XLXI_653 (.I(XLXN_2041), 
+                 .O(dir_a));
+   INV XLXI_654 (.I(XLXN_2042), 
+                 .O(step_a));
+   INV XLXI_655 (.I(XLXN_2043), 
+                 .O(enable_xyz));
+   INV XLXI_656 (.I(XLXN_2044), 
+                 .O(enable_a));
+   datamux XLXI_658 (.clk(clk_cpu), 
+                     .cpu_next_addr(cpu_addr[15:0]), 
+                     .cpu_next_rd(XLXN_433), 
+                     .cpu_next_we(XLXN_434), 
+                     .dev4_ack(XLXN_2184), 
+                     .dev4_data(steppers_data[7:0]), 
+                     .dev5_ack(XLXN_2184), 
+                     .dev5_data(), 
+                     .dev6_ack(XLXN_2184), 
+                     .dev6_data(), 
+                     .dev7_ack(XLXN_2184), 
+                     .dev7_data(), 
+                     .gpio_data(gpio_data[7:0]), 
+                     .maxspi_data(maxspi_data[7:0]), 
+                     .ram_data(ram_data[7:0]), 
+                     .reset(reset), 
+                     .rom_data(rom_data[7:0]), 
+                     .spi_ack(spi_ack), 
+                     .spi_data(spi_data[7:0]), 
+                     .uart_data(uart_data[7:0]), 
+                     .cpu_di(cpu_di[7:0]), 
+                     .cpu_enable(cpu_enable), 
+                     .dev4_rd(steppers_rd), 
+                     .dev4_stb(), 
+                     .dev4_wr(steppers_wr), 
+                     .dev5_rd(), 
+                     .dev5_stb(), 
+                     .dev5_wr(), 
+                     .dev6_rd(), 
+                     .dev6_stb(), 
+                     .dev6_wr(), 
+                     .dev7_rd(), 
+                     .dev7_stb(), 
+                     .dev7_wr(), 
+                     .gpio_rd(gpio_rd), 
+                     .gpio_wr(gpio_wr), 
+                     .maxspi_rd(maxspi_rd), 
+                     .maxspi_wr(maxspi_wr), 
+                     .ram_we(ram_we), 
+                     .spi_stb(spi_stb), 
+                     .spi_wr(spi_we), 
+                     .uart_rd(uart_rd), 
+                     .uart_wr(uart_wr));
+   VCC XLXI_685 (.P(XLXN_2184));
+   uarts_module XLXI_686 (.clk(clk_cpu), 
+                          .cpu_addr(cpu_addr[7:0]), 
+                          .cpu_data_in(cpu_do[7:0]), 
+                          .misc_in(), 
+                          .rd(uart_rd), 
+                          .reset(reset), 
+                          .rxd0(UART_RX), 
+                          .rxd1(RS485_RX), 
+                          .rxd2(), 
+                          .rxd3(), 
+                          .wr(uart_wr), 
+                          .cpu_data_out(uart_data[7:0]), 
+                          .misc_out(), 
+                          .txd0(UART_TX), 
+                          .txd1(RS485_TX), 
+                          .txd2(), 
+                          .txd3(), 
+                          .tx_idle0(), 
+                          .tx_idle1(XLXN_2191), 
+                          .tx_idle2(), 
+                          .tx_idle3());
+   INV XLXI_688 (.I(XLXN_2191), 
+                 .O(RS485_DE));
+endmodule

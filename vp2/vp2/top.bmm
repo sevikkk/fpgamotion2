@@ -1,0 +1,11 @@
+ADDRESS_MAP cpu PPC405 0
+  ADDRESS_SPACE cpu_rom RAMB16 [0x0000e000:0x0000ffff]
+     BUS_BLOCK
+	cpu_rom/Mrom_dataOut_mux00004 [7:6];
+	cpu_rom/Mrom_dataOut_mux00003 [5:4];
+	cpu_rom/Mrom_dataOut_mux00002 [3:2];
+        cpu_rom/Mrom_dataOut_mux00001 [1:0];
+     END_BUS_BLOCK;
+  END_ADDRESS_SPACE;
+END_ADDRESS_MAP;
+

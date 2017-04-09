@@ -1,0 +1,109 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1.03
+//  \   \         Application : sch2verilog
+//  /   /         Filename : stepper_ctrl.vf
+// /___/   /\     Timestamp : 02/07/2012 20:24:09
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: /opt/Xilinx/10.1/ISE/bin/lin64/unwrapped/sch2verilog -intstyle ise -family virtex2p -w /home/seva/src/vp2/rtl/vp2/stepper_ctrl.sch stepper_ctrl.vf
+//Design Name: stepper_ctrl
+//Device: virtex2p
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 1ns / 1ps
+
+module stepper_ctrl(clk, 
+                    data_in, 
+                    relative, 
+                    reset, 
+                    set_position, 
+                    start, 
+                    target_position, 
+                    target_time, 
+                    target_velocity, 
+                    acc, 
+                    dir, 
+                    done, 
+                    end_position, 
+                    end_velocity, 
+                    position, 
+                    step, 
+                    velocity);
+
+    input clk;
+    input [31:0] data_in;
+    input relative;
+    input reset;
+    input set_position;
+    input start;
+    input [31:0] target_position;
+    input [31:0] target_time;
+    input [31:0] target_velocity;
+   output [31:0] acc;
+   output dir;
+   output done;
+   output [31:0] end_position;
+   output [31:0] end_velocity;
+   output [31:0] position;
+   output step;
+   output [31:0] velocity;
+   
+   wire XLXN_6;
+   wire XLXN_9;
+   wire [31:0] XLXN_10;
+   wire [31:0] XLXN_11;
+   wire [63:0] XLXN_12;
+   wire XLXN_13;
+   wire XLXN_76;
+   wire [31:0] velocity_DUMMY;
+   wire [31:0] position_DUMMY;
+   
+   assign position[31:0] = position_DUMMY[31:0];
+   assign velocity[31:0] = velocity_DUMMY[31:0];
+   step_gen XLXI_3 (.clk(clk), 
+                    .data_in(data_in[31:0]), 
+                    .reset(reset), 
+                    .set_position(set_position), 
+                    .velocity(velocity_DUMMY[31:0]), 
+                    .acc(acc[31:0]), 
+                    .dir(dir), 
+                    .position(position_DUMMY[31:0]), 
+                    .step(step));
+   dda XLXI_4 (.clk(clk), 
+               .divide_done(XLXN_13), 
+               .position(position_DUMMY[31:0]), 
+               .quotinent(XLXN_12[63:0]), 
+               .relative(relative), 
+               .reset(XLXN_76), 
+               .start(start), 
+               .target_position(target_position[31:0]), 
+               .target_time(target_time[31:0]), 
+               .target_velocity(target_velocity[31:0]), 
+               .divident(XLXN_10[31:0]), 
+               .divisor(XLXN_11[31:0]), 
+               .done(done), 
+               .end_position(end_position[31:0]), 
+               .end_velocity(end_velocity[31:0]), 
+               .start_divide(XLXN_9), 
+               .velocity(velocity_DUMMY[31:0]));
+   div_steps XLXI_5 (.clk_en_i(XLXN_6), 
+                     .clk_i(clk), 
+                     .dividend_i(XLXN_10[31:0]), 
+                     .divide_i(XLXN_9), 
+                     .divisor_i(XLXN_11[31:0]), 
+                     .rst_i(reset), 
+                     .done_o(XLXN_13), 
+                     .quotient_o(XLXN_12[63:0]));
+   VCC XLXI_6 (.P(XLXN_6));
+   OR2 XLXI_13 (.I0(set_position), 
+                .I1(reset), 
+                .O(XLXN_76));
+endmodule

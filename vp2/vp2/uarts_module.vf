@@ -1,0 +1,217 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1.03
+//  \   \         Application : sch2verilog
+//  /   /         Filename : uarts_module.vf
+// /___/   /\     Timestamp : 02/07/2012 20:24:11
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: /opt/Xilinx/10.1/ISE/bin/lin64/unwrapped/sch2verilog -intstyle ise -family virtex2p -w /home/seva/src/vp2/rtl/vp2/uarts_module.sch uarts_module.vf
+//Design Name: uarts_module
+//Device: virtex2p
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 1ns / 1ps
+
+module uarts_module(clk, 
+                    cpu_addr, 
+                    cpu_data_in, 
+                    misc_in, 
+                    rd, 
+                    reset, 
+                    rxd0, 
+                    rxd1, 
+                    rxd2, 
+                    rxd3, 
+                    wr, 
+                    cpu_data_out, 
+                    misc_out, 
+                    txd0, 
+                    txd1, 
+                    txd2, 
+                    txd3, 
+                    tx_idle0, 
+                    tx_idle1, 
+                    tx_idle2, 
+                    tx_idle3);
+
+    input clk;
+    input [7:0] cpu_addr;
+    input [7:0] cpu_data_in;
+    input [7:0] misc_in;
+    input rd;
+    input reset;
+    input rxd0;
+    input rxd1;
+    input rxd2;
+    input rxd3;
+    input wr;
+   output [7:0] cpu_data_out;
+   output [7:0] misc_out;
+   output txd0;
+   output txd1;
+   output txd2;
+   output txd3;
+   output tx_idle0;
+   output tx_idle1;
+   output tx_idle2;
+   output tx_idle3;
+   
+   wire [15:0] uart0_divider;
+   wire uart0_rd;
+   wire [7:0] uart0_rx_data;
+   wire [5:0] uart0_status;
+   wire uart0_wr;
+   wire [15:0] uart1_divider;
+   wire uart1_rd;
+   wire [7:0] uart1_rx_data;
+   wire [5:0] uart1_status;
+   wire uart1_wr;
+   wire [15:0] uart2_divider;
+   wire uart2_rd;
+   wire [7:0] uart2_rx_data;
+   wire [5:0] uart2_status;
+   wire uart2_wr;
+   wire [15:0] uart3_divider;
+   wire uart3_rd;
+   wire [7:0] uart3_rx_data;
+   wire [5:0] uart3_status;
+   wire uart3_wr;
+   wire XLXN_1;
+   wire XLXN_2;
+   wire XLXN_23;
+   wire XLXN_24;
+   wire XLXN_41;
+   wire XLXN_42;
+   wire XLXN_59;
+   wire XLXN_60;
+   wire tx_idle0_DUMMY;
+   wire tx_idle1_DUMMY;
+   wire tx_idle2_DUMMY;
+   wire tx_idle3_DUMMY;
+   
+   assign tx_idle0 = tx_idle0_DUMMY;
+   assign tx_idle1 = tx_idle1_DUMMY;
+   assign tx_idle2 = tx_idle2_DUMMY;
+   assign tx_idle3 = tx_idle3_DUMMY;
+   uart XLXI_3 (.bgen_divider(uart1_divider[15:0]), 
+                .clk(clk), 
+                .reset(reset), 
+                .rxd(rxd1), 
+                .rx_read(uart1_rd), 
+                .tx_data(cpu_data_in[7:0]), 
+                .tx_we(uart1_wr), 
+                .rx_data(uart1_rx_data[7:0]), 
+                .rx_empty(XLXN_2), 
+                .rx_ferr(uart1_status[2]), 
+                .rx_oerr(uart1_status[3]), 
+                .txd(txd1), 
+                .tx_done(tx_idle1_DUMMY), 
+                .tx_empty(uart1_status[5]), 
+                .tx_full(XLXN_1));
+   uart_cpu_if XLXI_5 (.clk(clk), 
+                       .cpu_addr(cpu_addr[7:0]), 
+                       .cpu_data_in(cpu_data_in[7:0]), 
+                       .misc_in(misc_in[7:0]), 
+                       .rd(rd), 
+                       .reset(reset), 
+                       .uart0_rx_data(uart0_rx_data[7:0]), 
+                       .uart0_status(uart0_status[5:0]), 
+                       .uart1_rx_data(uart1_rx_data[7:0]), 
+                       .uart1_status(uart1_status[5:0]), 
+                       .uart2_rx_data(uart2_rx_data[7:0]), 
+                       .uart2_status(uart2_status[5:0]), 
+                       .uart3_rx_data(uart3_rx_data[7:0]), 
+                       .uart3_status(uart3_status[5:0]), 
+                       .wr(wr), 
+                       .cpu_data_out(cpu_data_out[7:0]), 
+                       .misc_out(misc_out[7:0]), 
+                       .uart0_divider(uart0_divider[15:0]), 
+                       .uart0_rx_rd(uart0_rd), 
+                       .uart0_tx_wr(uart0_wr), 
+                       .uart1_divider(uart1_divider[15:0]), 
+                       .uart1_rx_rd(uart1_rd), 
+                       .uart1_tx_wr(uart1_wr), 
+                       .uart2_divider(uart2_divider[15:0]), 
+                       .uart2_rx_rd(uart2_rd), 
+                       .uart2_tx_wr(uart2_wr), 
+                       .uart3_divider(uart3_divider[15:0]), 
+                       .uart3_rx_rd(uart3_rd), 
+                       .uart3_tx_wr(uart3_wr));
+   INV XLXI_10 (.I(XLXN_1), 
+                .O(uart1_status[1]));
+   INV XLXI_11 (.I(XLXN_2), 
+                .O(uart1_status[4]));
+   BUF XLXI_15 (.I(tx_idle1_DUMMY), 
+                .O(uart1_status[0]));
+   uart XLXI_16 (.bgen_divider(uart0_divider[15:0]), 
+                 .clk(clk), 
+                 .reset(reset), 
+                 .rxd(rxd0), 
+                 .rx_read(uart0_rd), 
+                 .tx_data(cpu_data_in[7:0]), 
+                 .tx_we(uart0_wr), 
+                 .rx_data(uart0_rx_data[7:0]), 
+                 .rx_empty(XLXN_24), 
+                 .rx_ferr(uart0_status[2]), 
+                 .rx_oerr(uart0_status[3]), 
+                 .txd(txd0), 
+                 .tx_done(tx_idle0_DUMMY), 
+                 .tx_empty(uart0_status[5]), 
+                 .tx_full(XLXN_23));
+   INV XLXI_17 (.I(XLXN_24), 
+                .O(uart0_status[4]));
+   INV XLXI_18 (.I(XLXN_23), 
+                .O(uart0_status[1]));
+   BUF XLXI_19 (.I(tx_idle0_DUMMY), 
+                .O(uart0_status[0]));
+   uart XLXI_20 (.bgen_divider(uart2_divider[15:0]), 
+                 .clk(clk), 
+                 .reset(reset), 
+                 .rxd(rxd2), 
+                 .rx_read(uart2_rd), 
+                 .tx_data(cpu_data_in[7:0]), 
+                 .tx_we(uart2_wr), 
+                 .rx_data(uart2_rx_data[7:0]), 
+                 .rx_empty(XLXN_42), 
+                 .rx_ferr(uart2_status[2]), 
+                 .rx_oerr(uart2_status[3]), 
+                 .txd(txd2), 
+                 .tx_done(tx_idle2_DUMMY), 
+                 .tx_empty(uart2_status[5]), 
+                 .tx_full(XLXN_41));
+   INV XLXI_21 (.I(XLXN_42), 
+                .O(uart2_status[4]));
+   INV XLXI_22 (.I(XLXN_41), 
+                .O(uart2_status[1]));
+   BUF XLXI_23 (.I(tx_idle2_DUMMY), 
+                .O(uart2_status[0]));
+   uart XLXI_24 (.bgen_divider(uart3_divider[15:0]), 
+                 .clk(clk), 
+                 .reset(reset), 
+                 .rxd(rxd3), 
+                 .rx_read(uart3_rd), 
+                 .tx_data(cpu_data_in[7:0]), 
+                 .tx_we(uart3_wr), 
+                 .rx_data(uart3_rx_data[7:0]), 
+                 .rx_empty(XLXN_60), 
+                 .rx_ferr(uart3_status[2]), 
+                 .rx_oerr(uart3_status[3]), 
+                 .txd(txd3), 
+                 .tx_done(tx_idle3_DUMMY), 
+                 .tx_empty(uart3_status[5]), 
+                 .tx_full(XLXN_59));
+   INV XLXI_25 (.I(XLXN_60), 
+                .O(uart3_status[4]));
+   INV XLXI_26 (.I(XLXN_59), 
+                .O(uart3_status[1]));
+   BUF XLXI_27 (.I(tx_idle3_DUMMY), 
+                .O(uart3_status[0]));
+endmodule

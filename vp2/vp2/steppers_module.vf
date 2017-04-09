@@ -1,0 +1,383 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1.03
+//  \   \         Application : sch2verilog
+//  /   /         Filename : steppers_module.vf
+// /___/   /\     Timestamp : 02/07/2012 20:24:10
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: /opt/Xilinx/10.1/ISE/bin/lin64/unwrapped/sch2verilog -intstyle ise -family virtex2p -w /home/seva/src/vp2/rtl/vp2/steppers_module.sch steppers_module.vf
+//Design Name: steppers_module
+//Device: virtex2p
+//Purpose:
+//    This verilog netlist is translated from an ECS schematic.It can be 
+//    synthesized and simulated, but it should not be modified. 
+//
+`timescale 1ns / 1ps
+
+module steppers_module(clk, 
+                       cpu_addr, 
+                       cpu_data_in, 
+                       rd, 
+                       reset, 
+                       wr, 
+                       x_endstop, 
+                       y_endstop, 
+                       z_endstop, 
+                       cpu_data_out, 
+                       dir_a, 
+                       dir_x, 
+                       dir_y, 
+                       dir_z, 
+                       enable_a, 
+                       enable_xyz, 
+                       step_a, 
+                       step_x, 
+                       step_y, 
+                       step_z);
+
+    input clk;
+    input [7:0] cpu_addr;
+    input [7:0] cpu_data_in;
+    input rd;
+    input reset;
+    input wr;
+    input x_endstop;
+    input y_endstop;
+    input z_endstop;
+   output [7:0] cpu_data_out;
+   output dir_a;
+   output dir_x;
+   output dir_y;
+   output dir_z;
+   output enable_a;
+   output enable_xyz;
+   output step_a;
+   output step_x;
+   output step_y;
+   output step_z;
+   
+   wire [31:0] a_cur_pos;
+   wire [31:0] a_cur_vel;
+   wire [31:0] a_end_pos;
+   wire [31:0] a_end_vel;
+   wire a_set_pos;
+   wire a_set_target_pos;
+   wire a_set_target_time;
+   wire a_set_target_vel;
+   wire a_start;
+   wire [31:0] data_in;
+   wire [31:0] data_loop;
+   wire debounce_set_timeout;
+   wire debounce_unlock;
+   wire [31:0] endstop_cycles;
+   wire [7:0] misc_in0;
+   wire [7:0] misc_in1;
+   wire [7:0] misc_out0;
+   wire [7:0] misc_out1;
+   wire [7:0] misc_out2;
+   wire [31:0] XLXN_1947;
+   wire [31:0] XLXN_1948;
+   wire [31:0] XLXN_1949;
+   wire [31:0] XLXN_1981;
+   wire [31:0] XLXN_1982;
+   wire [31:0] XLXN_1983;
+   wire [31:0] XLXN_2001;
+   wire [31:0] XLXN_2002;
+   wire [31:0] XLXN_2003;
+   wire [31:0] XLXN_2021;
+   wire [31:0] XLXN_2022;
+   wire [31:0] XLXN_2023;
+   wire XLXN_2135;
+   wire XLXN_2138;
+   wire XLXN_2140;
+   wire XLXN_2149;
+   wire XLXN_2150;
+   wire XLXN_2154;
+   wire XLXN_2155;
+   wire [31:0] x_cur_pos;
+   wire [31:0] x_cur_vel;
+   wire [31:0] x_endstop_bounce;
+   wire [31:0] x_endstop_pos;
+   wire [31:0] x_end_pos;
+   wire [31:0] x_end_vel;
+   wire x_set_pos;
+   wire x_set_target_pos;
+   wire x_set_target_time;
+   wire x_set_target_vel;
+   wire x_start;
+   wire [31:0] y_cur_pos;
+   wire [31:0] y_cur_vel;
+   wire [31:0] y_endstop_bounce;
+   wire [31:0] y_endstop_pos;
+   wire [31:0] y_end_pos;
+   wire [31:0] y_end_vel;
+   wire y_set_pos;
+   wire y_set_target_pos;
+   wire y_set_target_time;
+   wire y_set_target_vel;
+   wire y_start;
+   wire [31:0] z_cur_pos;
+   wire [31:0] z_cur_vel;
+   wire [31:0] z_endstop_bounce;
+   wire [31:0] z_endstop_pos;
+   wire [31:0] z_end_pos;
+   wire [31:0] z_end_vel;
+   wire z_set_pos;
+   wire z_set_target_pos;
+   wire z_set_target_time;
+   wire z_set_target_vel;
+   wire z_start;
+   
+   stepper_ctrl XLXI_643 (.clk(clk), 
+                          .data_in(data_in[31:0]), 
+                          .relative(misc_out0[0]), 
+                          .reset(reset), 
+                          .set_position(x_set_pos), 
+                          .start(x_start), 
+                          .target_position(XLXN_1948[31:0]), 
+                          .target_time(XLXN_1947[31:0]), 
+                          .target_velocity(XLXN_1949[31:0]), 
+                          .acc(), 
+                          .dir(XLXN_2149), 
+                          .done(misc_in0[0]), 
+                          .end_position(x_end_pos[31:0]), 
+                          .end_velocity(x_end_vel[31:0]), 
+                          .position(x_cur_pos[31:0]), 
+                          .step(step_x), 
+                          .velocity(x_cur_vel[31:0]));
+   dda_bus_if XLXI_644 (.clk(clk), 
+                        .data_in(data_in[31:0]), 
+                        .reset(reset), 
+                        .set_target_position(x_set_target_pos), 
+                        .set_target_time(x_set_target_time), 
+                        .set_target_velocity(x_set_target_vel), 
+                        .target_position(XLXN_1948[31:0]), 
+                        .target_time(XLXN_1947[31:0]), 
+                        .target_velocity(XLXN_1949[31:0]));
+   memory_maped_if XLXI_645 (.clk(clk), 
+                             .cpu_addr(cpu_addr[7:0]), 
+                             .cpu_data_in(cpu_data_in[7:0]), 
+                             .input0(data_loop[31:0]), 
+                             .input1(x_cur_pos[31:0]), 
+                             .input2(x_cur_vel[31:0]), 
+                             .input3(x_end_pos[31:0]), 
+                             .input4(x_end_vel[31:0]), 
+                             .input5(y_cur_pos[31:0]), 
+                             .input6(y_cur_vel[31:0]), 
+                             .input7(y_end_pos[31:0]), 
+                             .input8(y_end_vel[31:0]), 
+                             .input9(z_cur_pos[31:0]), 
+                             .input10(z_cur_vel[31:0]), 
+                             .input11(z_end_pos[31:0]), 
+                             .input12(z_end_vel[31:0]), 
+                             .input13(a_cur_pos[31:0]), 
+                             .input14(a_cur_vel[31:0]), 
+                             .input15(a_end_pos[31:0]), 
+                             .input16(a_end_vel[31:0]), 
+                             .input17(x_endstop_pos[31:0]), 
+                             .input18(x_endstop_bounce[31:0]), 
+                             .input19(y_endstop_pos[31:0]), 
+                             .input20(y_endstop_bounce[31:0]), 
+                             .input21(z_endstop_pos[31:0]), 
+                             .input22(z_endstop_bounce[31:0]), 
+                             .input23(endstop_cycles[31:0]), 
+                             .input24(), 
+                             .input25(), 
+                             .input26(), 
+                             .input27(), 
+                             .input28(), 
+                             .input29(), 
+                             .input30(), 
+                             .input31(), 
+                             .misc_in0(misc_in0[7:0]), 
+                             .misc_in1(misc_in1[7:0]), 
+                             .misc_in2(), 
+                             .misc_in3(), 
+                             .rd(rd), 
+                             .reset(reset), 
+                             .wr(wr), 
+                             .cpu_data_out(cpu_data_out[7:0]), 
+                             .data_out1(data_in[31:0]), 
+                             .data_out2(data_loop[31:0]), 
+                             .misc_out0(misc_out0[7:0]), 
+                             .misc_out1(misc_out1[7:0]), 
+                             .misc_out2(misc_out2[7:0]), 
+                             .misc_out3(), 
+                             .set0(x_start), 
+                             .set1(x_set_pos), 
+                             .set2(x_set_target_time), 
+                             .set3(x_set_target_pos), 
+                             .set4(x_set_target_vel), 
+                             .set5(y_start), 
+                             .set6(y_set_pos), 
+                             .set7(y_set_target_time), 
+                             .set8(y_set_target_pos), 
+                             .set9(y_set_target_vel), 
+                             .set10(z_start), 
+                             .set11(z_set_pos), 
+                             .set12(z_set_target_time), 
+                             .set13(z_set_target_pos), 
+                             .set14(z_set_target_vel), 
+                             .set15(a_start), 
+                             .set16(a_set_pos), 
+                             .set17(a_set_target_time), 
+                             .set18(a_set_target_pos), 
+                             .set19(a_set_target_vel), 
+                             .set20(debounce_unlock), 
+                             .set21(debounce_set_timeout), 
+                             .set22(), 
+                             .set23(), 
+                             .set24(), 
+                             .set25(), 
+                             .set26(), 
+                             .set27(), 
+                             .set28(), 
+                             .set29(), 
+                             .set30(), 
+                             .set31());
+   stepper_ctrl XLXI_646 (.clk(clk), 
+                          .data_in(data_in[31:0]), 
+                          .relative(misc_out0[1]), 
+                          .reset(reset), 
+                          .set_position(y_set_pos), 
+                          .start(y_start), 
+                          .target_position(XLXN_1982[31:0]), 
+                          .target_time(XLXN_1981[31:0]), 
+                          .target_velocity(XLXN_1983[31:0]), 
+                          .acc(), 
+                          .dir(XLXN_2150), 
+                          .done(misc_in0[1]), 
+                          .end_position(y_end_pos[31:0]), 
+                          .end_velocity(y_end_vel[31:0]), 
+                          .position(y_cur_pos[31:0]), 
+                          .step(step_y), 
+                          .velocity(y_cur_vel[31:0]));
+   dda_bus_if XLXI_647 (.clk(clk), 
+                        .data_in(data_in[31:0]), 
+                        .reset(reset), 
+                        .set_target_position(y_set_target_pos), 
+                        .set_target_time(y_set_target_time), 
+                        .set_target_velocity(y_set_target_vel), 
+                        .target_position(XLXN_1982[31:0]), 
+                        .target_time(XLXN_1981[31:0]), 
+                        .target_velocity(XLXN_1983[31:0]));
+   stepper_ctrl XLXI_648 (.clk(clk), 
+                          .data_in(data_in[31:0]), 
+                          .relative(misc_out0[2]), 
+                          .reset(reset), 
+                          .set_position(z_set_pos), 
+                          .start(z_start), 
+                          .target_position(XLXN_2002[31:0]), 
+                          .target_time(XLXN_2001[31:0]), 
+                          .target_velocity(XLXN_2003[31:0]), 
+                          .acc(), 
+                          .dir(XLXN_2154), 
+                          .done(misc_in0[2]), 
+                          .end_position(z_end_pos[31:0]), 
+                          .end_velocity(z_end_vel[31:0]), 
+                          .position(z_cur_pos[31:0]), 
+                          .step(step_z), 
+                          .velocity(z_cur_vel[31:0]));
+   dda_bus_if XLXI_649 (.clk(clk), 
+                        .data_in(data_in[31:0]), 
+                        .reset(reset), 
+                        .set_target_position(z_set_target_pos), 
+                        .set_target_time(z_set_target_time), 
+                        .set_target_velocity(z_set_target_vel), 
+                        .target_position(XLXN_2002[31:0]), 
+                        .target_time(XLXN_2001[31:0]), 
+                        .target_velocity(XLXN_2003[31:0]));
+   stepper_ctrl XLXI_650 (.clk(clk), 
+                          .data_in(data_in[31:0]), 
+                          .relative(misc_out0[3]), 
+                          .reset(reset), 
+                          .set_position(a_set_pos), 
+                          .start(a_start), 
+                          .target_position(XLXN_2022[31:0]), 
+                          .target_time(XLXN_2021[31:0]), 
+                          .target_velocity(XLXN_2023[31:0]), 
+                          .acc(), 
+                          .dir(XLXN_2155), 
+                          .done(misc_in0[3]), 
+                          .end_position(a_end_pos[31:0]), 
+                          .end_velocity(a_end_vel[31:0]), 
+                          .position(a_cur_pos[31:0]), 
+                          .step(step_a), 
+                          .velocity(a_cur_vel[31:0]));
+   dda_bus_if XLXI_651 (.clk(clk), 
+                        .data_in(data_in[31:0]), 
+                        .reset(reset), 
+                        .set_target_position(a_set_target_pos), 
+                        .set_target_time(a_set_target_time), 
+                        .set_target_velocity(a_set_target_vel), 
+                        .target_position(XLXN_2022[31:0]), 
+                        .target_time(XLXN_2021[31:0]), 
+                        .target_velocity(XLXN_2023[31:0]));
+   debounce XLXI_652 (.clk(clk), 
+                      .data_in(data_in[31:0]), 
+                      .pos_in(x_cur_pos[31:0]), 
+                      .reset(reset), 
+                      .set_timeout(debounce_set_timeout), 
+                      .sig_in(XLXN_2135), 
+                      .unlock(debounce_unlock), 
+                      .cycles(endstop_cycles[7:0]), 
+                      .max_bounce(x_endstop_bounce[31:0]), 
+                      .pos_out(x_endstop_pos[31:0]), 
+                      .sig_changed(misc_in1[1]), 
+                      .sig_out(misc_in1[0]));
+   debounce XLXI_655 (.clk(clk), 
+                      .data_in(data_in[31:0]), 
+                      .pos_in(y_cur_pos[31:0]), 
+                      .reset(reset), 
+                      .set_timeout(debounce_set_timeout), 
+                      .sig_in(XLXN_2138), 
+                      .unlock(debounce_unlock), 
+                      .cycles(endstop_cycles[15:8]), 
+                      .max_bounce(y_endstop_bounce[31:0]), 
+                      .pos_out(y_endstop_pos[31:0]), 
+                      .sig_changed(misc_in1[3]), 
+                      .sig_out(misc_in1[2]));
+   debounce XLXI_656 (.clk(clk), 
+                      .data_in(data_in[31:0]), 
+                      .pos_in(z_cur_pos[31:0]), 
+                      .reset(reset), 
+                      .set_timeout(debounce_set_timeout), 
+                      .sig_in(XLXN_2140), 
+                      .unlock(debounce_unlock), 
+                      .cycles(endstop_cycles[23:16]), 
+                      .max_bounce(z_endstop_bounce[31:0]), 
+                      .pos_out(z_endstop_pos[31:0]), 
+                      .sig_changed(misc_in1[5]), 
+                      .sig_out(misc_in1[4]));
+   BUF XLXI_657 (.I(misc_out1[0]), 
+                 .O(enable_xyz));
+   BUF XLXI_658 (.I(misc_out1[1]), 
+                 .O(enable_a));
+   XOR2 XLXI_659 (.I0(misc_out2[6]), 
+                  .I1(z_endstop), 
+                  .O(XLXN_2140));
+   XOR2 XLXI_660 (.I0(misc_out2[5]), 
+                  .I1(y_endstop), 
+                  .O(XLXN_2138));
+   XOR2 XLXI_661 (.I0(misc_out2[4]), 
+                  .I1(x_endstop), 
+                  .O(XLXN_2135));
+   XOR2 XLXI_662 (.I0(XLXN_2149), 
+                  .I1(misc_out2[0]), 
+                  .O(dir_x));
+   XOR2 XLXI_663 (.I0(XLXN_2150), 
+                  .I1(misc_out2[1]), 
+                  .O(dir_y));
+   XOR2 XLXI_664 (.I0(XLXN_2154), 
+                  .I1(misc_out2[2]), 
+                  .O(dir_z));
+   XOR2 XLXI_665 (.I0(XLXN_2155), 
+                  .I1(misc_out2[3]), 
+                  .O(dir_a));
+endmodule

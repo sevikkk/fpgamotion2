@@ -1,0 +1,6 @@
+sendcmd 0 c 1
+sendcmd 0 3 dc
+sendcmd 0 1f 6e
+
+sendcmd 0 2
+
