@@ -1,4 +1,26 @@
 ADDRESS_MAP cpu PPC405 0
+  ADDRESS_SPACE cpu_ram RAMB16 [0x00000000:0x00007fff]
+     BUS_BLOCK
+	cpu_ram/Mram_buffer15 [7];
+	cpu_ram/Mram_buffer13 [6];
+	cpu_ram/Mram_buffer11 [5];
+	cpu_ram/Mram_buffer9 [4];
+	cpu_ram/Mram_buffer7 [3];
+	cpu_ram/Mram_buffer5 [2];
+	cpu_ram/Mram_buffer3 [1];
+	cpu_ram/Mram_buffer1 [0];
+     END_BUS_BLOCK;
+     BUS_BLOCK
+	cpu_ram/Mram_buffer16 [7];
+	cpu_ram/Mram_buffer14 [6];
+	cpu_ram/Mram_buffer12 [5];
+	cpu_ram/Mram_buffer10 [4];
+	cpu_ram/Mram_buffer8 [3];
+	cpu_ram/Mram_buffer6 [2];
+	cpu_ram/Mram_buffer4 [1];
+	cpu_ram/Mram_buffer2 [0];
+     END_BUS_BLOCK;
+  END_ADDRESS_SPACE;
   ADDRESS_SPACE cpu_rom RAMB16 [0x0000e000:0x0000ffff]
      BUS_BLOCK
 	cpu_rom/Mrom_dataOut_mux00004 [7:6];

@@ -1,5 +1,5 @@
 dump: build
-	mkdir build && netgen -ofmt verilog -dir ngout -mhf top.ngd
+	cd build && netgen -ofmt verilog -dir ngout -mhf top.ngd
 
 SRCS:=$(shell echo *.v *.vf *.vhd)
 
@@ -34,9 +34,12 @@ get_loader:
 		data2mem -bm top_bd.bmm -bt top.bit -d>top_orig.dump && \
 		data2mem -bm top_bd.bmm -bt top_ld.bit -d>top_ld.dump
 
-build/loader.mem: ../soft/vp2_loader/loader.bin
+build/loader.mem: ../soft/vp2_loader/loader.bin ../soft/vp2_cli/main.bin
 	cd build && \
-		(echo "@0000E000"; hexdump -v -e '1/1 "%02X " "\n"' ../../soft/vp2_loader/loader.bin) >loader.mem
+		( \
+			echo "@0000E000"; hexdump -v -e '1/1 "%02X " "\n"' ../../soft/vp2_loader/loader.bin; \
+			echo "@00001000"; hexdump -v -e '1/1 "%02X " "\n"' ../../soft/vp2_cli/main.bin; \
+		) >loader.mem
 
 build/top_ld.bit: build/top.bit build/loader.mem
 	cd build && \
