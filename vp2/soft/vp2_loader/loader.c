@@ -182,6 +182,8 @@ main_loop() {
 		osram_write(osram_init[ch]);
 	};
 
+	asm("jmp $1000");
+
 	ch = sdinit();
 	if (ch) return;
 	ptr = ((char *) 0x1000); /* Load addr */
