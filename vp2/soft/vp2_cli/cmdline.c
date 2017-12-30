@@ -219,9 +219,11 @@ void cmdlineInputFunc(unsigned char c)
 		// echo CR and LF to terminal
 		cmdlineOutputFunc(ASCII_CR);
 		cmdlineOutputFunc(ASCII_LF);
+
 		// add null termination to command
 		CmdlineBuffer[CmdlineBufferLength++] = 0;
 		CmdlineBufferEditPos++;
+
 		// command is complete, process it
 		cmdlineProcessInputString();
 		// reset buffer
@@ -316,13 +318,35 @@ void cmdlineDoHistory(uint8_t action)
 	}
 }
 
+
+uint8_t cmdlineParseCommand(void)
+{
+	uint8_t i=0;
+	uint8_t cmdIndex;
+
+	// find the end of the command (excluding arguments)
+	// find first whitespace character in CmdlineBuffer
+	while( !((CmdlineBuffer[i] == ' ') || (CmdlineBuffer[i] == 0)) ) i++;
+
+	// search command list for match with entered command
+	for(cmdIndex=0; cmdIndex<CmdlineNumCommands; cmdIndex++)
+	{
+		if( !strncmp(CmdlineCommandList[cmdIndex], CmdlineBuffer, i) )
+		{
+			// user-entered command matched a command in the list (database)
+			// run the corresponding function
+			CmdlineExecFunction = CmdlineFunctionList[cmdIndex];
+			// new prompt will be output after user function runs
+			// and we're done
+			return 1;
+		}
+	};
+	return 0;
+}
+
 void cmdlineProcessInputString(void)
 {
-	uint8_t cmdIndex;
 	uint8_t i=0;
-
-	// save command in history
-	cmdlineDoHistory(CMDLINE_HISTORY_SAVE);
 
 	// find the end of the command (excluding arguments)
 	// find first whitespace character in CmdlineBuffer
@@ -337,25 +361,16 @@ void cmdlineProcessInputString(void)
 		return;
 	}
 
-	// search command list for match with entered command
-	for(cmdIndex=0; cmdIndex<CmdlineNumCommands; cmdIndex++)
-	{
-		if( !strncmp(CmdlineCommandList[cmdIndex], CmdlineBuffer, i) )
-		{
-			// user-entered command matched a command in the list (database)
-			// run the corresponding function
-			CmdlineExecFunction = CmdlineFunctionList[cmdIndex];
-			// new prompt will be output after user function runs
-			// and we're done
-			return;
-		}
-	}
+	// save command in history
+	cmdlineDoHistory(CMDLINE_HISTORY_SAVE);
 
-	// if we did not get a match
-	// output an error message
-	cmdlinePrintError();
-	// output a new prompt
-	cmdlinePrintPrompt();
+	if (!cmdlineParseCommand()) {
+		// if we did not get a match
+		// output an error message
+		cmdlinePrintError();
+		// output a new prompt
+		cmdlinePrintPrompt();
+	}
 }
 
 void cmdlineMainLoop(void)
