@@ -1,0 +1,156 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 16.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+jj(t) := c0;
+j(t) := c1 + defint(jj(t1), t1, 0, t);
+a(t) := c2 + defint(j(t1), t1, 0, t);
+v(t) := c3 + defint(a(t1), t1, 0, t);
+x(t) := c4 + defint(v(t1), t1, 0, t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(x(t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Single step solution 
+start and finish with zero acceleration
+with given
+  max acceleration
+  error margin at middle point
+  initial and final speed
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([
+        v(0) = v0*k,
+        v(t) = v1*k,
+        a(0) = 0,
+        a(t) = 0,
+        x(0) = -v0*t*km*k,
+        x(t) = v1*t*(1-km)*k,
+        x(t*km) = xm,
+        j(t*km) = 0,
+        a(t*km) = am,
+        x(0) = x0,
+        x(t) = x1
+    ],
+    [c0,c1,c2,c3,c4, x0, x1, km, t, k]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Multistep with pre and post acceleration
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+Main circle, with constant acceleration
+finds time and slowdown coeff, based on max accell and error margin
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([
+        v(0) = v0*k,
+        v(t) = v1*k,
+        a(0) = a0,
+        a(t) = a1,
+        x(0) = -v0*t*km*k,
+        x(t) = v1*t*(1-km)*k,
+        jj(0) = 0,
+        j(0) = 0,
+        x(0) = x0,
+        x(t) = x1,
+        x(t*km) = xm,
+        km = 0.5,
+        a0 = am,
+        a1 = am
+    ],
+    [c0,c1,c2,c3,c4, x0, x1, t, km, a0, a1, k]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+accel/decel part
+finds time given final acc with zero jerk at the end
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([
+        v(0) = v0,
+        v(t) = v1,
+        a(0) = 0,
+        a(t) = am,
+        j(t) = 0,
+        x(0) = 0,
+        x(t) = x1
+    ],
+    [c0,c1,c2,c3,c4, x1, t]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+dependent variable
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+Single step
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([
+        v(0) = v0,
+        v(t) = v1,
+        a(0) = 0,
+        a(t) = 0,
+        x(0) = -v0*t*km
+    ],
+    [c0,c1,c2,c3,c4]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Multistep
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+Main step
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([
+        v(0) = v0*k,
+        v(t) = v1*k,
+        a(0) = a0,
+        a(t) = a1,
+        x(0) = -v0*t*km*k,
+        jj(0) = 0,
+        j(0) = 0,
+        x(0) = x0,
+        x(t) = x1,
+        km = 0.5
+    ],
+    [c0,c1,c2,c3,c4, x0, x1, a0, a1, km]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+accel/decel
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([
+        v(0) = v0,
+        v(t) = v1,
+        a(0) = 0,
+        a(t) = am,
+        j(t) = 0,
+        x(0) = 0,
+        x(t) = x1
+    ],
+    [c0,c1,c2,c3,c4, x1, am]
+);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

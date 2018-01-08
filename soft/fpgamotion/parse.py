@@ -25,7 +25,7 @@ class Parser:
 
     def parse_file(self, filename):
         for line in open(filename):
-            print line
+            #print line
             self.parse_line(line)
 
     def parse_line(self, line, line_number=None):
@@ -36,6 +36,7 @@ class Parser:
         s1 = []
         for ss in s:
             if ss[0] in ["(", ';']:
+                print s
                 break
             s1.append(ss)
 
@@ -74,10 +75,12 @@ class Parser:
         print "set_pos", `args`
 
     def do_G0(self, args):
-        print "G0", `args`
+        #print "G0", `args`
+        pass
 
     def do_G1(self, args):
-        print "G1", `args`
+        #print "G1", `args`
+        pass
 
     def do_M84(self, args):
         pass

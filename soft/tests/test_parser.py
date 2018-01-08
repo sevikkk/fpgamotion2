@@ -8,6 +8,7 @@ class BasicTestCase(TestCase):
     def test_G90(self):
         p = Parser()
         p.parse_line("G90")
+        self.assertEqual(p.mode, "abs")
 
     def test_file(self):
         p = Parser()
