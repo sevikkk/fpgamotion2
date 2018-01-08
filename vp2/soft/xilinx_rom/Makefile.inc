@@ -13,6 +13,6 @@ runtime.lib:	${RUNTIMEOBJS}
 	ar65 a ${.TARGET} ${.ALLSRC}
 
 ${PROG}.bin:	crt0.o runtime.lib ${OBJS}
-	ld65 -C ${BASE}/ld65.cfg -o ${.TARGET} -m ${.TARGET:S/.bin$/.map/} crt0.o ${OBJS} runtime.lib /usr/lib/cc65/lib/nes.lib
+	ld65 -C ${BASE}/ld65.cfg -o ${.TARGET} -m ${.TARGET:S/.bin$/.map/} crt0.o ${OBJS} runtime.lib /usr/local/share/cc65/lib/nes.lib
 
 .include "../Makefile.inc"

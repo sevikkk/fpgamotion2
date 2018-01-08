@@ -14,7 +14,7 @@ runtime.lib:	${RUNTIMEOBJS}
 	ar65 a ${.TARGET} ${.ALLSRC}
 
 ${PROG}.bin:	crt0.o ${LIBS} ${OBJS}
-	ld65 -C ${BASE}/ld65.cfg -o ${.TARGET} -m ${.TARGET:S/.bin$/.map/} crt0.o ${OBJS} ${LIBS} /usr/lib/cc65/lib/nes.lib
+	ld65 -C ${BASE}/ld65.cfg -o ${.TARGET} -m ${.TARGET:S/.bin$/.map/} crt0.o ${OBJS} ${LIBS} /usr/local/share/cc65/lib/nes.lib
 
 load:	${PROG}.bin
 	../tools/send_prg.py ${PROG}.bin
