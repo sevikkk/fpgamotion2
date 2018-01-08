@@ -133,8 +133,13 @@ NET "SD_DO"  LOC = "AC1"  ;
 NET "SYSRESET"  LOC = "H17"  ; 
 NET "U38_DIR"  LOC = "AB1"  ; 
 NET "U38_OE"  LOC = "Y10"  ; 
-NET "UART_RX"  LOC = "H16"  ; 
-NET "UART_TX"  LOC = "J16"  ; 
+
+#RS232
+#NET "UART_RX"  LOC = "H16"  ; 
+#NET "UART_TX"  LOC = "J16"  ; 
+#TTL
+NET "UART_RX"  LOC = "E3"  ; 
+NET "UART_TX"  LOC = "Y3"  ; 
 
 NET "enable_xyz"  LOC = "M10"  ; 
 NET "enable_a"  LOC = "K4"  ; 
