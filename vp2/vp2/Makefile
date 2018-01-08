@@ -8,7 +8,7 @@ build/top.ngc: ${SRCS} top.xst
 	cd build && \
 		xst -ifn ../top.xst -ofn top.syr
 
-build/top.ngd: build/top.ngc
+build/top.ngd: build/top.ngc top.ucf
 	cd build && \
 		cp ../top.bmm . && \
 		ngdbuild -uc ../top.ucf -nt timestamp -p 2vp50ff1152-6 -bm top.bmm top.ngc top.ngd
@@ -43,7 +43,8 @@ build/loader.mem: ../soft/vp2_loader/loader.bin ../soft/vp2_cli/main.bin
 
 build/top_ld.bit: build/top.bit build/loader.mem
 	cd build && \
-		data2mem -bm top_bd.bmm -bd loader.mem -bt top.bit -o b top_ld.bit
+		data2mem -bm top_bd.bmm -bd loader.mem -bt top.bit -o b top_ld.bit && \
+		promgen -u 0x0 top_ld.bit -p bin -b -w
 
 load: build/top_ld.bit
 	cd build && \
